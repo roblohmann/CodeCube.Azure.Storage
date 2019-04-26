@@ -2,7 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <PackageProjectUrl>https://github.com/Rohem/CodeCube</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/Rohem/CodeCube.Azure</PackageProjectUrl>
+    <Authors>Rob Lohmann</Authors>
+    <Description>Library with utilities and wrappers around commonly used stuff in Microsoft Azure</Description>
   </PropertyGroup>
 
   <ItemGroup>
