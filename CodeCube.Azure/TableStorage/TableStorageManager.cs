@@ -11,7 +11,7 @@ namespace CodeCube.Azure.TableStorage
         private CloudTable _cloudTable { get; set; }
         private string _connectionstring { get; }
 
-        public TableStorageManager(string connectionstring, string tableName)
+        internal TableStorageManager(string connectionstring, string tableName)
         {
             _connectionstring = connectionstring;
 

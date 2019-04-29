@@ -6,6 +6,7 @@
 
         internal const string BlobAccountRequired = "Accountname for BLOB-storage cannot be empty!";
         internal const string BlobPasswordRequired = "Password for BLOB-storage cannot be empty!";
+        internal const string BlobConnectionstringRequired = "An valid connectionstring for the BLOB-storage is required!";
 
         internal const string TableConnectionstringRequired = "Connectionstring for TABLE-storage cannot be empty!";
         internal const string TableNameRequired = "Table-name for TABLE-storage cannot be empty!";

@@ -24,6 +24,16 @@ namespace CodeCube.Azure
             return new BlobStorageManager(blobStorageAccountname, blobPassword);
         }
 
+        public BlobStorageManager GetBlobStorageManager(string connectionstring)
+        {
+            if (string.IsNullOrWhiteSpace(connectionstring))
+            {
+                throw new ArgumentNullException(nameof(connectionstring), ErrorConstants.BlobConnectionstringRequired);
+            }
+
+            return new BlobStorageManager(connectionstring);
+        }
+
         public TableStorageManager GetTableStorageManager(string tableConnectionstring, string tableName)
         {
             if (string.IsNullOrWhiteSpace(tableConnectionstring))

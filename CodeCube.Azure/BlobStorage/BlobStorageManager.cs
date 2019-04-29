@@ -13,6 +13,7 @@ namespace CodeCube.Azure.BlobStorage
     {
         private readonly string _accountname;
         private readonly string _accessKey;
+        private readonly string _connectionstring;
 
         /// <summary>
         /// Constructor for this class which requires the accountname and accesskey for the blobstorage.
@@ -20,10 +21,20 @@ namespace CodeCube.Azure.BlobStorage
         /// </summary>
         /// <param name="accountName">The accountname for the blobstorage</param>
         /// <param name="accessKey">The accesskey for the blobstorage</param>
-        public BlobStorageManager(string accountName, string accessKey)
+        internal BlobStorageManager(string accountName, string accessKey)
         {
             _accountname = accountName;
             _accessKey = accessKey;
+        }
+
+        /// <summary>
+        /// Constructor for this class which requires an connectionstring for the blobstorage.
+        /// Container name is specific for each action on this blobstorage account.
+        /// </summary>
+        /// <param name="connectionstring"></param>
+        internal BlobStorageManager(string connectionstring)
+        {
+            _connectionstring = connectionstring;
         }
 
         /// <summary>
@@ -37,11 +48,8 @@ namespace CodeCube.Azure.BlobStorage
         {
             try
             {
-                //Get the credentials
-                var storageCredentials = new StorageCredentials(_accountname, _accessKey);
-
                 //Get a reference to the storage account.
-                var storageAccount = new CloudStorageAccount(storageCredentials, true);
+                CloudStorageAccount storageAccount = GetCloudStoragaAccount();
                 CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
 
                 //Get a reference to the container
@@ -122,8 +130,23 @@ namespace CodeCube.Azure.BlobStorage
                 await blockBlob.DownloadToStreamAsync(ms);
                 bytes = ms.GetBuffer();
             }
-            return bytes;
 
+            return bytes;
         }
+
+        #region privates
+        private CloudStorageAccount GetCloudStoragaAccount()
+        {
+            if (!string.IsNullOrWhiteSpace(_connectionstring))
+            {
+                return CloudStorageAccount.Parse(_connectionstring);
+            }
+
+            //Get the credentials
+            var storageCredentials = new StorageCredentials(_accountname, _accessKey);
+
+            return new CloudStorageAccount(storageCredentials, true);
+        }
+        #endregion
     }
 }
