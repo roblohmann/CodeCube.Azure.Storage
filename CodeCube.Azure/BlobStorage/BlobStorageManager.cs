@@ -21,7 +21,7 @@ namespace CodeCube.Azure.BlobStorage
         /// </summary>
         /// <param name="accountName">The accountname for the blobstorage</param>
         /// <param name="accessKey">The accesskey for the blobstorage</param>
-        internal BlobStorageManager(string accountName, string accessKey)
+        public BlobStorageManager(string accountName, string accessKey)
         {
             _accountname = accountName;
             _accessKey = accessKey;
@@ -32,7 +32,7 @@ namespace CodeCube.Azure.BlobStorage
         /// Container name is specific for each action on this blobstorage account.
         /// </summary>
         /// <param name="connectionstring"></param>
-        internal BlobStorageManager(string connectionstring)
+        public BlobStorageManager(string connectionstring)
         {
             _connectionstring = connectionstring;
         }
