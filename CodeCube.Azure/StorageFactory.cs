@@ -10,20 +10,31 @@ namespace CodeCube.Azure
     /// </summary>
     public sealed class StorageFactory
     {
-        public BlobStorageManager GetBlobStorageManager(string blobStorageAccountname, string blobPassword)
+        /// <summary>
+        /// Retrieve an instance of the BLOB-storagemanager.
+        /// </summary>
+        /// <param name="blobStorageAccountname">The accountname for the blob.</param>
+        /// <param name="blobAccesskey">The access-key for the storage</param>
+        /// <returns>An instance of the BLOB-storagemanager</returns>
+        public BlobStorageManager GetBlobStorageManager(string blobStorageAccountname, string blobAccesskey)
         {
             if(string.IsNullOrWhiteSpace(blobStorageAccountname))
             {
                 throw new ArgumentNullException(nameof(blobStorageAccountname),ErrorConstants.BlobAccountRequired);
             }
-            if (string.IsNullOrWhiteSpace(blobPassword))
+            if (string.IsNullOrWhiteSpace(blobAccesskey))
             {
-                throw new ArgumentNullException(nameof(blobPassword),ErrorConstants.BlobPasswordRequired);
+                throw new ArgumentNullException(nameof(blobAccesskey),ErrorConstants.BlobAccesskeyRequired);
             }
 
-            return new BlobStorageManager(blobStorageAccountname, blobPassword);
+            return new BlobStorageManager(blobStorageAccountname, blobAccesskey);
         }
 
+        /// <summary>
+        /// Retrieve an instance of the BLOB-storagemanager.
+        /// </summary>
+        /// <param name="connectionstring">The connectionstring to the BLOB-storage.</param>
+        /// <returns>An instance of the BLOB-storagemanager.</returns>
         public BlobStorageManager GetBlobStorageManager(string connectionstring)
         {
             if (string.IsNullOrWhiteSpace(connectionstring))
@@ -34,6 +45,12 @@ namespace CodeCube.Azure
             return new BlobStorageManager(connectionstring);
         }
 
+        /// <summary>
+        /// Retrieve an instance of the TABLE-storagemanager.
+        /// </summary>
+        /// <param name="tableConnectionstring">The connectionstring to the TABLE-storage.</param>
+        /// <param name="tableName">The name of the table to connect to.</param>
+        /// <returns></returns>
         public TableStorageManager GetTableStorageManager(string tableConnectionstring, string tableName)
         {
             if (string.IsNullOrWhiteSpace(tableConnectionstring))

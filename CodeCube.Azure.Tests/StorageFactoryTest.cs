@@ -1,4 +1,5 @@
 ﻿using System;
+using CodeCube.Azure.BlobStorage;
 using NUnit.Framework;
 
 namespace CodeCube.Azure.Tests
@@ -22,7 +23,20 @@ namespace CodeCube.Azure.Tests
         }
 
         [Test]
-        public void GetStorageManager_Blob_WithoutAccountAndPassword_ThrowsException()
+        public void GetStorageManager_Blob_WithoutAccountAndAccesskey_ThrowsException()
+        {
+            //Setup
+            const string mockBlobStorageAccount = "MockAccount";
+            string mockBlobStoragePassword = string.Empty;
+            var factory = new StorageFactory();
+
+            //Act + Assert
+            var exception = Assert.Throws<ArgumentNullException>(() => factory.GetBlobStorageManager(mockBlobStorageAccount, mockBlobStoragePassword));
+            Assert.AreEqual("Accesskey for BLOB-storage cannot be empty!\r\nParameter name: blobAccesskey", exception.GetBaseException().Message);
+        }
+
+        [Test]
+        public void GetStorageManager_Blob_WithoutAccesskey_ThrowsException()
         {
             //Setup
             var factory = new StorageFactory();
@@ -30,6 +44,31 @@ namespace CodeCube.Azure.Tests
             //Act + Assert
             var exception = Assert.Throws<ArgumentNullException>(() => factory.GetBlobStorageManager(string.Empty, string.Empty));
             Assert.AreEqual("Accountname for BLOB-storage cannot be empty!\r\nParameter name: blobStorageAccountname", exception.GetBaseException().Message);
+        }
+
+        [Test]
+        public void GetStorageManager_Blob_WithConnectionstring()
+        {
+            //Setup
+            var factory = new StorageFactory();
+            const string mockConnectionstring = "MockConnectionstring";
+
+            //Act
+            BlobStorageManager manager = factory.GetBlobStorageManager(mockConnectionstring);
+
+            //Assert
+            Assert.IsNotNull(manager);
+        }
+
+        [Test]
+        public void GetStoragemanager_Blob_WithoutConnectionstring_ThrowsException()
+        {
+            //Setup
+            var factory = new StorageFactory();
+
+            //Act + Assert
+            var exception = Assert.Throws<ArgumentNullException>(() => factory.GetBlobStorageManager(string.Empty));
+            Assert.AreEqual("A valid connectionstring for the BLOB-storage is required!\r\nParameter name: connectionstring", exception.GetBaseException().Message);
         }
     }
 }
