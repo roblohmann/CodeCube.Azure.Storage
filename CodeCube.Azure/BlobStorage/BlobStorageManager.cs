@@ -54,13 +54,13 @@ namespace CodeCube.Azure.BlobStorage
 
                 //Get a reference to the container
                 CloudBlobContainer containerReference = blobClient.GetContainerReference(container);
-                await containerReference.CreateIfNotExistsAsync();
+                await containerReference.CreateIfNotExistsAsync().ConfigureAwait(false);
 
                 //Create a reference to the blob.
                 CloudBlockBlob blockBlob = containerReference.GetBlockBlobReference(filename);
 
                 //Update the blob.
-                await blockBlob.UploadFromByteArrayAsync(bytes, 0, bytes.Length);
+                await blockBlob.UploadFromByteArrayAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
 
                 //Return the url for the blob.
                 return blockBlob.StorageUri.PrimaryUri.AbsoluteUri;
@@ -114,20 +114,25 @@ namespace CodeCube.Azure.BlobStorage
         /// <returns></returns>
         public async Task<byte[]> GetBytes(string url, string container)
         {
-            var storageCredentials = new StorageCredentials(_accountname, _accessKey);
             var filename = Path.GetFileName(url.Split('?')[0]);
 
             if (!string.IsNullOrWhiteSpace(filename)) filename = HttpUtility.UrlDecode(filename);
 
-            var storageAccount = new CloudStorageAccount(storageCredentials, false);
-            var blobClient = storageAccount.CreateCloudBlobClient();
-            var containerReference = blobClient.GetContainerReference(container);
-            var blockBlob = containerReference.GetBlockBlobReference(filename);
+            //Get a reference to the storage account.
+            CloudStorageAccount storageAccount = GetCloudStoragaAccount();
+            CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
+
+            //Get a reference to the container
+            CloudBlobContainer containerReference = blobClient.GetContainerReference(container);
+            await containerReference.CreateIfNotExistsAsync().ConfigureAwait(false);
+
+            //Create a reference to the blob.
+            CloudBlockBlob blockBlob = containerReference.GetBlockBlobReference(filename);
 
             byte[] bytes;
             using (var ms = new MemoryStream())
             {
-                await blockBlob.DownloadToStreamAsync(ms);
+                await blockBlob.DownloadToStreamAsync(ms).ConfigureAwait(false);
                 bytes = ms.GetBuffer();
             }
 
