@@ -20,11 +20,11 @@ namespace CodeCube.Azure
         {
             if(string.IsNullOrWhiteSpace(blobStorageAccountname))
             {
-                throw new ArgumentNullException(nameof(blobStorageAccountname),ErrorConstants.BlobAccountRequired);
+                throw new ArgumentNullException(nameof(blobStorageAccountname),ErrorConstants.Blob.BlobAccountRequired);
             }
             if (string.IsNullOrWhiteSpace(blobAccesskey))
             {
-                throw new ArgumentNullException(nameof(blobAccesskey),ErrorConstants.BlobAccesskeyRequired);
+                throw new ArgumentNullException(nameof(blobAccesskey),ErrorConstants.Blob.BlobAccesskeyRequired);
             }
 
             return new BlobStorageManager(blobStorageAccountname, blobAccesskey);
@@ -39,7 +39,7 @@ namespace CodeCube.Azure
         {
             if (string.IsNullOrWhiteSpace(connectionstring))
             {
-                throw new ArgumentNullException(nameof(connectionstring), ErrorConstants.BlobConnectionstringRequired);
+                throw new ArgumentNullException(nameof(connectionstring), ErrorConstants.Blob.BlobConnectionstringRequired);
             }
 
             return new BlobStorageManager(connectionstring);
@@ -55,11 +55,11 @@ namespace CodeCube.Azure
         {
             if (string.IsNullOrWhiteSpace(tableConnectionstring))
             {
-                throw new ArgumentNullException(nameof(tableConnectionstring), ErrorConstants.TableConnectionstringRequired);
+                throw new ArgumentNullException(nameof(tableConnectionstring), ErrorConstants.Table.TableConnectionstringRequired);
             }
             if (string.IsNullOrWhiteSpace(tableName))
             {
-                throw new ArgumentNullException(nameof(tableName), ErrorConstants.TableNameRequired);
+                throw new ArgumentNullException(nameof(tableName), ErrorConstants.Table.TableNameRequired);
             }
 
             return new TableStorageManager(tableConnectionstring, tableName);
