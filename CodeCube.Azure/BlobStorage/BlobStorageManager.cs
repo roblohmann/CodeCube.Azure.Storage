@@ -67,7 +67,7 @@ namespace CodeCube.Azure.BlobStorage
             }
             catch (Exception e)
             {
-                throw new Exception(ErrorConstants.FileCouldNotBeStored, e);
+                throw new Exception(ErrorConstants.Blob.FileCouldNotBeStored, e);
             }
 
         }
@@ -144,7 +144,12 @@ namespace CodeCube.Azure.BlobStorage
         {
             if (!string.IsNullOrWhiteSpace(_connectionstring))
             {
-                return CloudStorageAccount.Parse(_connectionstring);
+                if(!CloudStorageAccount.TryParse(_connectionstring, out CloudStorageAccount storageAccount))
+                {
+                    throw new InvalidOperationException(ErrorConstants.InvalidConnectionstring);
+                }
+
+                return storageAccount;
             }
 
             //Get the credentials
