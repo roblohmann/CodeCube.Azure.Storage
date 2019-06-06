@@ -75,13 +75,13 @@ namespace CodeCube.Azure.BlobStorage
         /// <summary>
         /// Download the specified file from the container.
         /// </summary>
-        /// <param name="url">The full URL of the blob to download.</param>
+        /// <param name="path">The full URL of the blob to download. This is used to get the filename for the blob.</param>
         /// <param name="container">The name of the container where the blob is stored.</param>
-        /// <returns>Forces an download for the file.</returns>
-        public string DownloadFile(string url, string container)
+        /// <returns>Uri to download the blob including sharedaccess-token</returns>
+        public string GetUrlForDownload(string path, string container)
         {
             var sc = new StorageCredentials(_accountname, _accessKey);
-            var filename = Path.GetFileName(url);
+            var filename = Path.GetFileName(path);
             var storageAccount = new CloudStorageAccount(sc, true);
             var blobClient = storageAccount.CreateCloudBlobClient();
             var containerReference = blobClient.GetContainerReference(container);
@@ -103,7 +103,23 @@ namespace CodeCube.Azure.BlobStorage
             var sasToken = blockBlob.GetSharedAccessSignature(policy, headers);
 
             return blockBlob.Uri.AbsoluteUri.Replace("http://", "https://") + sasToken;
+        }
 
+        /// <summary>
+        /// Get the file behind the specified URL as byte-array.
+        /// Public access is restricted by default.
+        /// </summary>
+        /// <param name="url">The full URL for the blob to retrieve.</param>
+        /// <param name="container">The name of the conatiner where the blob is stored.</param>
+        /// <returns>The bytearray for the specified blob.</returns>
+        public async Task<byte[]> GetBytes(string url, string container)
+        {
+            BlobContainerPermissions permissions = new BlobContainerPermissions
+            {
+                PublicAccess = BlobContainerPublicAccessType.Off
+            };
+
+            return await GetBytes(url, container, permissions);
         }
 
         /// <summary>
@@ -111,8 +127,9 @@ namespace CodeCube.Azure.BlobStorage
         /// </summary>
         /// <param name="url">The full URL for the blob to retrieve.</param>
         /// <param name="container">The name of the conatiner where the blob is stored.</param>
-        /// <returns></returns>
-        public async Task<byte[]> GetBytes(string url, string container)
+        /// <param name="containerPermissions">The object with container permissions.</param>
+        /// <returns>The bytearray for the specified blob.</returns>
+        public async Task<byte[]> GetBytes(string url, string container, BlobContainerPermissions containerPermissions)
         {
             var filename = Path.GetFileName(url.Split('?')[0]);
 
@@ -125,6 +142,8 @@ namespace CodeCube.Azure.BlobStorage
             //Get a reference to the container
             CloudBlobContainer containerReference = blobClient.GetContainerReference(container);
             await containerReference.CreateIfNotExistsAsync().ConfigureAwait(false);
+            await containerReference.SetPermissionsAsync(containerPermissions);
+
 
             //Create a reference to the blob.
             CloudBlockBlob blockBlob = containerReference.GetBlockBlobReference(filename);
@@ -144,7 +163,7 @@ namespace CodeCube.Azure.BlobStorage
         {
             if (!string.IsNullOrWhiteSpace(_connectionstring))
             {
-                if(!CloudStorageAccount.TryParse(_connectionstring, out CloudStorageAccount storageAccount))
+                if (!CloudStorageAccount.TryParse(_connectionstring, out CloudStorageAccount storageAccount))
                 {
                     throw new InvalidOperationException(ErrorConstants.InvalidConnectionstring);
                 }
