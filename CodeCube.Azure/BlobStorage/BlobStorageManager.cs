@@ -4,7 +4,6 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using System.Web;
 using CodeCube.Azure.Constants;
 
 namespace CodeCube.Azure.BlobStorage
@@ -80,11 +79,16 @@ namespace CodeCube.Azure.BlobStorage
         /// <returns>Uri to download the blob including sharedaccess-token</returns>
         public string GetUrlForDownload(string path, string container)
         {
-            var sc = new StorageCredentials(_accountname, _accessKey);
             var filename = Path.GetFileName(path);
-            var storageAccount = new CloudStorageAccount(sc, true);
+
+            //Get a reference to the storage account.
+            var storageAccount = GetCloudStoragaAccount();
             var blobClient = storageAccount.CreateCloudBlobClient();
+
+            //Get a reference to the container
             var containerReference = blobClient.GetContainerReference(container);
+
+            //Get a reference to the blob.
             var blockBlob = containerReference.GetBlockBlobReference(filename);
 
             //Create an ad-hoc Shared Access Policy with read permissions which will expire in 1 minute
@@ -105,54 +109,32 @@ namespace CodeCube.Azure.BlobStorage
             return blockBlob.Uri.AbsoluteUri.Replace("http://", "https://") + sasToken;
         }
 
-        ///// <summary>
-        ///// Get the file behind the specified URL as byte-array.
-        ///// Public access is restricted by default.
-        ///// </summary>
-        ///// <param name="url">The full URL for the blob to retrieve.</param>
-        ///// <param name="container">The name of the conatiner where the blob is stored.</param>
-        ///// <returns>The bytearray for the specified blob.</returns>
-        //public async Task<byte[]> GetBytes(string url, string container)
-        //{
-        //    BlobContainerPermissions permissions = new BlobContainerPermissions
-        //    {
-        //        PublicAccess = BlobContainerPublicAccessType.Off
-        //    };
-
-        //    return await GetBytes(url, container, permissions);
-        //}
-
-        public async Task<string> GetString(string filename, string container)
+        /// <summary>
+        /// Get the specified file from the BLOB-storage.
+        /// The BLOB-container permissions are set to private by default.
+        /// </summary>
+        /// <param name="filename">The full filename for the blob to retrieve.</param>
+        /// <param name="container">The name of the conatiner where the blob is stored.</param>
+        /// <returns>The bytearray for the specified blob.</returns>
+        public async Task<byte[]> GetBytes(string filename, string container)
         {
-            //Get a reference to the storage account.
-            CloudStorageAccount storageAccount = GetCloudStoragaAccount();
-            CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
+            BlobContainerPermissions permissions = new BlobContainerPermissions
+            {
+                PublicAccess = BlobContainerPublicAccessType.Off
+            };
 
-            //Get a reference to the container
-            CloudBlobContainer containerReference = blobClient.GetContainerReference(container);
-            await containerReference.CreateIfNotExistsAsync().ConfigureAwait(false);
-            //await containerReference.SetPermissionsAsync(containerPermissions);
-
-
-            //Create a reference to the blob.
-            CloudBlockBlob blockBlob = containerReference.GetBlockBlobReference(filename);
-
-            return await blockBlob.DownloadTextAsync().ConfigureAwait(false);
+            return await GetBytes(filename, container, permissions);
         }
 
         /// <summary>
-        /// Get the file behind the specified URL as byte-array.
+        /// Get the specified file from the BLOB-storage.
         /// </summary>
-        /// <param name="url">The full URL for the blob to retrieve.</param>
+        /// <param name="filename">The full filename for the blob to retrieve.</param>
         /// <param name="container">The name of the conatiner where the blob is stored.</param>
-        /// <param name="containerPermissions">The object with container permissions.</param>
+        /// <param name="containerPermissions">The object with container permissions. The enabled or restricts public access to the BLOB-container.</param>
         /// <returns>The bytearray for the specified blob.</returns>
-        public async Task<byte[]> GetBytes(string url, string container/*, BlobContainerPermissions containerPermissions*/)
+        public async Task<byte[]> GetBytes(string filename, string container, BlobContainerPermissions containerPermissions)
         {
-            var filename = Path.GetFileName(url.Split('?')[0]);
-
-            if (!string.IsNullOrWhiteSpace(filename)) filename = HttpUtility.UrlDecode(filename);
-
             //Get a reference to the storage account.
             CloudStorageAccount storageAccount = GetCloudStoragaAccount();
             CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
@@ -160,7 +142,7 @@ namespace CodeCube.Azure.BlobStorage
             //Get a reference to the container
             CloudBlobContainer containerReference = blobClient.GetContainerReference(container);
             await containerReference.CreateIfNotExistsAsync().ConfigureAwait(false);
-            //await containerReference.SetPermissionsAsync(containerPermissions);
+            await containerReference.SetPermissionsAsync(containerPermissions);
 
 
             //Create a reference to the blob.
@@ -174,6 +156,48 @@ namespace CodeCube.Azure.BlobStorage
             }
 
             return bytes;
+        }
+
+        /// <summary>
+        /// Retrieves the specified file as string.
+        /// The BLOB-container permissions are set to private by default.
+        /// </summary>
+        /// <param name="filename">The full filename for the blob to retrieve.</param>
+        /// <param name="container">The name of the conatiner where the blob is stored.</param>
+        /// <returns>The specified file as string.</returns>
+        public async Task<string> GetString(string filename, string container)
+        {
+            BlobContainerPermissions permissions = new BlobContainerPermissions
+            {
+                    PublicAccess = BlobContainerPublicAccessType.Off
+            };
+
+            return await GetString(filename, container, permissions);
+        }
+
+        /// <summary>
+        /// Retrieves the specified file as string.
+        /// </summary>
+        /// <param name="filename">The full filename for the blob to retrieve.</param>
+        /// <param name="container">The name of the conatiner where the blob is stored.</param>
+        /// <param name="containerPermissions">The object with container permissions. The enabled or restricts public access to the BLOB-container.</param>
+        /// <returns>The specified file as string.</returns>
+        public async Task<string> GetString(string filename, string container, BlobContainerPermissions containerPermissions)
+        {
+            //Get a reference to the storage account.
+            CloudStorageAccount storageAccount = GetCloudStoragaAccount();
+            CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
+
+            //Get a reference to the container
+            CloudBlobContainer containerReference = blobClient.GetContainerReference(container);
+            await containerReference.CreateIfNotExistsAsync().ConfigureAwait(false);
+            await containerReference.SetPermissionsAsync(containerPermissions);
+
+
+            //Create a reference to the blob.
+            CloudBlockBlob blockBlob = containerReference.GetBlockBlobReference(filename);
+
+            return await blockBlob.DownloadTextAsync().ConfigureAwait(false);
         }
 
         #region privates
