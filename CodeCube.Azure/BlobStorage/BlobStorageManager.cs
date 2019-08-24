@@ -40,6 +40,41 @@ namespace CodeCube.Azure.BlobStorage
         /// Stores a file in the blob-storage.
         /// </summary>
         /// <param name="filename">The filename of the blob.</param>
+        /// <param name="fileContent">The content for the blob as a stream.</param>
+        /// <param name="container">The containername where to store the blob. If the container doesn't exist it will be created.</param>
+        /// <returns>The URI for the blobfile.</returns>
+        public async Task<string> StoreFile(string filename, Stream fileContent, string container)
+        {
+            try
+            {
+                //Get a reference to the storage account.
+                CloudStorageAccount storageAccount = GetCloudStoragaAccount();
+                CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
+
+                //Get a reference to the container
+                CloudBlobContainer containerReference = blobClient.GetContainerReference(container);
+                await containerReference.CreateIfNotExistsAsync().ConfigureAwait(false);
+
+                //Create a reference to the blob.
+                CloudBlockBlob blockBlob = containerReference.GetBlockBlobReference(filename);
+
+                //Update the blob.
+                await blockBlob.UploadFromStreamAsync(fileContent, fileContent.Length).ConfigureAwait(false);
+
+                //Return the url for the blob.
+                return blockBlob.StorageUri.PrimaryUri.AbsoluteUri;
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException(ErrorConstants.Blob.FileCouldNotBeStored, e);
+            }
+
+        }
+
+        /// <summary>
+        /// Stores a file in the blob-storage.
+        /// </summary>
+        /// <param name="filename">The filename of the blob.</param>
         /// <param name="bytes">The content for the blob in bytes.</param>
         /// <param name="container">The containername where to store the blob. If the container doesn't exist it will be created.</param>
         /// <returns>The URI for the blobfile.</returns>
@@ -66,7 +101,7 @@ namespace CodeCube.Azure.BlobStorage
             }
             catch (Exception e)
             {
-                throw new Exception(ErrorConstants.Blob.FileCouldNotBeStored, e);
+                throw new InvalidOperationException(ErrorConstants.Blob.FileCouldNotBeStored, e);
             }
 
         }
