@@ -1,10 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageProjectUrl>https://github.com/roblohmann/CodeCube.Azure</PackageProjectUrl>
     <Authors>Rob Lohmann</Authors>
     <Description>Library with utilities and wrappers around commonly used stuff in Microsoft Azure</Description>
+    <PackageIconUrl>https://github.com/roblohmann/CodeCube.Azure/blob/master/nuget-icon.png?raw=true</PackageIconUrl>
+    <RepositoryUrl>https://github.com/roblohmann/CodeCube.Azure</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
