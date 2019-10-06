@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <PackageProjectUrl>https://github.com/roblohmann/CodeCube.Azure</PackageProjectUrl>
     <Authors>Rob Lohmann</Authors>
     <Description>Library with utilities and wrappers around commonly used stuff in Microsoft Azure</Description>
