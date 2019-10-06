@@ -1,12 +1,12 @@
-﻿using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Auth;
-using Microsoft.WindowsAzure.Storage.Blob;
-using System;
+﻿using System;
 using System.IO;
 using System.Threading.Tasks;
 using CodeCube.Azure.Constants;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Auth;
+using Microsoft.WindowsAzure.Storage.Blob;
 
-namespace CodeCube.Azure.BlobStorage
+namespace CodeCube.Azure
 {
     public sealed class BlobStorageManager
     {

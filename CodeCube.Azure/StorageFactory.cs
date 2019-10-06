@@ -1,7 +1,5 @@
 ﻿using System;
-using CodeCube.Azure.BlobStorage;
 using CodeCube.Azure.Constants;
-using CodeCube.Azure.TableStorage;
 
 namespace CodeCube.Azure
 {

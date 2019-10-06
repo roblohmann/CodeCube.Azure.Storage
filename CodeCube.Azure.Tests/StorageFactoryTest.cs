@@ -1,5 +1,4 @@
 ﻿using System;
-using CodeCube.Azure.BlobStorage;
 using NUnit.Framework;
 
 namespace CodeCube.Azure.Tests
@@ -32,7 +31,7 @@ namespace CodeCube.Azure.Tests
 
             //Act + Assert
             var exception = Assert.Throws<ArgumentNullException>(() => factory.GetBlobStorageManager(mockBlobStorageAccount, mockBlobStoragePassword));
-            Assert.AreEqual("Accesskey for BLOB-storage cannot be empty!\r\nParameter name: blobAccesskey", exception.GetBaseException().Message);
+            Assert.AreEqual("Accesskey for BLOB-storage cannot be empty! (Parameter 'blobAccesskey')", exception.GetBaseException().Message);
         }
 
         [Test]
@@ -43,7 +42,7 @@ namespace CodeCube.Azure.Tests
 
             //Act + Assert
             var exception = Assert.Throws<ArgumentNullException>(() => factory.GetBlobStorageManager(string.Empty, string.Empty));
-            Assert.AreEqual("Accountname for BLOB-storage cannot be empty!\r\nParameter name: blobStorageAccountname", exception.GetBaseException().Message);
+            Assert.AreEqual("Accountname for BLOB-storage cannot be empty! (Parameter 'blobStorageAccountname')", exception.GetBaseException().Message);
         }
 
         [Test]
@@ -68,7 +67,7 @@ namespace CodeCube.Azure.Tests
 
             //Act + Assert
             var exception = Assert.Throws<ArgumentNullException>(() => factory.GetBlobStorageManager(string.Empty));
-            Assert.AreEqual("A valid connectionstring for the BLOB-storage is required!\r\nParameter name: connectionstring", exception.GetBaseException().Message);
+            Assert.AreEqual("A valid connectionstring for the BLOB-storage is required! (Parameter 'connectionstring')", exception.GetBaseException().Message);
         }
     }
 }
