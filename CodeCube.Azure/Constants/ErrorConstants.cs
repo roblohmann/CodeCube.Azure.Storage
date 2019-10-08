@@ -16,6 +16,9 @@
         {
             internal const string TableConnectionstringRequired = "Connectionstring for TABLE-storage cannot be empty!";
             internal const string TableNameRequired = "Tablename for TABLE-storage cannot be empty!";
+
+            internal const string RowKeyIsRequired = "RowKey is required!";
+            internal const string PartitionKeyIsRequired = "PartitionKey is required!";
         }
     }
 }

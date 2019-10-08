@@ -43,6 +43,15 @@ namespace CodeCube.Azure
         /// <returns></returns>
         public async Task InsertOrReplace<T>(T entity, bool insertOnly = true) where T : TableEntity, new()
         {
+            if (string.IsNullOrWhiteSpace(entity.RowKey))
+            {
+                throw new InvalidOperationException(ErrorConstants.Table.RowKeyIsRequired);
+            }
+            if (string.IsNullOrWhiteSpace(entity.PartitionKey))
+            {
+                throw new InvalidOperationException(ErrorConstants.Table.PartitionKeyIsRequired);
+            }
+
             if (insertOnly)
             {
                 var insertOperation = TableOperation.Insert(entity);
