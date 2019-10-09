@@ -7,13 +7,12 @@ using Microsoft.WindowsAzure.Storage.Table;
 
 namespace CodeCube.Azure
 {
-    public sealed class TableStorageManager
+    public sealed class TableStorageManager : BaseManager
     {
         private CloudTable CloudTable { get; set; }
-        private string Connectionstring { get; }
         private string TableName { get; }
 
-        internal TableStorageManager(string connectionstring, string tableName)
+        internal TableStorageManager(string connectionstring, string tableName) : base(connectionstring)
         {
             //Validate parameters
             if (string.IsNullOrEmpty(tableName))
@@ -26,8 +25,6 @@ namespace CodeCube.Azure
                 throw new ArgumentNullException(nameof(connectionstring), ErrorConstants.Table.TableConnectionstringRequired);
             }
 
-            //Store parameter values
-            Connectionstring = connectionstring;
             TableName = tableName;
 
             //Setup connection
@@ -117,7 +114,7 @@ namespace CodeCube.Azure
         #region privates
         private void ConnectToCloudTable()
         {
-            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(Connectionstring);
+            CloudStorageAccount storageAccount = ConnectCloudStorageAccountWithConnectionString();
             CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
 
             CloudTable = tableClient.GetTableReference(TableName);

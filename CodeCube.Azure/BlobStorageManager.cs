@@ -8,11 +8,12 @@ using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace CodeCube.Azure
 {
-    public sealed class BlobStorageManager
+    public sealed class BlobStorageManager : BaseManager
     {
         private readonly string _accountname;
         private readonly string _accessKey;
-        private readonly string _connectionstring;
+
+        private CloudStorageAccount storageAccount;
 
         /// <summary>
         /// Constructor for this class which requires the accountname and accesskey for the blobstorage.
@@ -24,6 +25,8 @@ namespace CodeCube.Azure
         {
             _accountname = accountName;
             _accessKey = accessKey;
+
+            storageAccount = GetCloudStoragaAccount();
         }
 
         /// <summary>
@@ -31,9 +34,9 @@ namespace CodeCube.Azure
         /// Container name is specific for each action on this blobstorage account.
         /// </summary>
         /// <param name="connectionstring"></param>
-        internal BlobStorageManager(string connectionstring)
+        internal BlobStorageManager(string connectionstring) : base(connectionstring)
         {
-            _connectionstring = connectionstring;
+            storageAccount = GetCloudStoragaAccount();
         }
 
         /// <summary>
@@ -48,7 +51,6 @@ namespace CodeCube.Azure
             try
             {
                 //Get a reference to the storage account.
-                CloudStorageAccount storageAccount = GetCloudStoragaAccount();
                 CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
 
                 //Get a reference to the container
@@ -240,12 +242,7 @@ namespace CodeCube.Azure
         {
             if (!string.IsNullOrWhiteSpace(_connectionstring))
             {
-                if (!CloudStorageAccount.TryParse(_connectionstring, out CloudStorageAccount storageAccount))
-                {
-                    throw new InvalidOperationException(ErrorConstants.InvalidConnectionstring);
-                }
-
-                return storageAccount;
+                return ConnectCloudStorageAccountWithConnectionString();
             }
 
             //Get the credentials
