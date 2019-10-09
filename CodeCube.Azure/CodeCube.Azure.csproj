@@ -7,7 +7,9 @@
     <Description>Library with utilities and wrappers around commonly used stuff in Microsoft Azure</Description>
     <PackageIconUrl>https://github.com/roblohmann/CodeCube.Azure/blob/master/nuget-icon.png?raw=true</PackageIconUrl>
     <RepositoryUrl>https://github.com/roblohmann/CodeCube.Azure</RepositoryUrl>
-    <PackageReleaseNotes>Please not that the namespace for BlobStorageManager and TableStorageManager have changed!</PackageReleaseNotes>
+    <PackageReleaseNotes></PackageReleaseNotes>
+    <Copyright>Copyright Rob Lohmann 2019</Copyright>
+    <PackageTags>auzre blobstorage tablestorage</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
