@@ -20,5 +20,11 @@
             internal const string RowKeyIsRequired = "RowKey is required!";
             internal const string PartitionKeyIsRequired = "PartitionKey is required!";
         }
+
+        internal static class Queue
+        {
+            internal const string QueueNameRequired = "Name for the queue is required!";
+            internal const string QueueConnectionstringRequired = "Connectionstring for the queue is required!";
+        }
     }
 }

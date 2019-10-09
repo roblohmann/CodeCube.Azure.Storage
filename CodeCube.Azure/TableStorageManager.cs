@@ -9,8 +9,8 @@ namespace CodeCube.Azure
 {
     public sealed class TableStorageManager : BaseManager
     {
-        private CloudTable CloudTable { get; set; }
-        private string TableName { get; }
+        private CloudTable _cloudTable;
+        private readonly string _tableName;
 
         internal TableStorageManager(string connectionstring, string tableName) : base(connectionstring)
         {
@@ -25,7 +25,7 @@ namespace CodeCube.Azure
                 throw new ArgumentNullException(nameof(connectionstring), ErrorConstants.Table.TableConnectionstringRequired);
             }
 
-            TableName = tableName;
+            _tableName = tableName;
 
             //Setup connection
             ConnectToCloudTable();
@@ -52,12 +52,12 @@ namespace CodeCube.Azure
             if (insertOnly)
             {
                 var insertOperation = TableOperation.Insert(entity);
-                await CloudTable.ExecuteAsync(insertOperation);
+                await _cloudTable.ExecuteAsync(insertOperation);
             }
             else
             {
                 var insertOrMergeOperation = TableOperation.InsertOrReplace(entity);
-                await CloudTable.ExecuteAsync(insertOrMergeOperation).ConfigureAwait(false);
+                await _cloudTable.ExecuteAsync(insertOrMergeOperation).ConfigureAwait(false);
             }
         }
 
@@ -79,7 +79,7 @@ namespace CodeCube.Azure
             }
 
             // Execute the batch operation.
-            await CloudTable.ExecuteBatchAsync(batchOperation).ConfigureAwait(false);
+            await _cloudTable.ExecuteBatchAsync(batchOperation).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace CodeCube.Azure
         public async Task<T> Retrieve<T>(string partitionKey, string rowKey) where T : TableEntity, new()
         {
             TableOperation retrieveOperation = TableOperation.Retrieve<T>(partitionKey, rowKey);
-            TableResult result = await CloudTable.ExecuteAsync(retrieveOperation).ConfigureAwait(false);
+            TableResult result = await _cloudTable.ExecuteAsync(retrieveOperation).ConfigureAwait(false);
 
             return result.Result as T;
         }
@@ -106,7 +106,7 @@ namespace CodeCube.Azure
         public bool Delete<T>(T entity) where T : TableEntity, new()
         {
             var DeleteOperation = TableOperation.Delete(entity);
-            CloudTable.ExecuteAsync(DeleteOperation).ConfigureAwait(false);
+            _cloudTable.ExecuteAsync(DeleteOperation).ConfigureAwait(false);
 
             return true;
         }
@@ -117,8 +117,8 @@ namespace CodeCube.Azure
             CloudStorageAccount storageAccount = ConnectCloudStorageAccountWithConnectionString();
             CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
 
-            CloudTable = tableClient.GetTableReference(TableName);
-            CloudTable.CreateIfNotExistsAsync().ConfigureAwait(false);
+            _cloudTable = tableClient.GetTableReference(_tableName);
+            _cloudTable.CreateIfNotExistsAsync().ConfigureAwait(false);
         }
         #endregion
     }
