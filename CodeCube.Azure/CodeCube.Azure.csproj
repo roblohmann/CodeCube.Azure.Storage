@@ -13,12 +13,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
+    <Compile Remove="BlobStorage\**" />
+    <Compile Remove="TableStorage\**" />
+    <EmbeddedResource Remove="BlobStorage\**" />
+    <EmbeddedResource Remove="TableStorage\**" />
+    <None Remove="BlobStorage\**" />
+    <None Remove="TableStorage\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="BlobStorage\" />
-    <Folder Include="TableStorage\" />
+    <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
   </ItemGroup>
 
 </Project>
