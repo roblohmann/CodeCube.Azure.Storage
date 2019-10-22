@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
     <PackageProjectUrl>https://github.com/roblohmann/CodeCube.Azure</PackageProjectUrl>
     <Authors>Rob Lohmann</Authors>
     <Description>Library with utilities and wrappers around commonly used stuff in Microsoft Azure</Description>
@@ -20,15 +20,6 @@
     <OutputPath>bin\Release</OutputPath>
     <DocumentationFile>bin\Release\CodeCube.Azure.xml</DocumentationFile>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="BlobStorage\**" />
-    <Compile Remove="TableStorage\**" />
-    <EmbeddedResource Remove="BlobStorage\**" />
-    <EmbeddedResource Remove="TableStorage\**" />
-    <None Remove="BlobStorage\**" />
-    <None Remove="TableStorage\**" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
