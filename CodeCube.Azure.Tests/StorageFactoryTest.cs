@@ -46,20 +46,6 @@ namespace CodeCube.Azure.Tests
         }
 
         [Test]
-        public void GetStorageManager_Blob_WithConnectionstring()
-        {
-            //Setup
-            var factory = new StorageFactory();
-            const string mockConnectionstring = "MockConnectionstring";
-
-            //Act
-            BlobStorageManager manager = factory.GetBlobStorageManager(mockConnectionstring);
-
-            //Assert
-            Assert.IsNotNull(manager);
-        }
-
-        [Test]
         public void GetStoragemanager_Blob_WithoutConnectionstring_ThrowsException()
         {
             //Setup
