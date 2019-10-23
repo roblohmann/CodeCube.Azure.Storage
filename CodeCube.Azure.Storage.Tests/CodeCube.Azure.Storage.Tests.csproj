@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CodeCube.Azure\CodeCube.Azure.csproj" />
+    <ProjectReference Include="..\CodeCube.Azure.Storage\CodeCube.Azure.Storage.csproj" />
   </ItemGroup>
 
 </Project>
