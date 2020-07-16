@@ -1,19 +1,20 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using Azure.Storage;
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 using CodeCube.Azure.Constants;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Auth;
-using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace CodeCube.Azure
 {
     public sealed class BlobStorageManager : BaseManager
     {
-        private readonly string _accountname;
-        private readonly string _accessKey;
+        //private readonly string _accountname;
+        //private readonly string _accessKey;
 
-        private CloudStorageAccount storageAccount;
+        //private CloudStorageAccount storageAccount;
+        private BlobServiceClient _blobServiceClient;
 
         /// <summary>
         /// Constructor for this class which requires the accountname and accesskey for the blobstorage.
@@ -21,12 +22,9 @@ namespace CodeCube.Azure
         /// </summary>
         /// <param name="accountName">The accountname for the blobstorage</param>
         /// <param name="accessKey">The accesskey for the blobstorage</param>
-        internal BlobStorageManager(string accountName, string accessKey)
+        internal BlobStorageManager(string Uri, string accountName, string accessKey)
         {
-            _accountname = accountName;
-            _accessKey = accessKey;
-
-            storageAccount = GetCloudStoragaAccount();
+            _blobServiceClient = ConnectBlobServiceClient(Uri, accountName, accessKey);
         }
 
         /// <summary>
@@ -36,7 +34,7 @@ namespace CodeCube.Azure
         /// <param name="connectionstring"></param>
         internal BlobStorageManager(string connectionstring) : base(connectionstring)
         {
-            storageAccount = GetCloudStoragaAccount();
+            _blobServiceClient = ConnectBlobServiceClient();
         }
 
         /// <summary>
@@ -50,21 +48,18 @@ namespace CodeCube.Azure
         {
             try
             {
-                //Get a reference to the storage account.
-                CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
-
                 //Get a reference to the container
-                CloudBlobContainer containerReference = blobClient.GetContainerReference(container);
-                await containerReference.CreateIfNotExistsAsync().ConfigureAwait(false);
+                BlobContainerClient blobContainerClient = _blobServiceClient.GetBlobContainerClient(container);
+                await blobContainerClient.CreateIfNotExistsAsync().ConfigureAwait(false);
 
                 //Create a reference to the blob.
-                CloudBlockBlob blockBlob = containerReference.GetBlockBlobReference(filename);
+                BlobClient blobClient = blobContainerClient.GetBlobClient(filename);
 
                 //Update the blob.
-                await blockBlob.UploadFromStreamAsync(fileContent, fileContent.Length).ConfigureAwait(false);
+                await blobClient.UploadAsync(fileContent).ConfigureAwait(false);
 
                 //Return the url for the blob.
-                return blockBlob.StorageUri.PrimaryUri.AbsoluteUri;
+                return blobClient.Uri.AbsoluteUri;
             }
             catch (Exception e)
             {
@@ -84,22 +79,21 @@ namespace CodeCube.Azure
         {
             try
             {
-                //Get a reference to the storage account.
-                CloudStorageAccount storageAccount = GetCloudStoragaAccount();
-                CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
-
                 //Get a reference to the container
-                CloudBlobContainer containerReference = blobClient.GetContainerReference(container);
-                await containerReference.CreateIfNotExistsAsync().ConfigureAwait(false);
+                BlobContainerClient blobContainerClient = _blobServiceClient.GetBlobContainerClient(container);
+                await blobContainerClient.CreateIfNotExistsAsync().ConfigureAwait(false);
 
                 //Create a reference to the blob.
-                CloudBlockBlob blockBlob = containerReference.GetBlockBlobReference(filename);
+                BlobClient blobClient = blobContainerClient.GetBlobClient(filename);
 
                 //Update the blob.
-                await blockBlob.UploadFromByteArrayAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
+                using (var memoryStream = new MemoryStream(bytes))
+                {
+                    await blobClient.UploadAsync(memoryStream);
+                }
 
                 //Return the url for the blob.
-                return blockBlob.StorageUri.PrimaryUri.AbsoluteUri;
+                return blobClient.Uri.AbsoluteUri;
             }
             catch (Exception e)
             {
@@ -108,88 +102,63 @@ namespace CodeCube.Azure
 
         }
 
-        /// <summary>
-        /// Download the specified file from the container.
-        /// </summary>
-        /// <param name="path">The full URL of the blob to download. This is used to get the filename for the blob.</param>
-        /// <param name="container">The name of the container where the blob is stored.</param>
-        /// <returns>Uri to download the blob including sharedaccess-token</returns>
-        public string GetUrlForDownload(string path, string container)
-        {
-            var filename = Path.GetFileName(path);
+        ///// <summary>
+        ///// Download the specified file from the container.
+        ///// </summary>
+        ///// <param name="path">The full URL of the blob to download. This is used to get the filename for the blob.</param>
+        ///// <param name="container">The name of the container where the blob is stored.</param>
+        ///// <returns>Uri to download the blob including sharedaccess-token</returns>
+        //public string GetUrlForDownload(string path, string container)
+        //{
+        //    var filename = Path.GetFileName(path);
 
-            //Get a reference to the storage account.
-            var storageAccount = GetCloudStoragaAccount();
-            var blobClient = storageAccount.CreateCloudBlobClient();
+        //    //Get a reference to the container
+        //    var containerReference = blobClient.GetContainerReference(container);
 
-            //Get a reference to the container
-            var containerReference = blobClient.GetContainerReference(container);
+        //    //Get a reference to the blob.
+        //    var blockBlob = containerReference.GetBlockBlobReference(filename);
 
-            //Get a reference to the blob.
-            var blockBlob = containerReference.GetBlockBlobReference(filename);
+        //    //Create an ad-hoc Shared Access Policy with read permissions which will expire in 1 minute
+        //    var policy = new SharedAccessBlobPolicy()
+        //    {
+        //        Permissions = SharedAccessBlobPermissions.Read,
+        //        SharedAccessExpiryTime = DateTime.UtcNow.AddMinutes(1)
+        //    };
 
-            //Create an ad-hoc Shared Access Policy with read permissions which will expire in 1 minute
-            var policy = new SharedAccessBlobPolicy()
-            {
-                Permissions = SharedAccessBlobPermissions.Read,
-                SharedAccessExpiryTime = DateTime.UtcNow.AddMinutes(1)
-            };
+        //    //Set content-disposition header for force download
+        //    var headers = new SharedAccessBlobHeaders()
+        //    {
+        //        ContentDisposition = $"attachment;filename=\"{filename}\"",
+        //    };
 
-            //Set content-disposition header for force download
-            var headers = new SharedAccessBlobHeaders()
-            {
-                ContentDisposition = $"attachment;filename=\"{filename}\"",
-            };
+        //    var sasToken = blockBlob.GetSharedAccessSignature(policy, headers);
 
-            var sasToken = blockBlob.GetSharedAccessSignature(policy, headers);
+        //    return blockBlob.Uri.AbsoluteUri.Replace("http://", "https://") + sasToken;
+        //}
 
-            return blockBlob.Uri.AbsoluteUri.Replace("http://", "https://") + sasToken;
-        }
 
         /// <summary>
         /// Get the specified file from the BLOB-storage.
-        /// The BLOB-container permissions are set to private by default.
         /// </summary>
         /// <param name="filename">The full filename for the blob to retrieve.</param>
         /// <param name="container">The name of the conatiner where the blob is stored.</param>
         /// <returns>The bytearray for the specified blob.</returns>
         public async Task<byte[]> GetBytes(string filename, string container)
         {
-            BlobContainerPermissions permissions = new BlobContainerPermissions
-            {
-                PublicAccess = BlobContainerPublicAccessType.Off
-            };
-
-            return await GetBytes(filename, container, permissions);
-        }
-
-        /// <summary>
-        /// Get the specified file from the BLOB-storage.
-        /// </summary>
-        /// <param name="filename">The full filename for the blob to retrieve.</param>
-        /// <param name="container">The name of the conatiner where the blob is stored.</param>
-        /// <param name="containerPermissions">The object with container permissions. The enabled or restricts public access to the BLOB-container.</param>
-        /// <returns>The bytearray for the specified blob.</returns>
-        public async Task<byte[]> GetBytes(string filename, string container, BlobContainerPermissions containerPermissions)
-        {
-            //Get a reference to the storage account.
-            CloudStorageAccount storageAccount = GetCloudStoragaAccount();
-            CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
-
             //Get a reference to the container
-            CloudBlobContainer containerReference = blobClient.GetContainerReference(container);
-            await containerReference.CreateIfNotExistsAsync().ConfigureAwait(false);
-            await containerReference.SetPermissionsAsync(containerPermissions);
+            BlobContainerClient blobContainerClient = _blobServiceClient.GetBlobContainerClient(container);
+            await blobContainerClient.CreateIfNotExistsAsync().ConfigureAwait(false);
+            await blobContainerClient.SetAccessPolicyAsync(PublicAccessType.None);
 
+            BlobClient blobClient = blobContainerClient.GetBlobClient(filename);
 
-            //Create a reference to the blob.
-            CloudBlockBlob blockBlob = containerReference.GetBlockBlobReference(filename);
+            BlobDownloadInfo downloadInfo = await blobClient.DownloadAsync().ConfigureAwait(false);
 
             byte[] bytes;
-            using (var ms = new MemoryStream())
+            using (var memoryStream = new MemoryStream())
             {
-                await blockBlob.DownloadToStreamAsync(ms).ConfigureAwait(false);
-                bytes = ms.GetBuffer();
+                await downloadInfo.Content.CopyToAsync(memoryStream).ConfigureAwait(false);
+                bytes = memoryStream.GetBuffer();
             }
 
             return bytes;
@@ -197,58 +166,56 @@ namespace CodeCube.Azure
 
         /// <summary>
         /// Retrieves the specified file as string.
-        /// The BLOB-container permissions are set to private by default.
         /// </summary>
         /// <param name="filename">The full filename for the blob to retrieve.</param>
         /// <param name="container">The name of the conatiner where the blob is stored.</param>
         /// <returns>The specified file as string.</returns>
         public async Task<string> GetString(string filename, string container)
         {
-            BlobContainerPermissions permissions = new BlobContainerPermissions
-            {
-                    PublicAccess = BlobContainerPublicAccessType.Off
-            };
-
-            return await GetString(filename, container, permissions);
-        }
-
-        /// <summary>
-        /// Retrieves the specified file as string.
-        /// </summary>
-        /// <param name="filename">The full filename for the blob to retrieve.</param>
-        /// <param name="container">The name of the conatiner where the blob is stored.</param>
-        /// <param name="containerPermissions">The object with container permissions. The enabled or restricts public access to the BLOB-container.</param>
-        /// <returns>The specified file as string.</returns>
-        public async Task<string> GetString(string filename, string container, BlobContainerPermissions containerPermissions)
-        {
-            //Get a reference to the storage account.
-            CloudStorageAccount storageAccount = GetCloudStoragaAccount();
-            CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
-
             //Get a reference to the container
-            CloudBlobContainer containerReference = blobClient.GetContainerReference(container);
-            await containerReference.CreateIfNotExistsAsync().ConfigureAwait(false);
-            await containerReference.SetPermissionsAsync(containerPermissions);
+            BlobContainerClient blobContainerClient = _blobServiceClient.GetBlobContainerClient(container);
+            await blobContainerClient.CreateIfNotExistsAsync().ConfigureAwait(false);
+            await blobContainerClient.SetAccessPolicyAsync(PublicAccessType.None);
 
+            BlobClient blobClient = blobContainerClient.GetBlobClient(filename);
 
-            //Create a reference to the blob.
-            CloudBlockBlob blockBlob = containerReference.GetBlockBlobReference(filename);
+            BlobDownloadInfo downloadInfo = await blobClient.DownloadAsync().ConfigureAwait(false);
 
-            return await blockBlob.DownloadTextAsync().ConfigureAwait(false);
+            string returnvalue;
+            using (var memoryStream = new MemoryStream())
+            {
+                await downloadInfo.Content.CopyToAsync(memoryStream).ConfigureAwait(false);
+                using (var streamReader = new StreamReader(memoryStream))
+                {
+                    returnvalue = await streamReader.ReadToEndAsync().ConfigureAwait(false);
+                }
+            }
+
+            return returnvalue;
         }
 
         #region privates
-        private CloudStorageAccount GetCloudStoragaAccount()
+        private BlobServiceClient ConnectBlobServiceClient()
         {
-            if (!string.IsNullOrWhiteSpace(_connectionstring))
+            return ConnectCloudStorageAccountWithConnectionString();
+        }
+
+        private BlobServiceClient ConnectBlobServiceClient(string uri, string accountname, string accessKey)
+        {
+            //Get the credentials
+            var sharedkeyCredential = new StorageSharedKeyCredential(accountname, accessKey);
+
+            return new BlobServiceClient(new Uri(uri), sharedkeyCredential);
+        }
+
+        private BlobServiceClient ConnectCloudStorageAccountWithConnectionString()
+        {
+            if (string.IsNullOrWhiteSpace(Connectionstring))
             {
-                return ConnectCloudStorageAccountWithConnectionString();
+                throw new InvalidOperationException($"No connectionstring available!");
             }
 
-            //Get the credentials
-            var storageCredentials = new StorageCredentials(_accountname, _accessKey);
-
-            return new CloudStorageAccount(storageCredentials, true);
+            return new BlobServiceClient(Connectionstring);
         }
         #endregion
     }

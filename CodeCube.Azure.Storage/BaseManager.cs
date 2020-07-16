@@ -1,12 +1,11 @@
-﻿using System;
-using CodeCube.Azure.Constants;
-using Microsoft.WindowsAzure.Storage;
+﻿using Azure.Storage.Blobs;
+using System;
 
 namespace CodeCube.Azure
 {
     public abstract class BaseManager
     {
-        protected readonly string _connectionstring;
+        protected readonly string Connectionstring;
 
         protected BaseManager()
         {
@@ -14,17 +13,7 @@ namespace CodeCube.Azure
         }
         protected BaseManager(string connectionstring)
         {
-            _connectionstring = connectionstring;
-        }
-
-        protected CloudStorageAccount ConnectCloudStorageAccountWithConnectionString()
-        {
-            if (!CloudStorageAccount.TryParse(_connectionstring, out CloudStorageAccount storageAccount))
-            {
-                throw new InvalidOperationException(ErrorConstants.InvalidConnectionstring);
-            }
-
-            return storageAccount;
+            Connectionstring = connectionstring;
         }
     }
 }

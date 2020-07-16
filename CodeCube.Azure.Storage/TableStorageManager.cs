@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using CodeCube.Azure.Constants;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Table;
+using Microsoft.Azure.Cosmos.Table;
 
 namespace CodeCube.Azure
 {
@@ -119,6 +118,16 @@ namespace CodeCube.Azure
 
             _cloudTable = tableClient.GetTableReference(_tableName);
             _cloudTable.CreateIfNotExistsAsync().ConfigureAwait(false);
+        }
+
+        private CloudStorageAccount ConnectCloudStorageAccountWithConnectionString()
+        {
+            if (!CloudStorageAccount.TryParse(Connectionstring, out CloudStorageAccount storageAccount))
+            {
+                throw new InvalidOperationException(ErrorConstants.InvalidConnectionstring);
+            }
+
+            return storageAccount;
         }
         #endregion
     }

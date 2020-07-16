@@ -14,9 +14,13 @@ namespace CodeCube.Azure
         /// <param name="blobStorageAccountname">The accountname for the blob.</param>
         /// <param name="blobAccesskey">The access-key for the storage</param>
         /// <returns>An instance of the BLOB-storagemanager</returns>
-        public BlobStorageManager GetBlobStorageManager(string blobStorageAccountname, string blobAccesskey)
+        public BlobStorageManager GetBlobStorageManager(string uri, string blobStorageAccountname, string blobAccesskey)
         {
-            if(string.IsNullOrWhiteSpace(blobStorageAccountname))
+            if (string.IsNullOrWhiteSpace(uri))
+            {
+                throw new ArgumentNullException(nameof(uri), ErrorConstants.Blob.BlobUriRequired);
+            }
+            if (string.IsNullOrWhiteSpace(blobStorageAccountname))
             {
                 throw new ArgumentNullException(nameof(blobStorageAccountname),ErrorConstants.Blob.BlobAccountRequired);
             }
@@ -25,7 +29,7 @@ namespace CodeCube.Azure
                 throw new ArgumentNullException(nameof(blobAccesskey),ErrorConstants.Blob.BlobAccesskeyRequired);
             }
 
-            return new BlobStorageManager(blobStorageAccountname, blobAccesskey);
+            return new BlobStorageManager(uri, blobStorageAccountname, blobAccesskey);
         }
 
         /// <summary>

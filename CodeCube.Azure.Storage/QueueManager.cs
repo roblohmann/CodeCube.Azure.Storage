@@ -1,14 +1,17 @@
 ﻿using System;
+using System.Threading.Tasks;
+using Azure.Storage.Queues;
 using CodeCube.Azure.Constants;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Queue;
 
 namespace CodeCube.Azure
 {
+    /// <summary>
+    /// Manager class to connect to one single Azure Storage Queue
+    /// </summary>
     public sealed class QueueManager : BaseManager
     {
         private readonly string _queuename;
-        private CloudQueue _queue;
+        private QueueClient _queueClient;
 
         internal QueueManager(string connectionstring, string queuename) : base(connectionstring)
         {
@@ -26,25 +29,23 @@ namespace CodeCube.Azure
             _queuename = queuename;
         }
 
-        public CloudQueue Connect()
+        /// <summary>
+        /// Connect to the desired queue and return the client.
+        /// </summary>
+        /// <returns>The queueclient.</returns>
+        public async Task<QueueClient> ConnectAsync()
         {
-            if(_queue == null) ConnectToQueue();
-            
-            return _queue;
+            if(_queueClient == null) await ConnectToQueue();
+
+            return _queueClient;
         }
 
         #region privates
-        private void ConnectToQueue()
+        private async Task ConnectToQueue()
         {
-            CloudStorageAccount storageAccount = ConnectCloudStorageAccountWithConnectionString();
+            _queueClient = new QueueClient(Connectionstring, _queuename);
 
-            CloudQueueClient queueClient = storageAccount.CreateCloudQueueClient();
-
-            // Retrieve a reference to a queue.
-            _queue = queueClient.GetQueueReference(_queuename);
-
-            // Create the queue if it doesn't already exist
-            _queue.CreateIfNotExistsAsync();
+            await _queueClient.CreateIfNotExistsAsync();
         }
         #endregion
     }

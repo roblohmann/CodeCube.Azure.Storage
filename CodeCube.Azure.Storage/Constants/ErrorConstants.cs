@@ -6,6 +6,7 @@
 
         internal static class Blob
         {
+            internal const string BlobUriRequired = "URI for BLOB-storage cannot be empty!";
             internal const string BlobAccountRequired = "Accountname for BLOB-storage cannot be empty!";
             internal const string BlobAccesskeyRequired = "Accesskey for BLOB-storage cannot be empty!";
             internal const string BlobConnectionstringRequired = "A valid connectionstring for the BLOB-storage is required!";
