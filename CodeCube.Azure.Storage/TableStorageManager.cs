@@ -27,7 +27,7 @@ namespace CodeCube.Azure
             _tableName = tableName;
 
             //Setup connection
-            ConnectToCloudTable();
+            ConnectToCloudTable().ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace CodeCube.Azure
             if (insertOnly)
             {
                 var insertOperation = TableOperation.Insert(entity);
-                await _cloudTable.ExecuteAsync(insertOperation);
+                await _cloudTable.ExecuteAsync(insertOperation).ConfigureAwait(false);
             }
             else
             {
@@ -111,13 +111,13 @@ namespace CodeCube.Azure
         }
 
         #region privates
-        private void ConnectToCloudTable()
+        private async Task ConnectToCloudTable()
         {
             CloudStorageAccount storageAccount = ConnectCloudStorageAccountWithConnectionString();
             CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
 
             _cloudTable = tableClient.GetTableReference(_tableName);
-            _cloudTable.CreateIfNotExistsAsync().ConfigureAwait(false);
+            await _cloudTable.CreateIfNotExistsAsync().ConfigureAwait(false);
         }
 
         private CloudStorageAccount ConnectCloudStorageAccountWithConnectionString()

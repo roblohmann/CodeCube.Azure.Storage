@@ -45,7 +45,7 @@ namespace CodeCube.Azure
         {
             _queueClient = new QueueClient(Connectionstring, _queuename);
 
-            await _queueClient.CreateIfNotExistsAsync();
+            await _queueClient.CreateIfNotExistsAsync().ConfigureAwait(false);
         }
         #endregion
     }

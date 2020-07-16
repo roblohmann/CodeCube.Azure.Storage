@@ -148,7 +148,7 @@ namespace CodeCube.Azure
             //Get a reference to the container
             BlobContainerClient blobContainerClient = _blobServiceClient.GetBlobContainerClient(container);
             await blobContainerClient.CreateIfNotExistsAsync().ConfigureAwait(false);
-            await blobContainerClient.SetAccessPolicyAsync(PublicAccessType.None);
+            await blobContainerClient.SetAccessPolicyAsync(PublicAccessType.None).ConfigureAwait(false);
 
             BlobClient blobClient = blobContainerClient.GetBlobClient(filename);
 
@@ -175,7 +175,7 @@ namespace CodeCube.Azure
             //Get a reference to the container
             BlobContainerClient blobContainerClient = _blobServiceClient.GetBlobContainerClient(container);
             await blobContainerClient.CreateIfNotExistsAsync().ConfigureAwait(false);
-            await blobContainerClient.SetAccessPolicyAsync(PublicAccessType.None);
+            await blobContainerClient.SetAccessPolicyAsync(PublicAccessType.None).ConfigureAwait(false);
 
             BlobClient blobClient = blobContainerClient.GetBlobClient(filename);
 
