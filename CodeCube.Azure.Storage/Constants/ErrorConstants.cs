@@ -1,4 +1,4 @@
-﻿namespace CodeCube.Azure.Constants
+﻿namespace CodeCube.Azure.Storage.Constants
 {
     internal static class ErrorConstants
     {

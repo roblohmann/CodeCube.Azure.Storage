@@ -1,7 +1,7 @@
 ﻿using System;
-using CodeCube.Azure.Constants;
+using CodeCube.Azure.Storage.Constants;
 
-namespace CodeCube.Azure
+namespace CodeCube.Azure.Storage
 {
     /// <summary>
     /// Helper class to retrieve the right helper to communicate with several types of storage.

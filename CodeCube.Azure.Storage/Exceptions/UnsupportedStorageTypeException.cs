@@ -1,7 +1,7 @@
 ﻿using System;
-using CodeCube.Azure.Enum;
+using CodeCube.Azure.Storage.Enum;
 
-namespace CodeCube.Azure.Exceptions
+namespace CodeCube.Azure.Storage.Exceptions
 {
     public sealed class UnsupportedStorageTypeException : Exception
     {

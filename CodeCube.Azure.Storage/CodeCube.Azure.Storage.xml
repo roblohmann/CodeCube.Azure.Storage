@@ -4,22 +4,42 @@
         <name>CodeCube.Azure.Storage</name>
     </assembly>
     <members>
-        <member name="M:CodeCube.Azure.BlobStorageManager.#ctor(System.String,System.String,System.String)">
+        <member name="F:CodeCube.Azure.Storage.BaseManager.Connectionstring">
+            <summary>
+            The connectionstring to the storage
+            </summary>
+        </member>
+        <member name="T:CodeCube.Azure.Storage.BlobStorageManager">
+            <summary>
+            Manager class to connect to a blob storage and upload or download blobs.
+            </summary>
+        </member>
+        <member name="M:CodeCube.Azure.Storage.BlobStorageManager.#ctor(System.String,System.String,System.String)">
             <summary>
             Constructor for this class which requires the accountname and accesskey for the blobstorage.
             Container name is specific for each action on this blobstorage account.
             </summary>
+            <param name="url">The URL to the BLOB-storage.</param>
             <param name="accountName">The accountname for the blobstorage</param>
             <param name="accessKey">The accesskey for the blobstorage</param>
         </member>
-        <member name="M:CodeCube.Azure.BlobStorageManager.#ctor(System.String)">
+        <member name="M:CodeCube.Azure.Storage.BlobStorageManager.#ctor(System.Uri,System.String,System.String)">
+            <summary>
+            Constructor for this class which requires the accountname and accesskey for the blobstorage.
+            Container name is specific for each action on this blobstorage account.
+            </summary>
+            <param name="url">The URL to the BLOB-storage.</param>
+            <param name="accountName">The accountname for the blobstorage</param>
+            <param name="accessKey">The accesskey for the blobstorage</param>
+        </member>
+        <member name="M:CodeCube.Azure.Storage.BlobStorageManager.#ctor(System.String)">
             <summary>
             Constructor for this class which requires an connectionstring for the blobstorage.
             Container name is specific for each action on this blobstorage account.
             </summary>
             <param name="connectionstring"></param>
         </member>
-        <member name="M:CodeCube.Azure.BlobStorageManager.StoreFile(System.String,System.IO.Stream,System.String)">
+        <member name="M:CodeCube.Azure.Storage.BlobStorageManager.StoreFile(System.String,System.IO.Stream,System.String)">
             <summary>
             Stores a file in the blob-storage.
             </summary>
@@ -28,7 +48,7 @@
             <param name="container">The containername where to store the blob. If the container doesn't exist it will be created.</param>
             <returns>The URI for the blobfile.</returns>
         </member>
-        <member name="M:CodeCube.Azure.BlobStorageManager.StoreFile(System.String,System.Byte[],System.String)">
+        <member name="M:CodeCube.Azure.Storage.BlobStorageManager.StoreFile(System.String,System.Byte[],System.String)">
             <summary>
             Stores a file in the blob-storage.
             </summary>
@@ -37,7 +57,7 @@
             <param name="container">The containername where to store the blob. If the container doesn't exist it will be created.</param>
             <returns>The URI for the blobfile.</returns>
         </member>
-        <member name="M:CodeCube.Azure.BlobStorageManager.GetBytes(System.String,System.String)">
+        <member name="M:CodeCube.Azure.Storage.BlobStorageManager.GetBytes(System.String,System.String)">
             <summary>
             Get the specified file from the BLOB-storage.
             </summary>
@@ -45,7 +65,7 @@
             <param name="container">The name of the conatiner where the blob is stored.</param>
             <returns>The bytearray for the specified blob.</returns>
         </member>
-        <member name="M:CodeCube.Azure.BlobStorageManager.GetString(System.String,System.String)">
+        <member name="M:CodeCube.Azure.Storage.BlobStorageManager.GetString(System.String,System.String)">
             <summary>
             Retrieves the specified file as string.
             </summary>
@@ -53,23 +73,28 @@
             <param name="container">The name of the conatiner where the blob is stored.</param>
             <returns>The specified file as string.</returns>
         </member>
-        <member name="T:CodeCube.Azure.QueueManager">
+        <member name="T:CodeCube.Azure.Storage.Enum.EStorageType">
+            <summary>
+            The type of of storages.
+            </summary>
+        </member>
+        <member name="T:CodeCube.Azure.Storage.QueueManager">
             <summary>
             Manager class to connect to one single Azure Storage Queue
             </summary>
         </member>
-        <member name="M:CodeCube.Azure.QueueManager.ConnectAsync">
+        <member name="M:CodeCube.Azure.Storage.QueueManager.ConnectAsync">
             <summary>
             Connect to the desired queue and return the client.
             </summary>
             <returns>The queueclient.</returns>
         </member>
-        <member name="T:CodeCube.Azure.StorageFactory">
+        <member name="T:CodeCube.Azure.Storage.StorageFactory">
             <summary>
             Helper class to retrieve the right helper to communicate with several types of storage.
             </summary>
         </member>
-        <member name="M:CodeCube.Azure.StorageFactory.GetBlobStorageManager(System.String,System.String,System.String)">
+        <member name="M:CodeCube.Azure.Storage.StorageFactory.GetBlobStorageManager(System.String,System.String,System.String)">
             <summary>
             Retrieve an instance of the BLOB-storagemanager.
             </summary>
@@ -77,14 +102,14 @@
             <param name="blobAccesskey">The access-key for the storage</param>
             <returns>An instance of the BLOB-storagemanager</returns>
         </member>
-        <member name="M:CodeCube.Azure.StorageFactory.GetBlobStorageManager(System.String)">
+        <member name="M:CodeCube.Azure.Storage.StorageFactory.GetBlobStorageManager(System.String)">
             <summary>
             Retrieve an instance of the BLOB-storagemanager.
             </summary>
             <param name="connectionstring">The connectionstring to the BLOB-storage.</param>
             <returns>An instance of the BLOB-storagemanager.</returns>
         </member>
-        <member name="M:CodeCube.Azure.StorageFactory.GetTableStorageManager(System.String,System.String)">
+        <member name="M:CodeCube.Azure.Storage.StorageFactory.GetTableStorageManager(System.String,System.String)">
             <summary>
             Retrieve an instance of the TABLE-storagemanager.
             </summary>
@@ -92,7 +117,12 @@
             <param name="tableName">The name of the table to connect to.</param>
             <returns></returns>
         </member>
-        <member name="M:CodeCube.Azure.TableStorageManager.InsertOrReplace``1(``0,System.Boolean)">
+        <member name="T:CodeCube.Azure.Storage.TableStorageManager">
+            <summary>
+            Manager class to communicate with azure table storage
+            </summary>
+        </member>
+        <member name="M:CodeCube.Azure.Storage.TableStorageManager.InsertOrReplace``1(``0,System.Boolean)">
             <summary>
             Insert the specified entity to the table.
             </summary>
@@ -101,7 +131,7 @@
             <param name="insertOnly">Indicates wether an TableEntity is only allowed to be inserted. Defaults to 'True'</param>
             <returns></returns>
         </member>
-        <member name="M:CodeCube.Azure.TableStorageManager.InsertBatch``1(System.Collections.Generic.List{``0})">
+        <member name="M:CodeCube.Azure.Storage.TableStorageManager.InsertBatch``1(System.Collections.Generic.List{``0})">
             <summary>
             Insert a batch of entities.
             </summary>
@@ -109,7 +139,7 @@
             <param name="entities">The batch of entities to insert.</param>
             <returns></returns>
         </member>
-        <member name="M:CodeCube.Azure.TableStorageManager.Retrieve``1(System.String,System.String)">
+        <member name="M:CodeCube.Azure.Storage.TableStorageManager.Retrieve``1(System.String,System.String)">
             <summary>
             Retrieve an entity from the tablestorage
             </summary>
@@ -118,7 +148,7 @@
             <param name="rowKey">The rowkey of the entity to retrieve.</param>
             <returns></returns>
         </member>
-        <member name="M:CodeCube.Azure.TableStorageManager.Delete``1(``0)">
+        <member name="M:CodeCube.Azure.Storage.TableStorageManager.Delete``1(``0)">
             <summary>
             Delete the specified entity from the tablestorage.
             </summary>

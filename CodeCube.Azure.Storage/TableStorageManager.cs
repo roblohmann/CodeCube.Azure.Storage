@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using CodeCube.Azure.Constants;
+using CodeCube.Azure.Storage.Constants;
 using Microsoft.Azure.Cosmos.Table;
 
-namespace CodeCube.Azure
+namespace CodeCube.Azure.Storage
 {
+    /// <summary>
+    /// Manager class to communicate with azure table storage
+    /// </summary>
     public sealed class TableStorageManager : BaseManager
     {
         private CloudTable _cloudTable;

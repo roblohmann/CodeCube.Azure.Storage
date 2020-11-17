@@ -4,27 +4,65 @@ using System.Threading.Tasks;
 using Azure.Storage;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
-using CodeCube.Azure.Constants;
+using CodeCube.Azure.Storage.Constants;
 
-namespace CodeCube.Azure
+namespace CodeCube.Azure.Storage
 {
+    /// <summary>
+    /// Manager class to connect to a blob storage and upload or download blobs.
+    /// </summary>
     public sealed class BlobStorageManager : BaseManager
     {
-        //private readonly string _accountname;
-        //private readonly string _accessKey;
-
-        //private CloudStorageAccount storageAccount;
-        private BlobServiceClient _blobServiceClient;
+        private readonly BlobServiceClient _blobServiceClient;
 
         /// <summary>
         /// Constructor for this class which requires the accountname and accesskey for the blobstorage.
         /// Container name is specific for each action on this blobstorage account.
         /// </summary>
+        /// <param name="url">The URL to the BLOB-storage.</param>
         /// <param name="accountName">The accountname for the blobstorage</param>
         /// <param name="accessKey">The accesskey for the blobstorage</param>
-        internal BlobStorageManager(string Uri, string accountName, string accessKey)
+        internal BlobStorageManager(string url, string accountName, string accessKey)
         {
-            _blobServiceClient = ConnectBlobServiceClient(Uri, accountName, accessKey);
+            if (string.IsNullOrEmpty(url))
+            {
+                throw new ArgumentNullException(nameof(url), ErrorConstants.Blob.BlobUriRequired);
+            }
+            if (string.IsNullOrEmpty(accountName))
+            {
+                throw new ArgumentNullException(nameof(accountName), ErrorConstants.Blob.BlobAccountRequired);
+            }
+            if (string.IsNullOrEmpty(accessKey))
+            {
+                throw new ArgumentNullException(nameof(accessKey), ErrorConstants.Blob.BlobAccesskeyRequired);
+            }
+
+            ConnectBlobServiceClient(new Uri(url), accountName, accessKey);
+        }
+
+        /// <summary>
+        /// Constructor for this class which requires the accountname and accesskey for the blobstorage.
+        /// Container name is specific for each action on this blobstorage account.
+        /// </summary>
+        /// <param name="url">The URL to the BLOB-storage.</param>
+        /// <param name="accountName">The accountname for the blobstorage</param>
+        /// <param name="accessKey">The accesskey for the blobstorage</param>
+        internal BlobStorageManager(Uri url, string accountName, string accessKey)
+        {
+            if (url == null)
+            {
+                throw new ArgumentNullException(nameof(url), ErrorConstants.Blob.BlobUriRequired);
+            }
+            if (string.IsNullOrEmpty(accountName))
+            {
+                throw new ArgumentNullException(nameof(accountName), ErrorConstants.Blob.BlobAccountRequired);
+            }
+            if (string.IsNullOrEmpty(accessKey))
+            {
+                throw new ArgumentNullException(nameof(accessKey), ErrorConstants.Blob.BlobAccesskeyRequired);
+            }
+
+            _blobServiceClient = ConnectBlobServiceClient(url, accountName, accessKey);
         }
 
         /// <summary>
@@ -34,6 +72,11 @@ namespace CodeCube.Azure
         /// <param name="connectionstring"></param>
         internal BlobStorageManager(string connectionstring) : base(connectionstring)
         {
+            if (string.IsNullOrEmpty(connectionstring))
+            {
+                throw new ArgumentNullException(nameof(connectionstring), ErrorConstants.Blob.BlobConnectionstringRequired);
+            }
+
             _blobServiceClient = ConnectBlobServiceClient();
         }
 
@@ -165,12 +208,12 @@ namespace CodeCube.Azure
             return ConnectCloudStorageAccountWithConnectionString();
         }
 
-        private BlobServiceClient ConnectBlobServiceClient(string uri, string accountname, string accessKey)
+        private BlobServiceClient ConnectBlobServiceClient(Uri uri, string accountname, string accessKey)
         {
             //Get the credentials
             var sharedkeyCredential = new StorageSharedKeyCredential(accountname, accessKey);
 
-            return new BlobServiceClient(new Uri(uri), sharedkeyCredential);
+            return new BlobServiceClient(uri, sharedkeyCredential);
         }
 
         private BlobServiceClient ConnectCloudStorageAccountWithConnectionString()

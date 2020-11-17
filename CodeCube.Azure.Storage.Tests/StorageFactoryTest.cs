@@ -1,7 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 
-namespace CodeCube.Azure.Tests
+namespace CodeCube.Azure.Storage.Tests
 {
     [TestFixture]
     public class StorageFactoryTest
