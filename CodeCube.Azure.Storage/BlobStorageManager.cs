@@ -102,41 +102,6 @@ namespace CodeCube.Azure
 
         }
 
-        ///// <summary>
-        ///// Download the specified file from the container.
-        ///// </summary>
-        ///// <param name="path">The full URL of the blob to download. This is used to get the filename for the blob.</param>
-        ///// <param name="container">The name of the container where the blob is stored.</param>
-        ///// <returns>Uri to download the blob including sharedaccess-token</returns>
-        //public string GetUrlForDownload(string path, string container)
-        //{
-        //    var filename = Path.GetFileName(path);
-
-        //    //Get a reference to the container
-        //    var containerReference = blobClient.GetContainerReference(container);
-
-        //    //Get a reference to the blob.
-        //    var blockBlob = containerReference.GetBlockBlobReference(filename);
-
-        //    //Create an ad-hoc Shared Access Policy with read permissions which will expire in 1 minute
-        //    var policy = new SharedAccessBlobPolicy()
-        //    {
-        //        Permissions = SharedAccessBlobPermissions.Read,
-        //        SharedAccessExpiryTime = DateTime.UtcNow.AddMinutes(1)
-        //    };
-
-        //    //Set content-disposition header for force download
-        //    var headers = new SharedAccessBlobHeaders()
-        //    {
-        //        ContentDisposition = $"attachment;filename=\"{filename}\"",
-        //    };
-
-        //    var sasToken = blockBlob.GetSharedAccessSignature(policy, headers);
-
-        //    return blockBlob.Uri.AbsoluteUri.Replace("http://", "https://") + sasToken;
-        //}
-
-
         /// <summary>
         /// Get the specified file from the BLOB-storage.
         /// </summary>
