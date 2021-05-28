@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using CodeCube.Azure.Storage.Constants;
 
 namespace CodeCube.Azure.Storage
@@ -63,6 +64,7 @@ namespace CodeCube.Azure.Storage
             {
                 throw new ArgumentNullException(nameof(tableName), ErrorConstants.Table.TableNameRequired);
             }
+            if(!Regex.IsMatch(tableName, "^[a-zA-Z][a-zA-Z0-9]*$", RegexOptions.IgnoreCase)) throw new InvalidOperationException(ErrorConstants.Table.TableNameNotAllowed);
             if (tableName.Length > ValidationConstants.MaxLengthTableStorage) throw new InvalidOperationException(string.Format(ErrorConstants.Table.MaxLengthTableNameExceeded, ValidationConstants.MaxLengthTableStorage));
 
             return new TableStorageManager(tableConnectionstring, tableName);

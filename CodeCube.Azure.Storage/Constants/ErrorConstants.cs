@@ -22,6 +22,7 @@
             internal const string PartitionKeyIsRequired = "PartitionKey is required!";
 
             internal const string MaxLengthTableNameExceeded = "The max length for the table name is {0} characters!";
+            internal const string TableNameNotAllowed = "The table name provided is not valid! Only alphanumeric characters are allowed!";
         }
 
         internal static class Queue
