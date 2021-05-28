@@ -63,6 +63,7 @@ namespace CodeCube.Azure.Storage
             {
                 throw new ArgumentNullException(nameof(tableName), ErrorConstants.Table.TableNameRequired);
             }
+            if (tableName.Length > ValidationConstants.MaxLengthTableStorage) throw new InvalidOperationException(string.Format(ErrorConstants.Table.MaxLengthTableNameExceeded, ValidationConstants.MaxLengthTableStorage));
 
             return new TableStorageManager(tableConnectionstring, tableName);
         }

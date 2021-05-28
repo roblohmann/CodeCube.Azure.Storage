@@ -20,6 +20,8 @@
 
             internal const string RowKeyIsRequired = "RowKey is required!";
             internal const string PartitionKeyIsRequired = "PartitionKey is required!";
+
+            internal const string MaxLengthTableNameExceeded = "The max length for the table name is {0} characters!";
         }
 
         internal static class Queue
