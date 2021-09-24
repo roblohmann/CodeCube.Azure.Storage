@@ -54,12 +54,12 @@ namespace CodeCube.Azure.Storage
             if (insertOnly)
             {
                 var insertOperation = TableOperation.Insert(entity);
-                await _cloudTable.ExecuteAsync(insertOperation).ConfigureAwait(false);
+                await _cloudTable.ExecuteAsync(insertOperation);
             }
             else
             {
                 var insertOrMergeOperation = TableOperation.InsertOrReplace(entity);
-                await _cloudTable.ExecuteAsync(insertOrMergeOperation).ConfigureAwait(false);
+                await _cloudTable.ExecuteAsync(insertOrMergeOperation);
             }
         }
 
@@ -69,19 +69,19 @@ namespace CodeCube.Azure.Storage
         /// <typeparam name="T">The type for the entities. Must inherit from TableEntity.</typeparam>
         /// <param name="entities">The batch of entities to insert.</param>
         /// <returns></returns>
-        public async Task InsertBatch<T>(List<T> entities) where T : TableEntity
+        public async Task InsertBatch<T>(IEnumerable<T> entities) where T : TableEntity
         {
             // Create the batch operation.
-            TableBatchOperation batchOperation = new TableBatchOperation();
+            var batchOperation = new TableBatchOperation();
 
             // Add both customer entities to the batch insert operation.
-            foreach (T d in entities)
+            foreach (var tableEntity in entities)
             {
-                batchOperation.Insert(d);
+                batchOperation.Insert(tableEntity);
             }
 
             // Execute the batch operation.
-            await _cloudTable.ExecuteBatchAsync(batchOperation).ConfigureAwait(false);
+            await _cloudTable.ExecuteBatchAsync(batchOperation);
         }
 
         /// <summary>
@@ -93,8 +93,8 @@ namespace CodeCube.Azure.Storage
         /// <returns></returns>
         public async Task<T> Retrieve<T>(string partitionKey, string rowKey) where T : TableEntity, new()
         {
-            TableOperation retrieveOperation = TableOperation.Retrieve<T>(partitionKey, rowKey);
-            TableResult result = await _cloudTable.ExecuteAsync(retrieveOperation).ConfigureAwait(false);
+            var retrieveOperation = TableOperation.Retrieve<T>(partitionKey, rowKey);
+            var result = await _cloudTable.ExecuteAsync(retrieveOperation);
 
             return result.Result as T;
         }
@@ -105,10 +105,10 @@ namespace CodeCube.Azure.Storage
         /// <typeparam name="T">The type for the entities. Must inherit from TableEntity.</typeparam>
         /// <param name="entity">The entity to delete.</param>
         /// <returns></returns>
-        public bool Delete<T>(T entity) where T : TableEntity, new()
+        public async Task<bool> Delete<T>(T entity) where T : TableEntity, new()
         {
-            var DeleteOperation = TableOperation.Delete(entity);
-            _cloudTable.ExecuteAsync(DeleteOperation).ConfigureAwait(false);
+            var deleteOperation = TableOperation.Delete(entity);
+            await _cloudTable.ExecuteAsync(deleteOperation);
 
             return true;
         }
@@ -116,16 +116,16 @@ namespace CodeCube.Azure.Storage
         #region privates
         private async Task ConnectToCloudTable()
         {
-            CloudStorageAccount storageAccount = ConnectCloudStorageAccountWithConnectionString();
-            CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
+            var storageAccount = ConnectCloudStorageAccountWithConnectionString();
+            var tableClient = storageAccount.CreateCloudTableClient();
 
             _cloudTable = tableClient.GetTableReference(_tableName);
-            await _cloudTable.CreateIfNotExistsAsync().ConfigureAwait(false);
+            await _cloudTable.CreateIfNotExistsAsync();
         }
 
         private CloudStorageAccount ConnectCloudStorageAccountWithConnectionString()
         {
-            if (!CloudStorageAccount.TryParse(Connectionstring, out CloudStorageAccount storageAccount))
+            if (!CloudStorageAccount.TryParse(Connectionstring, out var storageAccount))
             {
                 throw new InvalidOperationException(ErrorConstants.InvalidConnectionstring);
             }

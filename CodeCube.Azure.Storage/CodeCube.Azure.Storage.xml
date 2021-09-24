@@ -131,7 +131,7 @@
             <param name="insertOnly">Indicates wether an TableEntity is only allowed to be inserted. Defaults to 'True'</param>
             <returns></returns>
         </member>
-        <member name="M:CodeCube.Azure.Storage.TableStorageManager.InsertBatch``1(System.Collections.Generic.List{``0})">
+        <member name="M:CodeCube.Azure.Storage.TableStorageManager.InsertBatch``1(System.Collections.Generic.IEnumerable{``0})">
             <summary>
             Insert a batch of entities.
             </summary>
