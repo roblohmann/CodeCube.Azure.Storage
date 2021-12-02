@@ -2,7 +2,7 @@
 
 namespace CodeCube.Azure.Storage.Interfaces
 {
-    internal interface IStorageFactory
+    public interface IStorageFactory
     {
         /// <summary>
         /// Retrieve an instance of the <see cref="BlobStorageManager"/>.
