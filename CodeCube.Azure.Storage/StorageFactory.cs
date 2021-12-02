@@ -11,12 +11,12 @@ namespace CodeCube.Azure.Storage
     public sealed class StorageFactory : IStorageFactory
     {
         /// <summary>
-        /// Retrieve an instance of the BLOB-storagemanager.
+        /// Retrieve an instance of the <see cref="BlobStorageManager"/>.
         /// </summary>
         /// <param name="uri">The URI to the <see cref="BlobStorageManager"/></param>
         /// <param name="blobStorageAccountname">The accountname for the blob.</param>
         /// <param name="blobAccesskey">The access-key for the storage</param>
-        /// <returns>An instance of the BLOB-storagemanager</returns>
+        /// <returns>An instance of the <see cref="BlobStorageManager"/>.</returns>
         public BlobStorageManager GetBlobStorageManager(string uri, string blobStorageAccountname, string blobAccesskey)
         {
             if (string.IsNullOrWhiteSpace(uri))
@@ -36,10 +36,10 @@ namespace CodeCube.Azure.Storage
         }
 
         /// <summary>
-        /// Retrieve an instance of the BLOB-storagemanager.
+        /// Retrieve an instance of the <see cref="BlobStorageManager"/>.
         /// </summary>
-        /// <param name="connectionstring">The connectionstring to the BLOB-storage.</param>
-        /// <returns>An instance of the BLOB-storagemanager.</returns>
+        /// <param name="connectionstring">The connectionstring to the blob storage</param>
+        /// <returns>An instance of the <see cref="BlobStorageManager"/>.</returns>
         public BlobStorageManager GetBlobStorageManager(string connectionstring)
         {
             if (string.IsNullOrWhiteSpace(connectionstring))
@@ -51,11 +51,11 @@ namespace CodeCube.Azure.Storage
         }
 
         /// <summary>
-        /// Retrieve an instance of the TABLE-storagemanager.
+        /// Retrieve an instance of the <see cref="TableStorageManager"/>.
         /// </summary>
         /// <param name="tableConnectionstring">The connectionstring to the TABLE-storage.</param>
         /// <param name="tableName">The name of the table to connect to.</param>
-        /// <returns></returns>
+        /// <returns>An instance of the <see cref="TableStorageManager"/>.</returns>
         public TableStorageManager GetTableStorageManager(string tableConnectionstring, string tableName)
         {
             if (string.IsNullOrWhiteSpace(tableConnectionstring))
@@ -76,6 +76,13 @@ namespace CodeCube.Azure.Storage
             return new TableStorageManager(tableConnectionstring, tableName);
         }
 
+        /// <summary>
+        /// Retrieve an instance of the <see cref="QueueManager"/>.
+        /// </summary>
+        /// <param name="connectionstring">The connectionstring to the queue</param>
+        /// <param name="queueName">The name of the queue to connect to</param>
+        /// <returns>An instance of the <see cref="QueueManager"/></returns>
+        /// <exception cref="ArgumentNullException">Throws an <see cref="ArgumentNullException"/> when parameters are forgotten.</exception>
         public QueueManager GetQueueManager(string connectionstring, string queueName)
         {
             if (string.IsNullOrWhiteSpace(connectionstring))
