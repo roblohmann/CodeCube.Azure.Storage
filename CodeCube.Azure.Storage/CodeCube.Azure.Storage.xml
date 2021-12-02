@@ -78,6 +78,38 @@
             The type of of storages.
             </summary>
         </member>
+        <member name="M:CodeCube.Azure.Storage.Interfaces.IStorageFactory.GetBlobStorageManager(System.String,System.String,System.String)">
+            <summary>
+            Retrieve an instance of the <see cref="T:CodeCube.Azure.Storage.BlobStorageManager"/>.
+            </summary>
+            <param name="uri">The URI to the <see cref="T:CodeCube.Azure.Storage.BlobStorageManager"/></param>
+            <param name="blobStorageAccountname">The accountname for the blob.</param>
+            <param name="blobAccesskey">The access-key for the storage</param>
+            <returns>An instance of the BLOB-storagemanager</returns>
+        </member>
+        <member name="M:CodeCube.Azure.Storage.Interfaces.IStorageFactory.GetBlobStorageManager(System.String)">
+            <summary>
+            Retrieve an instance of the <see cref="T:CodeCube.Azure.Storage.BlobStorageManager"/>.
+            </summary>
+            <param name="connectionstring">The connectionstring to the BLOB-storage.</param>
+            <returns>An instance of the BLOB-storagemanager.</returns>
+        </member>
+        <member name="M:CodeCube.Azure.Storage.Interfaces.IStorageFactory.GetTableStorageManager(System.String,System.String)">
+            <summary>
+            Retrieve an instance of the <see cref="T:CodeCube.Azure.Storage.TableStorageManager"/>.
+            </summary>
+            <param name="tableConnectionstring">The connectionstring to the TABLE-storage.</param>
+            <param name="tableName">The name of the table to connect to.</param>
+            <returns></returns>
+        </member>
+        <member name="M:CodeCube.Azure.Storage.Interfaces.IStorageFactory.GetQueueManager(System.String,System.String)">
+            <summary>
+            Retrieve an instance of the <see cref="T:CodeCube.Azure.Storage.QueueManager"/>.
+            </summary>
+            <param name="connectionstring"></param>
+            <param name="queueName"></param>
+            <returns></returns>
+        </member>
         <member name="T:CodeCube.Azure.Storage.QueueManager">
             <summary>
             Manager class to connect to one single Azure Storage Queue
@@ -98,6 +130,7 @@
             <summary>
             Retrieve an instance of the BLOB-storagemanager.
             </summary>
+            <param name="uri">The URI to the <see cref="T:CodeCube.Azure.Storage.BlobStorageManager"/></param>
             <param name="blobStorageAccountname">The accountname for the blob.</param>
             <param name="blobAccesskey">The access-key for the storage</param>
             <returns>An instance of the BLOB-storagemanager</returns>

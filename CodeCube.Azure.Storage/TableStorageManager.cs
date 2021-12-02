@@ -13,6 +13,7 @@ namespace CodeCube.Azure.Storage
     {
         private CloudTable _cloudTable;
         private readonly string _tableName;
+        private bool _isConnected;
 
         internal TableStorageManager(string connectionstring, string tableName) : base(connectionstring)
         {
@@ -27,10 +28,15 @@ namespace CodeCube.Azure.Storage
                 throw new ArgumentNullException(nameof(connectionstring), ErrorConstants.Table.TableConnectionstringRequired);
             }
 
-            _tableName = tableName;
+            _tableName = tableName;            
+        }
 
+        public async Task Connect()
+        {
             //Setup connection
-            ConnectToCloudTable().ConfigureAwait(false).GetAwaiter().GetResult();
+            await ConnectToCloudTable().ConfigureAwait(false);
+
+            _isConnected = true;
         }
 
         /// <summary>
@@ -44,12 +50,14 @@ namespace CodeCube.Azure.Storage
         {
             if (string.IsNullOrWhiteSpace(entity.RowKey))
             {
-                throw new InvalidOperationException(ErrorConstants.Table.RowKeyIsRequired);
+                throw new ArgumentException(ErrorConstants.Table.RowKeyIsRequired, nameof(entity));
             }
             if (string.IsNullOrWhiteSpace(entity.PartitionKey))
             {
-                throw new InvalidOperationException(ErrorConstants.Table.PartitionKeyIsRequired);
+                throw new ArgumentException(ErrorConstants.Table.PartitionKeyIsRequired, nameof(entity));
             }
+
+            if (!_isConnected) throw new InvalidOperationException(ErrorConstants.Table.NotConnected);
 
             if (insertOnly)
             {
@@ -71,6 +79,8 @@ namespace CodeCube.Azure.Storage
         /// <returns></returns>
         public async Task InsertBatch<T>(IEnumerable<T> entities) where T : TableEntity
         {
+            if (!_isConnected) throw new InvalidOperationException(ErrorConstants.Table.NotConnected);
+
             // Create the batch operation.
             var batchOperation = new TableBatchOperation();
 
@@ -93,6 +103,8 @@ namespace CodeCube.Azure.Storage
         /// <returns></returns>
         public async Task<T> Retrieve<T>(string partitionKey, string rowKey) where T : TableEntity, new()
         {
+            if (!_isConnected) throw new InvalidOperationException(ErrorConstants.Table.NotConnected);
+
             var retrieveOperation = TableOperation.Retrieve<T>(partitionKey, rowKey);
             var result = await _cloudTable.ExecuteAsync(retrieveOperation);
 
@@ -107,6 +119,8 @@ namespace CodeCube.Azure.Storage
         /// <returns></returns>
         public async Task<bool> Delete<T>(T entity) where T : TableEntity, new()
         {
+            if (!_isConnected) throw new InvalidOperationException(ErrorConstants.Table.NotConnected);
+
             var deleteOperation = TableOperation.Delete(entity);
             await _cloudTable.ExecuteAsync(deleteOperation);
 

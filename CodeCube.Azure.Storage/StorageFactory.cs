@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 using CodeCube.Azure.Storage.Constants;
+using CodeCube.Azure.Storage.Interfaces;
 
 namespace CodeCube.Azure.Storage
 {
     /// <summary>
     /// Helper class to retrieve the right helper to communicate with several types of storage.
     /// </summary>
-    public sealed class StorageFactory
+    public sealed class StorageFactory : IStorageFactory
     {
         /// <summary>
         /// Retrieve an instance of the BLOB-storagemanager.
         /// </summary>
+        /// <param name="uri">The URI to the <see cref="BlobStorageManager"/></param>
         /// <param name="blobStorageAccountname">The accountname for the blob.</param>
         /// <param name="blobAccesskey">The access-key for the storage</param>
         /// <returns>An instance of the BLOB-storagemanager</returns>
@@ -64,10 +66,28 @@ namespace CodeCube.Azure.Storage
             {
                 throw new ArgumentNullException(nameof(tableName), ErrorConstants.Table.TableNameRequired);
             }
-            if(!Regex.IsMatch(tableName, "^[a-zA-Z][a-zA-Z0-9]*$", RegexOptions.IgnoreCase)) throw new InvalidOperationException(ErrorConstants.Table.TableNameNotAllowed);
-            if (tableName.Length > ValidationConstants.MaxLengthTableStorage) throw new InvalidOperationException(string.Format(ErrorConstants.Table.MaxLengthTableNameExceeded, ValidationConstants.MaxLengthTableStorage));
+
+            if(!Regex.IsMatch(tableName, "^[a-zA-Z][a-zA-Z0-9]*$", RegexOptions.IgnoreCase)) 
+                throw new InvalidOperationException(ErrorConstants.Table.TableNameNotAllowed);
+
+            if (tableName.Length > ValidationConstants.MaxLengthTableStorage) 
+                throw new InvalidOperationException(string.Format(ErrorConstants.Table.MaxLengthTableNameExceeded, ValidationConstants.MaxLengthTableStorage));
 
             return new TableStorageManager(tableConnectionstring, tableName);
+        }
+
+        public QueueManager GetQueueManager(string connectionstring, string queueName)
+        {
+            if (string.IsNullOrWhiteSpace(connectionstring))
+            {
+                throw new ArgumentNullException(nameof(connectionstring), ErrorConstants.Queue.QueueNameRequired);
+            }
+            if (string.IsNullOrWhiteSpace(queueName))
+            {
+                throw new ArgumentNullException(nameof(queueName), ErrorConstants.Queue.QueueConnectionstringRequired);
+            }
+
+            return new QueueManager(connectionstring, queueName);
         }
     }
 }

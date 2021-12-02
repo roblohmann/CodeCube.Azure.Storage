@@ -15,14 +15,16 @@
 
         internal static class Table
         {
-            internal const string TableConnectionstringRequired = "Connectionstring for TABLE-storage cannot be empty!";
-            internal const string TableNameRequired = "Tablename for TABLE-storage cannot be empty!";
+            internal const string TableConnectionstringRequired = "Connectionstring for tablestorage cannot be empty!";
+            internal const string TableNameRequired = "Tablename for tablestorage cannot be empty!";
 
             internal const string RowKeyIsRequired = "RowKey is required!";
             internal const string PartitionKeyIsRequired = "PartitionKey is required!";
 
             internal const string MaxLengthTableNameExceeded = "The max length for the table name is {0} characters!";
             internal const string TableNameNotAllowed = "The table name provided is not valid! Only alphanumeric characters are allowed!";
+
+            internal const string NotConnected = "No connection has been made! Please call 'Connect()' method before executing operations on the table!";
         }
 
         internal static class Queue
