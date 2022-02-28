@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using CodeCube.Azure.Storage.Constants;
 using Microsoft.Azure.Cosmos.Table;
@@ -92,6 +93,29 @@ namespace CodeCube.Azure.Storage
 
             // Execute the batch operation.
             await _cloudTable.ExecuteBatchAsync(batchOperation);
+        }
+
+        /// <summary>
+        /// Retrieve all entities of the given type.
+        /// </summary>
+        /// <typeparam name="T">The type of entity. Must inherit from TableEntity</typeparam>
+        /// <returns>All entities in the specified table matching the type.</returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        public async Task<List<T>> Retrieve<T>() where T : TableEntity, new()
+        {
+            if (!_isConnected) throw new InvalidOperationException(ErrorConstants.Table.NotConnected);
+
+            TableContinuationToken token = null;
+            var entities = new List<T>();
+            do
+            {
+                var queryResult = await _cloudTable.ExecuteQuerySegmentedAsync(new TableQuery<T>(), token);
+                entities.AddRange(queryResult.Results);
+                token = queryResult.ContinuationToken;
+
+            } while (token != null);
+
+            return entities;
         }
 
         /// <summary>
