@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Azure.Storage;
 using Azure.Storage.Blobs;
@@ -86,20 +87,21 @@ namespace CodeCube.Azure.Storage
         /// <param name="filename">The filename of the blob.</param>
         /// <param name="fileContent">The content for the blob as a stream.</param>
         /// <param name="container">The containername where to store the blob. If the container doesn't exist it will be created.</param>
+        /// <param name="cancellationToken">The cancellationtoken.</param>
         /// <returns>The URI for the blobfile.</returns>
-        public async Task<string> StoreFile(string filename, Stream fileContent, string container)
+        public async Task<string> StoreFile(string filename, Stream fileContent, string container, CancellationToken cancellationToken = default)
         {
             try
             {
                 //Get a reference to the container
-                BlobContainerClient blobContainerClient = _blobServiceClient.GetBlobContainerClient(container);
-                await blobContainerClient.CreateIfNotExistsAsync().ConfigureAwait(false);
+                var blobContainerClient = _blobServiceClient.GetBlobContainerClient(container);
+                await blobContainerClient.CreateIfNotExistsAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
 
                 //Create a reference to the blob.
-                BlobClient blobClient = blobContainerClient.GetBlobClient(filename);
+                var blobClient = blobContainerClient.GetBlobClient(filename);
 
                 //Update the blob.
-                await blobClient.UploadAsync(fileContent).ConfigureAwait(false);
+                await blobClient.UploadAsync(fileContent, cancellationToken).ConfigureAwait(false);
 
                 //Return the url for the blob.
                 return blobClient.Uri.AbsoluteUri;
@@ -117,22 +119,23 @@ namespace CodeCube.Azure.Storage
         /// <param name="filename">The filename of the blob.</param>
         /// <param name="bytes">The content for the blob in bytes.</param>
         /// <param name="container">The containername where to store the blob. If the container doesn't exist it will be created.</param>
+        /// <param name="cancellationToken">The cancellationtoken.</param>
         /// <returns>The URI for the blobfile.</returns>
-        public async Task<string> StoreFile(string filename, byte[] bytes, string container)
+        public async Task<string> StoreFile(string filename, byte[] bytes, string container, CancellationToken cancellationToken = default)
         {
             try
             {
                 //Get a reference to the container
-                BlobContainerClient blobContainerClient = _blobServiceClient.GetBlobContainerClient(container);
-                await blobContainerClient.CreateIfNotExistsAsync().ConfigureAwait(false);
+                var blobContainerClient = _blobServiceClient.GetBlobContainerClient(container);
+                await blobContainerClient.CreateIfNotExistsAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
 
                 //Create a reference to the blob.
-                BlobClient blobClient = blobContainerClient.GetBlobClient(filename);
+                var blobClient = blobContainerClient.GetBlobClient(filename);
 
                 //Update the blob.
                 using (var memoryStream = new MemoryStream(bytes))
                 {
-                    await blobClient.UploadAsync(memoryStream);
+                    await blobClient.UploadAsync(memoryStream, cancellationToken);
                 }
 
                 //Return the url for the blob.
@@ -150,17 +153,18 @@ namespace CodeCube.Azure.Storage
         /// </summary>
         /// <param name="filename">The full filename for the blob to retrieve.</param>
         /// <param name="container">The name of the conatiner where the blob is stored.</param>
+        /// <param name="cancellationToken">The cancellationtoken.</param>
         /// <returns>The bytearray for the specified blob.</returns>
-        public async Task<byte[]> GetBytes(string filename, string container)
+        public async Task<byte[]> GetBytes(string filename, string container, CancellationToken cancellationToken = default)
         {
             //Get a reference to the container
-            BlobContainerClient blobContainerClient = _blobServiceClient.GetBlobContainerClient(container);
-            await blobContainerClient.CreateIfNotExistsAsync().ConfigureAwait(false);
-            await blobContainerClient.SetAccessPolicyAsync(PublicAccessType.None).ConfigureAwait(false);
+            var blobContainerClient = _blobServiceClient.GetBlobContainerClient(container);
+            await blobContainerClient.CreateIfNotExistsAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
+            await blobContainerClient.SetAccessPolicyAsync(PublicAccessType.None, cancellationToken: cancellationToken).ConfigureAwait(false);
 
-            BlobClient blobClient = blobContainerClient.GetBlobClient(filename);
+            var blobClient = blobContainerClient.GetBlobClient(filename);
 
-            BlobDownloadInfo downloadInfo = await blobClient.DownloadAsync().ConfigureAwait(false);
+            BlobDownloadInfo downloadInfo = await blobClient.DownloadAsync(cancellationToken).ConfigureAwait(false);
 
             byte[] bytes;
             using (var memoryStream = new MemoryStream())
@@ -177,17 +181,18 @@ namespace CodeCube.Azure.Storage
         /// </summary>
         /// <param name="filename">The full filename for the blob to retrieve.</param>
         /// <param name="container">The name of the conatiner where the blob is stored.</param>
+        /// <param name="cancellationToken">The cancellationtoken.</param>
         /// <returns>The specified file as string.</returns>
-        public async Task<string> GetString(string filename, string container)
+        public async Task<string> GetString(string filename, string container, CancellationToken cancellationToken = default)
         {
             //Get a reference to the container
-            BlobContainerClient blobContainerClient = _blobServiceClient.GetBlobContainerClient(container);
-            await blobContainerClient.CreateIfNotExistsAsync().ConfigureAwait(false);
-            await blobContainerClient.SetAccessPolicyAsync(PublicAccessType.None).ConfigureAwait(false);
+            var blobContainerClient = _blobServiceClient.GetBlobContainerClient(container);
+            await blobContainerClient.CreateIfNotExistsAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
+            await blobContainerClient.SetAccessPolicyAsync(PublicAccessType.None, cancellationToken: cancellationToken).ConfigureAwait(false);
 
-            BlobClient blobClient = blobContainerClient.GetBlobClient(filename);
+            var blobClient = blobContainerClient.GetBlobClient(filename);
 
-            BlobDownloadInfo downloadInfo = await blobClient.DownloadAsync().ConfigureAwait(false);
+            BlobDownloadInfo downloadInfo = await blobClient.DownloadAsync(cancellationToken).ConfigureAwait(false);
 
             string returnvalue;
             using (var memoryStream = new MemoryStream())
