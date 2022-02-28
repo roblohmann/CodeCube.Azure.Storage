@@ -32,6 +32,9 @@ namespace CodeCube.Azure.Storage
             _tableName = tableName;            
         }
 
+        /// <summary>
+        /// Connect to the table storage. Method must be called before any other methods can be used!
+        /// </summary>
         public async Task Connect()
         {
             //Setup connection
@@ -64,12 +67,12 @@ namespace CodeCube.Azure.Storage
             if (insertOnly)
             {
                 var insertOperation = TableOperation.Insert(entity);
-                await _cloudTable.ExecuteAsync(insertOperation, cancellationToken);
+                await _cloudTable.ExecuteAsync(insertOperation, cancellationToken).ConfigureAwait(false);
             }
             else
             {
                 var insertOrMergeOperation = TableOperation.InsertOrReplace(entity);
-                await _cloudTable.ExecuteAsync(insertOrMergeOperation, cancellationToken);
+                await _cloudTable.ExecuteAsync(insertOrMergeOperation, cancellationToken).ConfigureAwait(false);
             }
         }
 
@@ -94,7 +97,7 @@ namespace CodeCube.Azure.Storage
             }
 
             // Execute the batch operation.
-            await _cloudTable.ExecuteBatchAsync(batchOperation, cancellationToken);
+            await _cloudTable.ExecuteBatchAsync(batchOperation, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -112,7 +115,7 @@ namespace CodeCube.Azure.Storage
             var entities = new List<T>();
             do
             {
-                var queryResult = await _cloudTable.ExecuteQuerySegmentedAsync(new TableQuery<T>(), token, cancellationToken);
+                var queryResult = await _cloudTable.ExecuteQuerySegmentedAsync(new TableQuery<T>(), token, cancellationToken).ConfigureAwait(false);
                 entities.AddRange(queryResult.Results);
                 token = queryResult.ContinuationToken;
 
@@ -134,7 +137,7 @@ namespace CodeCube.Azure.Storage
             if (!_isConnected) throw new InvalidOperationException(ErrorConstants.Table.NotConnected);
 
             var retrieveOperation = TableOperation.Retrieve<T>(partitionKey, rowKey);
-            var result = await _cloudTable.ExecuteAsync(retrieveOperation, cancellationToken);
+            var result = await _cloudTable.ExecuteAsync(retrieveOperation, cancellationToken).ConfigureAwait(false);
 
             return result.Result as T;
         }
@@ -151,7 +154,7 @@ namespace CodeCube.Azure.Storage
             if (!_isConnected) throw new InvalidOperationException(ErrorConstants.Table.NotConnected);
 
             var deleteOperation = TableOperation.Delete(entity);
-            await _cloudTable.ExecuteAsync(deleteOperation, cancellationToken);
+            await _cloudTable.ExecuteAsync(deleteOperation, cancellationToken).ConfigureAwait(false);
 
             return true;
         }
@@ -163,7 +166,7 @@ namespace CodeCube.Azure.Storage
             var tableClient = storageAccount.CreateCloudTableClient();
 
             _cloudTable = tableClient.GetTableReference(_tableName);
-            await _cloudTable.CreateIfNotExistsAsync();
+            await _cloudTable.CreateIfNotExistsAsync().ConfigureAwait(false);
         }
 
         private CloudStorageAccount ConnectCloudStorageAccountWithConnectionString()
