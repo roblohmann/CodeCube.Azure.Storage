@@ -29,7 +29,7 @@ namespace CodeCube.Azure.Storage
                 throw new ArgumentNullException(nameof(connectionstring), ErrorConstants.Table.TableConnectionstringRequired);
             }
 
-            _tableName = tableName;            
+            _tableName = tableName;
         }
 
         /// <summary>
@@ -46,11 +46,35 @@ namespace CodeCube.Azure.Storage
         /// <summary>
         /// Insert the specified entity to the table.
         /// </summary>
-        /// <typeparam name="T">The type of the entity. Must inherit from TableEntity.</typeparam>
+        /// <typeparam name="T">The type for the entities. Must inherit from <see cref="TableEntity">TableEntity.</see></typeparam>
+        /// <param name="entity">The entity to insertin the tablestorage</param>
+        /// <param name="cancellationToken">The cancellationtoken.</param>
+        /// <returns></returns>
+        public async Task Insert<T>(T entity, CancellationToken cancellationToken = default) where T : TableEntity, new()
+        {
+            if (string.IsNullOrWhiteSpace(entity.RowKey))
+            {
+                throw new ArgumentException(ErrorConstants.Table.RowKeyIsRequired, nameof(entity));
+            }
+            if (string.IsNullOrWhiteSpace(entity.PartitionKey))
+            {
+                throw new ArgumentException(ErrorConstants.Table.PartitionKeyIsRequired, nameof(entity));
+            }
+            if (!_isConnected) throw new InvalidOperationException(ErrorConstants.Table.NotConnected);
+
+            var insertOperation = TableOperation.Insert(entity);
+            await _cloudTable.ExecuteAsync(insertOperation, cancellationToken).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Insert the specified entity to the table.
+        /// </summary>
+        /// <typeparam name="T">The type for the entities. Must inherit from <see cref="TableEntity">TableEntity.</see></typeparam>
         /// <param name="entity">The entity to insert or replace in the tablestorage</param>
         /// <param name="insertOnly">Indicates wether an TableEntity is only allowed to be inserted. Defaults to 'True'</param>
         /// <param name="cancellationToken">The cancellationtoken.</param>
         /// <returns></returns>
+        [Obsolete("Use Insert method for insertions and use Update method for updates. Method will be removed in future version", false)]
         public async Task InsertOrReplace<T>(T entity, bool insertOnly = true, CancellationToken cancellationToken = default) where T : TableEntity, new()
         {
             if (string.IsNullOrWhiteSpace(entity.RowKey))
@@ -79,13 +103,14 @@ namespace CodeCube.Azure.Storage
         /// <summary>
         /// Insert a batch of entities.
         /// </summary>
-        /// <typeparam name="T">The type for the entities. Must inherit from TableEntity.</typeparam>
+        /// <typeparam name="T">The type for the entities. Must inherit from <see cref="TableEntity">TableEntity.</see></typeparam>
         /// <param name="entities">The batch of entities to insert.</param>
         /// <param name="cancellationToken">The cancellationtoken.</param>
         /// <returns></returns>
-        public async Task InsertBatch<T>(IEnumerable<T> entities, CancellationToken cancellationToken = default) where T : TableEntity
+        public async Task InsertBatch<T>(List<T> entities, CancellationToken cancellationToken = default) where T : TableEntity
         {
             if (!_isConnected) throw new InvalidOperationException(ErrorConstants.Table.NotConnected);
+            if (entities == null || entities.Count == 0) return;
 
             // Create the batch operation.
             var batchOperation = new TableBatchOperation();
@@ -101,10 +126,37 @@ namespace CodeCube.Azure.Storage
         }
 
         /// <summary>
+        /// Update the specified entity in the table storage.
+        /// </summary>
+        /// <typeparam name="T">The type for the entity. Must inherit from <see cref="TableEntity">TableEntity.</see></typeparam>
+        /// <param name="entity">The entity to update.</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        public async Task Update<T>(T entity, CancellationToken cancellationToken = default) where T : TableEntity, new()
+        {
+            if (string.IsNullOrWhiteSpace(entity.RowKey))
+            {
+                throw new ArgumentException(ErrorConstants.Table.RowKeyIsRequired, nameof(entity));
+            }
+            if (string.IsNullOrWhiteSpace(entity.PartitionKey))
+            {
+                throw new ArgumentException(ErrorConstants.Table.PartitionKeyIsRequired, nameof(entity));
+            }
+
+            if (!_isConnected) throw new InvalidOperationException(ErrorConstants.Table.NotConnected);
+
+
+            var insertOrMergeOperation = TableOperation.InsertOrReplace(entity);
+            await _cloudTable.ExecuteAsync(insertOrMergeOperation, cancellationToken).ConfigureAwait(false);
+        }
+
+        /// <summary>
         /// Retrieve all entities of the given type.
         /// </summary>
         /// <param name="cancellationToken">The cancellationtoken.</param>
-        /// <typeparam name="T">The type of entity. Must inherit from TableEntity</typeparam>
+        /// <typeparam name="T">The type of the entity. Must inherit from <see cref="TableEntity">TableEntity.</see></typeparam>
         /// <returns>All entities in the specified table matching the type.</returns>
         /// <exception cref="InvalidOperationException"></exception>
         public async Task<List<T>> Retrieve<T>(CancellationToken cancellationToken = default) where T : TableEntity, new()
@@ -125,9 +177,39 @@ namespace CodeCube.Azure.Storage
         }
 
         /// <summary>
+        /// Retrieve all entities of the given type.
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="cancellationToken">The cancellationtoken.</param>
+        /// <typeparam name="T">The type for the entities in the list. Must inherit from <see cref="TableEntity">TableEntity.</see></typeparam>
+        /// <returns>All entities in the specified table matching the type.</returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        public async Task<List<T>> Retrieve<T>(string query, CancellationToken cancellationToken = default) where T : TableEntity, new()
+        {
+            if (!_isConnected) throw new InvalidOperationException(ErrorConstants.Table.NotConnected);
+
+            var tableQuery = new TableQuery<T>
+            {
+                FilterString = query
+            };
+
+            TableContinuationToken continuationToken = null;
+            var entities = new List<T>();
+            do
+            {
+                var queryResult = await _cloudTable.ExecuteQuerySegmentedAsync(tableQuery, continuationToken, cancellationToken).ConfigureAwait(false);
+                entities.AddRange(queryResult.Results);
+                continuationToken = queryResult.ContinuationToken;
+
+            } while (continuationToken != null);
+
+            return entities;
+        }
+
+        /// <summary>
         /// Retrieve an entity from the tablestorage
         /// </summary>
-        /// <typeparam name="T">The type for the entities. Must inherit from TableEntity.</typeparam>
+        /// <typeparam name="T">The type of the entity. Must inherit from <see cref="TableEntity">TableEntity.</see></typeparam>
         /// <param name="partitionKey">The partitionkey of the entity to retrieve.</param>
         /// <param name="rowKey">The rowkey of the entity to retrieve.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
@@ -145,7 +227,7 @@ namespace CodeCube.Azure.Storage
         /// <summary>
         /// Delete the specified entity from the tablestorage.
         /// </summary>
-        /// <typeparam name="T">The type for the entities. Must inherit from TableEntity.</typeparam>
+        /// <typeparam name="T">The type of the entity. Must inherit from <see cref="TableEntity">TableEntity.</see></typeparam>
         /// <param name="entity">The entity to delete.</param>
         /// <param name="cancellationToken">The cancellationtoken.</param>
         /// <returns></returns>
