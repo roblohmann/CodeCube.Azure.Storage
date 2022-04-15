@@ -50,7 +50,7 @@ namespace CodeCube.Azure.Storage
         /// <param name="entity">The entity to insertin the tablestorage</param>
         /// <param name="cancellationToken">The cancellationtoken.</param>
         /// <returns></returns>
-        public async Task Insert<T>(T entity, CancellationToken cancellationToken = default) where T : TableEntity, new()
+        public async Task<TableResult> Insert<T>(T entity, CancellationToken cancellationToken = default) where T : TableEntity, new()
         {
             if (string.IsNullOrWhiteSpace(entity.RowKey))
             {
@@ -63,7 +63,7 @@ namespace CodeCube.Azure.Storage
             if (!_isConnected) throw new InvalidOperationException(ErrorConstants.Table.NotConnected);
 
             var insertOperation = TableOperation.Insert(entity);
-            await _cloudTable.ExecuteAsync(insertOperation, cancellationToken).ConfigureAwait(false);
+            return await _cloudTable.ExecuteAsync(insertOperation, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace CodeCube.Azure.Storage
         /// <param name="cancellationToken">The cancellationtoken.</param>
         /// <returns></returns>
         [Obsolete("Use Insert method for insertions and use Update method for updates. Method will be removed in future version", false)]
-        public async Task InsertOrReplace<T>(T entity, bool insertOnly = true, CancellationToken cancellationToken = default) where T : TableEntity, new()
+        public async Task<TableResult> InsertOrReplace<T>(T entity, bool insertOnly = true, CancellationToken cancellationToken = default) where T : TableEntity, new()
         {
             if (string.IsNullOrWhiteSpace(entity.RowKey))
             {
@@ -91,12 +91,12 @@ namespace CodeCube.Azure.Storage
             if (insertOnly)
             {
                 var insertOperation = TableOperation.Insert(entity);
-                await _cloudTable.ExecuteAsync(insertOperation, cancellationToken).ConfigureAwait(false);
+                return await _cloudTable.ExecuteAsync(insertOperation, cancellationToken).ConfigureAwait(false);
             }
             else
             {
                 var insertOrMergeOperation = TableOperation.InsertOrReplace(entity);
-                await _cloudTable.ExecuteAsync(insertOrMergeOperation, cancellationToken).ConfigureAwait(false);
+                return await _cloudTable.ExecuteAsync(insertOrMergeOperation, cancellationToken).ConfigureAwait(false);
             }
         }
 
@@ -107,10 +107,10 @@ namespace CodeCube.Azure.Storage
         /// <param name="entities">The batch of entities to insert.</param>
         /// <param name="cancellationToken">The cancellationtoken.</param>
         /// <returns></returns>
-        public async Task InsertBatch<T>(List<T> entities, CancellationToken cancellationToken = default) where T : TableEntity
+        public async Task<TableBatchResult> InsertBatch<T>(List<T> entities, CancellationToken cancellationToken = default) where T : TableEntity
         {
             if (!_isConnected) throw new InvalidOperationException(ErrorConstants.Table.NotConnected);
-            if (entities == null || entities.Count == 0) return;
+            if (entities == null || entities.Count == 0) return new TableBatchResult();
 
             // Create the batch operation.
             var batchOperation = new TableBatchOperation();
@@ -122,7 +122,7 @@ namespace CodeCube.Azure.Storage
             }
 
             // Execute the batch operation.
-            await _cloudTable.ExecuteBatchAsync(batchOperation, cancellationToken).ConfigureAwait(false);
+            return await _cloudTable.ExecuteBatchAsync(batchOperation, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -134,7 +134,7 @@ namespace CodeCube.Azure.Storage
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
-        public async Task Update<T>(T entity, CancellationToken cancellationToken = default) where T : TableEntity, new()
+        public async Task<TableResult> Update<T>(T entity, CancellationToken cancellationToken = default) where T : TableEntity, new()
         {
             if (string.IsNullOrWhiteSpace(entity.RowKey))
             {
@@ -149,7 +149,7 @@ namespace CodeCube.Azure.Storage
 
 
             var insertOrMergeOperation = TableOperation.InsertOrReplace(entity);
-            await _cloudTable.ExecuteAsync(insertOrMergeOperation, cancellationToken).ConfigureAwait(false);
+            return await _cloudTable.ExecuteAsync(insertOrMergeOperation, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -231,14 +231,12 @@ namespace CodeCube.Azure.Storage
         /// <param name="entity">The entity to delete.</param>
         /// <param name="cancellationToken">The cancellationtoken.</param>
         /// <returns></returns>
-        public async Task<bool> Delete<T>(T entity, CancellationToken cancellationToken = default) where T : TableEntity, new()
+        public async Task<TableResult> Delete<T>(T entity, CancellationToken cancellationToken = default) where T : TableEntity, new()
         {
             if (!_isConnected) throw new InvalidOperationException(ErrorConstants.Table.NotConnected);
 
             var deleteOperation = TableOperation.Delete(entity);
-            await _cloudTable.ExecuteAsync(deleteOperation, cancellationToken).ConfigureAwait(false);
-
-            return true;
+            return await _cloudTable.ExecuteAsync(deleteOperation, cancellationToken).ConfigureAwait(false);
         }
 
         #region privates
