@@ -169,27 +169,12 @@
             Manager class to communicate with azure table storage
             </summary>
         </member>
-        <member name="M:CodeCube.Azure.Storage.TableStorageManager.Connect">
-            <summary>
-            Connect to the table storage. Method must be called before any other methods can be used!
-            </summary>
-        </member>
         <member name="M:CodeCube.Azure.Storage.TableStorageManager.Insert``1(``0,System.Threading.CancellationToken)">
             <summary>
             Insert the specified entity to the table.
             </summary>
-            <typeparam name="T">The type for the entities. Must inherit from <see cref="T:Microsoft.Azure.Cosmos.Table.TableEntity">TableEntity.</see></typeparam>
+            <typeparam name="T">The type for the entities. Must inherit from <see cref="T:Azure.Data.Tables.TableEntity">TableEntity.</see></typeparam>
             <param name="entity">The entity to insertin the tablestorage</param>
-            <param name="cancellationToken">The cancellationtoken.</param>
-            <returns></returns>
-        </member>
-        <member name="M:CodeCube.Azure.Storage.TableStorageManager.InsertOrReplace``1(``0,System.Boolean,System.Threading.CancellationToken)">
-            <summary>
-            Insert the specified entity to the table.
-            </summary>
-            <typeparam name="T">The type for the entities. Must inherit from <see cref="T:Microsoft.Azure.Cosmos.Table.TableEntity">TableEntity.</see></typeparam>
-            <param name="entity">The entity to insert or replace in the tablestorage</param>
-            <param name="insertOnly">Indicates wether an TableEntity is only allowed to be inserted. Defaults to 'True'</param>
             <param name="cancellationToken">The cancellationtoken.</param>
             <returns></returns>
         </member>
@@ -197,7 +182,7 @@
             <summary>
             Insert a batch of entities.
             </summary>
-            <typeparam name="T">The type for the entities. Must inherit from <see cref="T:Microsoft.Azure.Cosmos.Table.TableEntity">TableEntity.</see></typeparam>
+            <typeparam name="T">The type for the entities. Must inherit from <see cref="T:Azure.Data.Tables.TableEntity">TableEntity.</see></typeparam>
             <param name="entities">The batch of entities to insert.</param>
             <param name="cancellationToken">The cancellationtoken.</param>
             <returns></returns>
@@ -206,29 +191,22 @@
             <summary>
             Update the specified entity in the table storage.
             </summary>
-            <typeparam name="T">The type for the entity. Must inherit from <see cref="T:Microsoft.Azure.Cosmos.Table.TableEntity">TableEntity.</see></typeparam>
+            <typeparam name="T">The type for the entity. Must inherit from <see cref="T:Azure.Data.Tables.TableEntity">TableEntity.</see></typeparam>
             <param name="entity">The entity to update.</param>
             <param name="cancellationToken"></param>
             <returns></returns>
             <exception cref="T:System.ArgumentException"></exception>
             <exception cref="T:System.InvalidOperationException"></exception>
         </member>
-        <member name="M:CodeCube.Azure.Storage.TableStorageManager.Retrieve``1(System.Threading.CancellationToken)">
-            <summary>
-            Retrieve all entities of the given type.
-            </summary>
-            <param name="cancellationToken">The cancellationtoken.</param>
-            <typeparam name="T">The type of the entity. Must inherit from <see cref="T:Microsoft.Azure.Cosmos.Table.TableEntity">TableEntity.</see></typeparam>
-            <returns>All entities in the specified table matching the type.</returns>
-            <exception cref="T:System.InvalidOperationException"></exception>
-        </member>
-        <member name="M:CodeCube.Azure.Storage.TableStorageManager.Retrieve``1(System.String,System.Threading.CancellationToken)">
+        <member name="M:CodeCube.Azure.Storage.TableStorageManager.Retrieve``1(System.String,System.Collections.Generic.IEnumerable{System.String},System.Int32,System.Threading.CancellationToken)">
             <summary>
             Retrieve all entities of the given type.
             </summary>
             <param name="query"></param>
+            <param name="pageSize"></param>
             <param name="cancellationToken">The cancellationtoken.</param>
-            <typeparam name="T">The type for the entities in the list. Must inherit from <see cref="T:Microsoft.Azure.Cosmos.Table.TableEntity">TableEntity.</see></typeparam>
+            <param name="propertiesToSelect"></param>
+            <typeparam name="T">The type for the entities in the list. Must inherit from <see cref="T:Azure.Data.Tables.TableEntity">TableEntity.</see></typeparam>
             <returns>All entities in the specified table matching the type.</returns>
             <exception cref="T:System.InvalidOperationException"></exception>
         </member>
@@ -236,19 +214,20 @@
             <summary>
             Retrieve an entity from the tablestorage
             </summary>
-            <typeparam name="T">The type of the entity. Must inherit from <see cref="T:Microsoft.Azure.Cosmos.Table.TableEntity">TableEntity.</see></typeparam>
+            <typeparam name="T">The type of the entity. Must inherit from <see cref="T:Azure.Data.Tables.TableEntity">TableEntity.</see></typeparam>
             <param name="partitionKey">The partitionkey of the entity to retrieve.</param>
             <param name="rowKey">The rowkey of the entity to retrieve.</param>
             <param name="cancellationToken">The cancellation token.</param>
             <returns></returns>
         </member>
-        <member name="M:CodeCube.Azure.Storage.TableStorageManager.Delete``1(``0,System.Threading.CancellationToken)">
+        <member name="M:CodeCube.Azure.Storage.TableStorageManager.Delete``1(System.String,System.String,System.Threading.CancellationToken)">
             <summary>
             Delete the specified entity from the tablestorage.
             </summary>
-            <typeparam name="T">The type of the entity. Must inherit from <see cref="T:Microsoft.Azure.Cosmos.Table.TableEntity">TableEntity.</see></typeparam>
-            <param name="entity">The entity to delete.</param>
+            <typeparam name="T">The type of the entity. Must inherit from <see cref="T:Azure.Data.Tables.TableEntity">TableEntity.</see></typeparam>
+            <param name="rowKey"></param>
             <param name="cancellationToken">The cancellationtoken.</param>
+            <param name="partitionKey"></param>
             <returns></returns>
         </member>
     </members>

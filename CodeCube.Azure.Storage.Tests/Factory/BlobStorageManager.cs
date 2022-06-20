@@ -50,19 +50,31 @@ namespace CodeCube.Azure.Storage.Tests.Factory
     [TestFixture]
     public class TableStorageManager
     {
+        //[Test]
+        //public void Get()
+        //{
+        //    //Setup            
+        //    const string mockConnectionstring = "MockConnectionstring";
+        //    const string mockTableName = "MockTable";
+        //    var factory = new StorageFactory();
+
+        //    //Act
+        //    var manager = factory.GetTableStorageManager(mockConnectionstring, mockTableName);
+
+        //    //Assert
+        //    Assert.IsNotNull(manager);
+        //}
+
         [Test]
-        public void Get()
+        public void Get_With_Invalid_Connectionstring_Throws_Exception()
         {
             //Setup            
-            const string mockConnectionstring = "MockConnectionstring";
-            const string mockTableName = "MockTable";
+            const string mockTableName = "MockTableName";
             var factory = new StorageFactory();
 
-            //Act
-            var manager = factory.GetTableStorageManager(mockConnectionstring, mockTableName);
-
-            //Assert
-            Assert.IsNotNull(manager);
+            //Act + Assert
+            var exception = Assert.Throws<InvalidOperationException>(() => factory.GetTableStorageManager("MockConnectionString", mockTableName));
+            Assert.AreEqual("Connection string doesn't have value for keyword 'MockConnectionString'.", exception.GetBaseException().Message);
         }
 
         [Test]
