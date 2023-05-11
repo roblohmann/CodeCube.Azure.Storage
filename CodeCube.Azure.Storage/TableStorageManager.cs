@@ -1,23 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Azure;
 using Azure.Data.Tables;
 using CodeCube.Azure.Storage.Constants;
+using CodeCube.Azure.Storage.Interfaces;
 
 namespace CodeCube.Azure.Storage
 {
     /// <summary>
     /// Manager class to communicate with azure table storage
     /// </summary>
-    public sealed class TableStorageManager : BaseManager
+    public sealed class TableStorageManager : BaseManager, ITableStorageManager
     {
         private readonly TableClient _tableClient;
-        //private readonly string _tableName;
-        //private bool _isConnected;
 
         internal TableStorageManager(string connectionstring, string tableName) : base(connectionstring)
         {
@@ -32,7 +30,6 @@ namespace CodeCube.Azure.Storage
                 throw new ArgumentNullException(nameof(connectionstring), ErrorConstants.Table.TableConnectionstringRequired);
             }
 
-            //_tableName = tableName;
             _tableClient = new TableClient(Connectionstring, tableName);
             _tableClient.CreateIfNotExists();
         }

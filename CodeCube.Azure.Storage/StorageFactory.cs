@@ -17,7 +17,7 @@ namespace CodeCube.Azure.Storage
         /// <param name="blobStorageAccountname">The accountname for the blob.</param>
         /// <param name="blobAccesskey">The access-key for the storage</param>
         /// <returns>An instance of the <see cref="BlobStorageManager"/>.</returns>
-        public BlobStorageManager GetBlobStorageManager(string uri, string blobStorageAccountname, string blobAccesskey)
+        public IBlobStorageManager GetBlobStorageManager(string uri, string blobStorageAccountname, string blobAccesskey)
         {
             if (string.IsNullOrWhiteSpace(uri))
             {
@@ -40,7 +40,7 @@ namespace CodeCube.Azure.Storage
         /// </summary>
         /// <param name="connectionstring">The connectionstring to the blob storage</param>
         /// <returns>An instance of the <see cref="BlobStorageManager"/>.</returns>
-        public BlobStorageManager GetBlobStorageManager(string connectionstring)
+        public IBlobStorageManager GetBlobStorageManager(string connectionstring)
         {
             if (string.IsNullOrWhiteSpace(connectionstring))
             {
@@ -56,7 +56,7 @@ namespace CodeCube.Azure.Storage
         /// <param name="tableConnectionstring">The connectionstring to the TABLE-storage.</param>
         /// <param name="tableName">The name of the table to connect to.</param>
         /// <returns>An instance of the <see cref="TableStorageManager"/>.</returns>
-        public TableStorageManager GetTableStorageManager(string tableConnectionstring, string tableName)
+        public ITableStorageManager GetTableStorageManager(string tableConnectionstring, string tableName)
         {
             if (string.IsNullOrWhiteSpace(tableConnectionstring))
             {
@@ -83,7 +83,7 @@ namespace CodeCube.Azure.Storage
         /// <param name="queueName">The name of the queue to connect to</param>
         /// <returns>An instance of the <see cref="QueueManager"/></returns>
         /// <exception cref="ArgumentNullException">Throws an <see cref="ArgumentNullException"/> when parameters are forgotten.</exception>
-        public QueueManager GetQueueManager(string connectionstring, string queueName)
+        public IQueueManager GetQueueManager(string connectionstring, string queueName)
         {
             if (string.IsNullOrWhiteSpace(connectionstring))
             {

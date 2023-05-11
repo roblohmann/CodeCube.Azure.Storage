@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+    <TargetFrameworks>netstandard2.1</TargetFrameworks>
     <PackageProjectUrl>https://github.com/roblohmann/CodeCube.Azure.Storage</PackageProjectUrl>
     <Authors>Rob Lohmann</Authors>
     <Description>Library with utilities and wrappers around commonly used stuff in Microsoft Azure Storages</Description>
@@ -22,9 +22,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Azure.Data.Tables" Version="12.6.0" />
-    <PackageReference Include="Azure.Storage.Blobs" Version="12.13.0" />
-    <PackageReference Include="Azure.Storage.Queues" Version="12.11.0" />
+    <PackageReference Include="Azure.Data.Tables" Version="12.8.0" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.16.0" />
+    <PackageReference Include="Azure.Storage.Queues" Version="12.14.0" />
   </ItemGroup>
 
 </Project>

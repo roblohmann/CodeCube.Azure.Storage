@@ -6,13 +6,14 @@ using Azure.Storage;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using CodeCube.Azure.Storage.Constants;
+using CodeCube.Azure.Storage.Interfaces;
 
 namespace CodeCube.Azure.Storage
 {
     /// <summary>
     /// Manager class to connect to a blob storage and upload or download blobs.
     /// </summary>
-    public sealed class BlobStorageManager : BaseManager
+    public sealed class BlobStorageManager : BaseManager, IBlobStorageManager
     {
         private readonly BlobServiceClient _blobServiceClient;
 
@@ -169,7 +170,7 @@ namespace CodeCube.Azure.Storage
             byte[] bytes;
             using (var memoryStream = new MemoryStream())
             {
-                await downloadInfo.Content.CopyToAsync(memoryStream).ConfigureAwait(false);
+                await downloadInfo.Content.CopyToAsync(memoryStream, cancellationToken).ConfigureAwait(false);
                 bytes = memoryStream.GetBuffer();
             }
 
@@ -197,7 +198,7 @@ namespace CodeCube.Azure.Storage
             string returnvalue;
             using (var memoryStream = new MemoryStream())
             {
-                await downloadInfo.Content.CopyToAsync(memoryStream).ConfigureAwait(false);
+                await downloadInfo.Content.CopyToAsync(memoryStream, cancellationToken).ConfigureAwait(false);
                 using (var streamReader = new StreamReader(memoryStream))
                 {
                     returnvalue = await streamReader.ReadToEndAsync().ConfigureAwait(false);
@@ -225,7 +226,7 @@ namespace CodeCube.Azure.Storage
         {
             if (string.IsNullOrWhiteSpace(Connectionstring))
             {
-                throw new InvalidOperationException($"No connectionstring available!");
+                throw new InvalidOperationException("No connectionstring available!");
             }
 
             return new BlobServiceClient(Connectionstring);

@@ -2,13 +2,14 @@
 using System.Threading.Tasks;
 using Azure.Storage.Queues;
 using CodeCube.Azure.Storage.Constants;
+using CodeCube.Azure.Storage.Interfaces;
 
 namespace CodeCube.Azure.Storage
 {
     /// <summary>
     /// Manager class to connect to one single Azure Storage Queue
     /// </summary>
-    public sealed class QueueManager : BaseManager
+    public sealed class QueueManager : BaseManager, IQueueManager
     {
         private readonly string _queuename;
         private QueueClient _queueClient;
