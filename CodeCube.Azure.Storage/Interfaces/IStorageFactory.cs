@@ -25,7 +25,7 @@ namespace CodeCube.Azure.Storage.Interfaces
         /// <param name="tableConnectionstring">The connectionstring to the TABLE-storage.</param>
         /// <param name="tableName">The name of the table to connect to.</param>
         /// <returns>An instance of the <see cref="TableStorageManager"/>.</returns>
-        TableStorageManager GetTableStorageManager(string tableConnectionstring, string tableName);
+        ITableStorageManager GetTableStorageManager(string tableConnectionstring, string tableName);
 
         /// <summary>
         /// Retrieve an instance of the <see cref="QueueManager"/>.

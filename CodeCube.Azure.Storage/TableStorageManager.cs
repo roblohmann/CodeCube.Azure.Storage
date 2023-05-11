@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Azure;
 using Azure.Data.Tables;
 using CodeCube.Azure.Storage.Constants;
+using CodeCube.Azure.Storage.Interfaces;
 
 namespace CodeCube.Azure.Storage
 {
     /// <summary>
     /// Manager class to communicate with azure table storage
     /// </summary>
-    public sealed class TableStorageManager : BaseManager
+    public sealed class TableStorageManager : BaseManager, ITableStorageManager
     {
         private readonly TableClient _tableClient;
         //private readonly string _tableName;

@@ -56,7 +56,7 @@ namespace CodeCube.Azure.Storage
         /// <param name="tableConnectionstring">The connectionstring to the TABLE-storage.</param>
         /// <param name="tableName">The name of the table to connect to.</param>
         /// <returns>An instance of the <see cref="TableStorageManager"/>.</returns>
-        public TableStorageManager GetTableStorageManager(string tableConnectionstring, string tableName)
+        public ITableStorageManager GetTableStorageManager(string tableConnectionstring, string tableName)
         {
             if (string.IsNullOrWhiteSpace(tableConnectionstring))
             {
