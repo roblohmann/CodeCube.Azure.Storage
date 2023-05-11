@@ -13,24 +13,19 @@ namespace CodeCube.Azure.Storage
     /// <summary>
     /// Manager class to communicate with azure table storage
     /// </summary>
-    public sealed class TableStorageManager : BaseManager, ITableStorageManager
+    public sealed class TableStorageManager : ITableStorageManager
     {
         private readonly TableClient _tableClient;
 
-        internal TableStorageManager(string connectionstring, string tableName) : base(connectionstring)
+        internal TableStorageManager(TableClient tableClient)
         {
             //Validate parameters
-            if (string.IsNullOrEmpty(tableName))
+            if (tableClient == null)
             {
-                throw new ArgumentNullException(nameof(tableName), ErrorConstants.Table.TableNameRequired);
+                throw new ArgumentNullException(nameof(tableClient), ErrorConstants.Table.TableClientRequired);
             }
 
-            if (string.IsNullOrEmpty(connectionstring))
-            {
-                throw new ArgumentNullException(nameof(connectionstring), ErrorConstants.Table.TableConnectionstringRequired);
-            }
-
-            _tableClient = new TableClient(Connectionstring, tableName);
+            _tableClient = tableClient;
             _tableClient.CreateIfNotExists();
         }
 

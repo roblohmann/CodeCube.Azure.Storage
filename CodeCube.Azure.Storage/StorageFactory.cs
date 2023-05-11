@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text.RegularExpressions;
+using Azure.Data.Tables;
 using CodeCube.Azure.Storage.Constants;
 using CodeCube.Azure.Storage.Interfaces;
 
@@ -73,7 +74,8 @@ namespace CodeCube.Azure.Storage
             if (tableName.Length > ValidationConstants.MaxLengthTableStorage) 
                 throw new InvalidOperationException(string.Format(ErrorConstants.Table.MaxLengthTableNameExceeded, ValidationConstants.MaxLengthTableStorage));
 
-            return new TableStorageManager(tableConnectionstring, tableName);
+            var tableClient = new TableClient(tableConnectionstring, tableName);
+            return new TableStorageManager(tableClient);
         }
 
         /// <summary>
