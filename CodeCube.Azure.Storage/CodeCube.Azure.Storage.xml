@@ -82,6 +82,50 @@
             The type of of storages.
             </summary>
         </member>
+        <member name="M:CodeCube.Azure.Storage.Interfaces.IBlobStorageManager.StoreFile(System.String,System.IO.Stream,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Stores a file in the blob-storage.
+            </summary>
+            <param name="filename">The filename of the blob.</param>
+            <param name="fileContent">The content for the blob as a stream.</param>
+            <param name="container">The containername where to store the blob. If the container doesn't exist it will be created.</param>
+            <param name="cancellationToken">The cancellationtoken.</param>
+            <returns>The URI for the blobfile.</returns>
+        </member>
+        <member name="M:CodeCube.Azure.Storage.Interfaces.IBlobStorageManager.StoreFile(System.String,System.Byte[],System.String,System.Threading.CancellationToken)">
+            <summary>
+            Stores a file in the blob-storage.
+            </summary>
+            <param name="filename">The filename of the blob.</param>
+            <param name="bytes">The content for the blob in bytes.</param>
+            <param name="container">The containername where to store the blob. If the container doesn't exist it will be created.</param>
+            <param name="cancellationToken">The cancellationtoken.</param>
+            <returns>The URI for the blobfile.</returns>
+        </member>
+        <member name="M:CodeCube.Azure.Storage.Interfaces.IBlobStorageManager.GetBytes(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Get the specified file from the BLOB-storage.
+            </summary>
+            <param name="filename">The full filename for the blob to retrieve.</param>
+            <param name="container">The name of the conatiner where the blob is stored.</param>
+            <param name="cancellationToken">The cancellationtoken.</param>
+            <returns>The bytearray for the specified blob.</returns>
+        </member>
+        <member name="M:CodeCube.Azure.Storage.Interfaces.IBlobStorageManager.GetString(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Retrieves the specified file as string.
+            </summary>
+            <param name="filename">The full filename for the blob to retrieve.</param>
+            <param name="container">The name of the conatiner where the blob is stored.</param>
+            <param name="cancellationToken">The cancellationtoken.</param>
+            <returns>The specified file as string.</returns>
+        </member>
+        <member name="M:CodeCube.Azure.Storage.Interfaces.IQueueManager.ConnectAsync">
+            <summary>
+            Connect to the desired queue and return the client.
+            </summary>
+            <returns>The queueclient.</returns>
+        </member>
         <member name="M:CodeCube.Azure.Storage.Interfaces.IStorageFactory.GetBlobStorageManager(System.String,System.String,System.String)">
             <summary>
             Retrieve an instance of the <see cref="T:CodeCube.Azure.Storage.BlobStorageManager"/>.
@@ -114,6 +158,67 @@
             <param name="queueName">The name of the queue to connect to</param>
             <returns>An instance of the <see cref="T:CodeCube.Azure.Storage.QueueManager"/></returns>
             <exception cref="T:System.ArgumentNullException">Throws an <see cref="T:System.ArgumentNullException"/> when parameters are forgotten.</exception>
+        </member>
+        <member name="M:CodeCube.Azure.Storage.Interfaces.ITableStorageManager.Insert``1(``0,System.Threading.CancellationToken)">
+            <summary>
+            Insert the specified entity to the table.
+            </summary>
+            <typeparam name="T">The type for the entities. Must inherit from <see cref="T:Azure.Data.Tables.TableEntity">TableEntity.</see></typeparam>
+            <param name="entity">The entity to insertin the tablestorage</param>
+            <param name="cancellationToken">The cancellationtoken.</param>
+            <returns></returns>
+        </member>
+        <member name="M:CodeCube.Azure.Storage.Interfaces.ITableStorageManager.InsertBatch``1(System.Collections.Generic.List{``0},System.Threading.CancellationToken)">
+            <summary>
+            Insert a batch of entities.
+            </summary>
+            <typeparam name="T">The type for the entities. Must inherit from <see cref="T:Azure.Data.Tables.TableEntity">TableEntity.</see></typeparam>
+            <param name="entities">The batch of entities to insert.</param>
+            <param name="cancellationToken">The cancellationtoken.</param>
+            <returns></returns>
+        </member>
+        <member name="M:CodeCube.Azure.Storage.Interfaces.ITableStorageManager.Update``1(``0,System.Threading.CancellationToken)">
+            <summary>
+            Update the specified entity in the table storage.
+            </summary>
+            <typeparam name="T">The type for the entity. Must inherit from <see cref="T:Azure.Data.Tables.TableEntity">TableEntity.</see></typeparam>
+            <param name="entity">The entity to update.</param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentException"></exception>
+            <exception cref="T:System.InvalidOperationException"></exception>
+        </member>
+        <member name="M:CodeCube.Azure.Storage.Interfaces.ITableStorageManager.Retrieve``1(System.String,System.Collections.Generic.IEnumerable{System.String},System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Retrieve all entities of the given type.
+            </summary>
+            <param name="query"></param>
+            <param name="pageSize"></param>
+            <param name="cancellationToken">The cancellationtoken.</param>
+            <param name="propertiesToSelect"></param>
+            <typeparam name="T">The type for the entities in the list. Must inherit from <see cref="T:Azure.Data.Tables.TableEntity">TableEntity.</see></typeparam>
+            <returns>All entities in the specified table matching the type.</returns>
+            <exception cref="T:System.InvalidOperationException"></exception>
+        </member>
+        <member name="M:CodeCube.Azure.Storage.Interfaces.ITableStorageManager.Retrieve``1(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Retrieve an entity from the tablestorage
+            </summary>
+            <typeparam name="T">The type of the entity. Must inherit from <see cref="T:Azure.Data.Tables.TableEntity">TableEntity.</see></typeparam>
+            <param name="partitionKey">The partitionkey of the entity to retrieve.</param>
+            <param name="rowKey">The rowkey of the entity to retrieve.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns></returns>
+        </member>
+        <member name="M:CodeCube.Azure.Storage.Interfaces.ITableStorageManager.Delete``1(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Delete the specified entity from the tablestorage.
+            </summary>
+            <typeparam name="T">The type of the entity. Must inherit from <see cref="T:Azure.Data.Tables.TableEntity">TableEntity.</see></typeparam>
+            <param name="rowKey"></param>
+            <param name="cancellationToken">The cancellationtoken.</param>
+            <param name="partitionKey"></param>
+            <returns></returns>
         </member>
         <member name="T:CodeCube.Azure.Storage.QueueManager">
             <summary>

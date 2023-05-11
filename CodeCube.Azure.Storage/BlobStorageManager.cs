@@ -6,13 +6,14 @@ using Azure.Storage;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using CodeCube.Azure.Storage.Constants;
+using CodeCube.Azure.Storage.Interfaces;
 
 namespace CodeCube.Azure.Storage
 {
     /// <summary>
     /// Manager class to connect to a blob storage and upload or download blobs.
     /// </summary>
-    public sealed class BlobStorageManager : BaseManager
+    public sealed class BlobStorageManager : BaseManager, IBlobStorageManager
     {
         private readonly BlobServiceClient _blobServiceClient;
 

@@ -16,8 +16,6 @@ namespace CodeCube.Azure.Storage
     public sealed class TableStorageManager : BaseManager, ITableStorageManager
     {
         private readonly TableClient _tableClient;
-        //private readonly string _tableName;
-        //private bool _isConnected;
 
         internal TableStorageManager(string connectionstring, string tableName) : base(connectionstring)
         {
@@ -32,7 +30,6 @@ namespace CodeCube.Azure.Storage
                 throw new ArgumentNullException(nameof(connectionstring), ErrorConstants.Table.TableConnectionstringRequired);
             }
 
-            //_tableName = tableName;
             _tableClient = new TableClient(Connectionstring, tableName);
             _tableClient.CreateIfNotExists();
         }
