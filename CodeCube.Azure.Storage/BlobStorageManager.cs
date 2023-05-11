@@ -170,7 +170,7 @@ namespace CodeCube.Azure.Storage
             byte[] bytes;
             using (var memoryStream = new MemoryStream())
             {
-                await downloadInfo.Content.CopyToAsync(memoryStream).ConfigureAwait(false);
+                await downloadInfo.Content.CopyToAsync(memoryStream, cancellationToken).ConfigureAwait(false);
                 bytes = memoryStream.GetBuffer();
             }
 
@@ -198,7 +198,7 @@ namespace CodeCube.Azure.Storage
             string returnvalue;
             using (var memoryStream = new MemoryStream())
             {
-                await downloadInfo.Content.CopyToAsync(memoryStream).ConfigureAwait(false);
+                await downloadInfo.Content.CopyToAsync(memoryStream, cancellationToken).ConfigureAwait(false);
                 using (var streamReader = new StreamReader(memoryStream))
                 {
                     returnvalue = await streamReader.ReadToEndAsync().ConfigureAwait(false);
@@ -226,7 +226,7 @@ namespace CodeCube.Azure.Storage
         {
             if (string.IsNullOrWhiteSpace(Connectionstring))
             {
-                throw new InvalidOperationException($"No connectionstring available!");
+                throw new InvalidOperationException("No connectionstring available!");
             }
 
             return new BlobServiceClient(Connectionstring);
