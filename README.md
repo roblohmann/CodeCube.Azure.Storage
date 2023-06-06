@@ -26,7 +26,7 @@ The following methods have been changed;
 
 ## How to use
 
-There are two options to use this library. You can either get the storagefactory from the DI-container. This is usefull when you need the factory multiple times to give you an TableStorage-, BlobStorage or QueueManager.
+There are two options to use this library. You can either get the storagefactory from the DI-container. This is useful when you need the factory multiple times to give you an TableStorage-, BlobStorage or QueueManager.
 The other way is to add a little more code in your startup to directly get one of managers directly in your implementation.
 
 Both options are explained here.
