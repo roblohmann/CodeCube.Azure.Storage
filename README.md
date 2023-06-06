@@ -32,23 +32,45 @@ The other way is to add a little more code in your startup to directly get one o
 Both options are explained here.
 
 ### Option 1 - StorageFactory
-1. In your startup.cs add the following line of code;
+  1. In your startup.cs add the following line of code;
 
-    ```
-    service.AddScoped<IStorageFactory, StorageFactory>();
-    ```
+      ```
+      services.AddSingleton<IStorageFactory, StorageFactory>();
+      ```
 
-2. On your implementation side you can use one of the options below
-   - 
-    ```
-        public class MyClass{
-            
-            private readonly ITableStorageManager _tableStorageManager;
-            
-            public MyClass(IStorageFactory storageFactory){
-                _tableStorageManager = storageFactory.GetTableStorageManager("myConnectionString","myTableName")
-            }
-        } 
-    ```
-
+  2. On your implementation side you can use one of the options below
+     - 
+      ```
+          public class MyClass{
+              
+              private readonly ITableStorageManager _tableStorageManager;
+              
+              public MyClass(IStorageFactory storageFactory){
+                  _tableStorageManager = storageFactory.GetTableStorageManager("myConnectionString","myTableName")
+              }
+          } 
+      ```
 ### Option 2 - Direct Implementation
+  1. In your startup.cs add the following line of code;
+
+      ```
+      services.AddSingleton<IStorageFactory, StorageFactory>();
+      services.AddScoped<ITableStorageManager>((s) => {
+        var factory = s.GetRequiredService<IStorageFactory>();
+
+        return factory.GetTableStorageManager("myConnectionString","myTableName");
+      });
+      ```
+
+  2. On your implementation side you can use one of the options below
+     - 
+      ```
+          public class MyClass{
+              
+              private readonly ITableStorageManager _tableStorageManager;
+              
+              public MyClass(IStorageFactory storageFactory){
+                  _tableStorageManager = storageFactory.GetTableStorageManager("myConnectionString","myTableName")
+              }
+          } 
+      ```
