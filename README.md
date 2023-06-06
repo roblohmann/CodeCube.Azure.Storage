@@ -17,18 +17,38 @@ Version 2.x of this package supports the following microsoft packages;
 - Microsoft.Azure.Storage.Queue
 - Microsoft.Azure.Cosmos.Table
 
-# Version 3.3.x and higer
+## Version 3.3.x and higer
 Version 3.3.x introduces a breaking change!
 
 The following methods have been changed;
 - Task<Response<T>> Retrieve<T> was changed to Task<Response<T>> GetSingle<T>
 - AsyncPageable<T> Retrieve<T> was changed to AsyncPageable<T> Query<T> (including all overloads!)
 
-# How to use
+## How to use
+
+There are two options to use this library. You can either get the storagefactory from the DI-container. This is usefull when you need the factory multiple times to give you an TableStorage-, BlobStorage or QueueManager.
+The other way is to add a little more code in your startup to directly get one of managers directly in your implementation.
+
+Both options are explained here.
+
+### Option 1 - StorageFactory
 1. In your startup.cs add the following line of code;
 
     ```
     service.AddScoped<IStorageFactory, StorageFactory>();
     ```
 
-2.
+2. On your implementation side you can use one of the options below
+   - 
+    ```
+        public class MyClass{
+            
+            private readonly ITableStorageManager _tableStorageManager;
+            
+            public MyClass(IStorageFactory storageFactory){
+                _tableStorageManager = storageFactory.GetTableStorageManager("myConnectionString","myTableName")
+            }
+        } 
+    ```
+
+### Option 2 - Direct Implementation
