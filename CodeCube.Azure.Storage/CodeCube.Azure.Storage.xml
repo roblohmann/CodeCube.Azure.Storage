@@ -218,7 +218,7 @@
             </summary>
             <param name="query">The query to use for filtering entites.</param>
             <param name="pageSize">The number of items per page.</param>
-            <param name="cancellationToken">The cancellationtoken.</param>        
+            <param name="cancellationToken">The cancellationtoken.</param>
             <typeparam name="T">The type for the entities in the list. Must inherit from <see cref="T:Azure.Data.Tables.TableEntity">TableEntity.</see></typeparam>
             <returns>All entities in the specified table matching the type.</returns>
             <exception cref="T:System.InvalidOperationException"></exception>
@@ -229,9 +229,9 @@
             Retrieve all entities of the given type.
             </summary>
             <param name="query">The query to use for filtering entites.</param>
+            <param name="propertiesToSelect">The properties eg coluns to select from your tableEntity.</param>
             <param name="pageSize">The number of items per page.</param>
             <param name="cancellationToken">The cancellationtoken.</param>
-            <param name="propertiesToSelect">The properties eg coluns to select from your tableEntity.</param>
             <typeparam name="T">The type for the entities in the list. Must inherit from <see cref="T:Azure.Data.Tables.TableEntity">TableEntity.</see></typeparam>
             <returns>All entities in the specified table matching the type.</returns>
             <exception cref="T:System.InvalidOperationException"></exception>
@@ -247,12 +247,11 @@
             <param name="cancellationToken">The cancellation token.</param>
             <returns></returns>
         </member>
-        <member name="M:CodeCube.Azure.Storage.Interfaces.ITableStorageManager.GetSingle``1(System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Int32,System.Threading.CancellationToken)">
+        <member name="M:CodeCube.Azure.Storage.Interfaces.ITableStorageManager.GetSingle``1(System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Threading.CancellationToken)">
             <summary>
             Retrieve all entities of the given type.
             </summary>
             <param name="query">The query to use for filtering entites.</param>
-            <param name="pageSize">The number of items per page.</param>
             <param name="cancellationToken">The cancellationtoken.</param>        
             <typeparam name="T">The type for the entities in the list. Must inherit from <see cref="T:Azure.Data.Tables.TableEntity">TableEntity.</see></typeparam>
             <returns>All entities in the specified table matching the type.</returns>
@@ -387,7 +386,7 @@
             </summary>
             <param name="query">The query to use for filtering entites.</param>
             <param name="pageSize">The number of items per page.</param>
-            <param name="cancellationToken">The cancellationtoken.</param>        
+            <param name="cancellationToken">The cancellationtoken.</param>
             <typeparam name="T">The type for the entities in the list. Must inherit from <see cref="T:Azure.Data.Tables.TableEntity">TableEntity.</see></typeparam>
             <returns>All entities in the specified table matching the type.</returns>
             <exception cref="T:System.InvalidOperationException"></exception>
@@ -398,9 +397,9 @@
             Retrieve all entities of the given type.
             </summary>
             <param name="query">The query to use for filtering entites.</param>
+            <param name="propertiesToSelect">The properties eg coluns to select from your tableEntity.</param>
             <param name="pageSize">The number of items per page.</param>
             <param name="cancellationToken">The cancellationtoken.</param>
-            <param name="propertiesToSelect">The properties eg coluns to select from your tableEntity.</param>
             <typeparam name="T">The type for the entities in the list. Must inherit from <see cref="T:Azure.Data.Tables.TableEntity">TableEntity.</see></typeparam>
             <returns>All entities in the specified table matching the type.</returns>
             <exception cref="T:System.InvalidOperationException"></exception>
@@ -417,12 +416,11 @@
             <returns></returns>
             <exception cref="T:Azure.RequestFailedException"></exception>
         </member>
-        <member name="M:CodeCube.Azure.Storage.TableStorageManager.GetSingle``1(System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Int32,System.Threading.CancellationToken)">
+        <member name="M:CodeCube.Azure.Storage.TableStorageManager.GetSingle``1(System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Threading.CancellationToken)">
             <summary>
             Retrieve all entities of the given type.
             </summary>
             <param name="query">The query to use for filtering entites.</param>
-            <param name="pageSize">The number of items per page.</param>
             <param name="cancellationToken">The cancellationtoken.</param>        
             <typeparam name="T">The type for the entities in the list. Must inherit from <see cref="T:Azure.Data.Tables.TableEntity">TableEntity.</see></typeparam>
             <returns>All entities in the specified table matching the type.</returns>
