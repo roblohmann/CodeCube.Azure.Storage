@@ -36,15 +36,17 @@ namespace CodeCube.Azure.Storage
         /// <param name="entity">The entity to insertin the tablestorage</param>
         /// <param name="cancellationToken">The cancellationtoken.</param>
         /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="RequestFailedException"></exception>
         public async Task<Response> Insert<T>(T entity, CancellationToken cancellationToken = default) where T : ITableEntity, new()
         {
             if (string.IsNullOrWhiteSpace(entity.RowKey))
             {
-                throw new ArgumentException(ErrorConstants.Table.RowKeyIsRequired, nameof(entity));
+                throw new ArgumentNullException(ErrorConstants.Table.RowKeyIsRequired, nameof(entity));
             }
             if (string.IsNullOrWhiteSpace(entity.PartitionKey))
             {
-                throw new ArgumentException(ErrorConstants.Table.PartitionKeyIsRequired, nameof(entity));
+                throw new ArgumentNullException(ErrorConstants.Table.PartitionKeyIsRequired, nameof(entity));
             }
 
             return await _tableClient.AddEntityAsync(entity, cancellationToken);
@@ -57,6 +59,8 @@ namespace CodeCube.Azure.Storage
         /// <param name="entities">The batch of entities to insert.</param>
         /// <param name="cancellationToken">The cancellationtoken.</param>
         /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="RequestFailedException"></exception>
         public async Task<Response<IReadOnlyList<Response>>> InsertBatch<T>(List<T> entities, CancellationToken cancellationToken = default) where T : ITableEntity
         {
             var batch = new List<TableTransactionAction>();
@@ -70,10 +74,10 @@ namespace CodeCube.Azure.Storage
         /// </summary>
         /// <typeparam name="T">The type for the entity. Must inherit from <see cref="TableEntity">TableEntity.</see></typeparam>
         /// <param name="entity">The entity to update.</param>
-        /// <param name="cancellationToken"></param>
+        /// <param name="cancellationToken">The cancellationtoken.</param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="RequestFailedException"></exception>
         public async Task<Response> Update<T>(T entity, CancellationToken cancellationToken = default) where T : ITableEntity, new()
         {
             if (string.IsNullOrWhiteSpace(entity.RowKey))
@@ -91,13 +95,30 @@ namespace CodeCube.Azure.Storage
         /// <summary>
         /// Retrieve all entities of the given type.
         /// </summary>
-        /// <param name="query"></param>
-        /// <param name="pageSize"></param>
-        /// <param name="cancellationToken">The cancellationtoken.</param>
-        /// <param name="propertiesToSelect"></param>
+        /// <param name="query">The query to use for filtering entites. Eg: PartitionKey eq 'myPartitionKey' </param>
+        /// <param name="pageSize">The number of items per page.</param>
+        /// <param name="cancellationToken">The cancellationtoken.</param>        
         /// <typeparam name="T">The type for the entities in the list. Must inherit from <see cref="TableEntity">TableEntity.</see></typeparam>
         /// <returns>All entities in the specified table matching the type.</returns>
         /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="RequestFailedException"></exception>
+        public AsyncPageable<T> Retrieve<T>(string query, int pageSize = 25, CancellationToken cancellationToken = default)
+            where T : class, ITableEntity, new()
+        {
+            return _tableClient.QueryAsync<T>(query, pageSize, null, cancellationToken);
+        }
+
+        /// <summary>
+        /// Retrieve all entities of the given type.
+        /// </summary>
+        /// <param name="query">The query to use for filtering entites. Eg: PartitionKey eq 'myPartitionKey' </param>
+        /// <param name="pageSize">The number of items per page.</param>
+        /// <param name="cancellationToken">The cancellationtoken.</param>
+        /// <param name="propertiesToSelect">The properties eg coluns to select from your tableEntity.</param>
+        /// <typeparam name="T">The type for the entities in the list. Must inherit from <see cref="TableEntity">TableEntity.</see></typeparam>
+        /// <returns>All entities in the specified table matching the type.</returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="RequestFailedException"></exception>
         public AsyncPageable<T> Retrieve<T>(string query, IEnumerable<string> propertiesToSelect = null, int pageSize = 25, CancellationToken cancellationToken = default)
             where T : class, ITableEntity, new()
         {
@@ -112,8 +133,9 @@ namespace CodeCube.Azure.Storage
         /// <param name="rowKey">The rowkey of the entity to retrieve.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
+        /// <exception cref="RequestFailedException"></exception>
         public async Task<Response<T>> Retrieve<T>(string partitionKey, string rowKey, CancellationToken cancellationToken = default) where T : class, ITableEntity, new()
-        {
+        {            
             return await _tableClient.GetEntityAsync<T>(partitionKey, rowKey, null, cancellationToken);
         }
 
@@ -125,6 +147,7 @@ namespace CodeCube.Azure.Storage
         /// <param name="cancellationToken">The cancellationtoken.</param>
         /// <param name="partitionKey"></param>
         /// <returns></returns>
+        /// <exception cref="RequestFailedException"></exception>
         public async Task<Response> Delete<T>(string partitionKey, string rowKey, CancellationToken cancellationToken = default) where T : ITableEntity, new()
         {
             return await _tableClient.DeleteEntityAsync(partitionKey, rowKey, ETag.All, cancellationToken);

@@ -10,9 +10,16 @@ Version 1.x of this package is supporting Windows.Azure.Storage untill version 9
 
 This version won't be maintained anymore!
 
-## Version 2.x
-Version 2.x of this package only the following packages are supported;
+## Version 2.x 
+Version 2.x of this package supports the following microsoft packages;
 
 - Microsoft.Azure.Storage.Blob
 - Microsoft.Azure.Storage.Queue
 - Microsoft.Azure.Cosmos.Table
+
+# How to use
+1. In your startup.cs add the following line of code;
+
+    service.AddScoped<IStorageFactory, StorageFactory>();
+
+2.
