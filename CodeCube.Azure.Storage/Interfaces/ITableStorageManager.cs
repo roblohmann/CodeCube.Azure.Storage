@@ -102,13 +102,12 @@ namespace CodeCube.Azure.Storage.Interfaces
         /// Retrieve all entities of the given type.
         /// </summary>
         /// <param name="query">The query to use for filtering entites.</param>
-        /// <param name="pageSize">The number of items per page.</param>
         /// <param name="cancellationToken">The cancellationtoken.</param>        
         /// <typeparam name="T">The type for the entities in the list. Must inherit from <see cref="TableEntity">TableEntity.</see></typeparam>
         /// <returns>All entities in the specified table matching the type.</returns>
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="RequestFailedException"></exception>
-        Task<T> GetSingle<T>(Expression<Func<T, bool>> query, int pageSize = 25, CancellationToken cancellationToken = default) where T : class, ITableEntity, new();
+        Task<T> GetSingle<T>(Expression<Func<T, bool>> query, CancellationToken cancellationToken = default) where T : class, ITableEntity, new();
 
         /// <summary>
         /// Delete the specified entity from the tablestorage.

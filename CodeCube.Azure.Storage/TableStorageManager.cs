@@ -177,17 +177,16 @@ namespace CodeCube.Azure.Storage
         /// Retrieve all entities of the given type.
         /// </summary>
         /// <param name="query">The query to use for filtering entites.</param>
-        /// <param name="pageSize">The number of items per page.</param>
         /// <param name="cancellationToken">The cancellationtoken.</param>        
         /// <typeparam name="T">The type for the entities in the list. Must inherit from <see cref="TableEntity">TableEntity.</see></typeparam>
         /// <returns>All entities in the specified table matching the type.</returns>
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="RequestFailedException"></exception>
-        public async Task<T> GetSingle<T>(Expression<Func<T,bool>> query, int pageSize = 25, CancellationToken cancellationToken = default)
+        public async Task<T> GetSingle<T>(Expression<Func<T,bool>> query, CancellationToken cancellationToken = default)
             where T : class, ITableEntity, new()
         {
             var responseList = new List<T>();
-            var queryResponse = _tableClient.QueryAsync<T>(query, pageSize, null, cancellationToken);
+            var queryResponse = _tableClient.QueryAsync<T>(query, 1, null, cancellationToken);
 
             await foreach (var responseObject in queryResponse){
                 responseList.Add(responseObject);
