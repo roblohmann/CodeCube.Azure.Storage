@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Azure;
@@ -41,6 +42,18 @@ namespace CodeCube.Azure.Storage.Interfaces
         /// <summary>
         /// Retrieve all entities of the given type.
         /// </summary>
+        /// <param name="query">The query to use for filtering entites. Eg: PartitionKey eq 'myPartitionKey' </param>
+        /// <param name="pageSize">The number of items per page.</param>
+        /// <param name="cancellationToken">The cancellationtoken.</param>        
+        /// <typeparam name="T">The type for the entities in the list. Must inherit from <see cref="TableEntity">TableEntity.</see></typeparam>
+        /// <returns>All entities in the specified table matching the type.</returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="RequestFailedException"></exception>
+        AsyncPageable<T> Query<T>(string query, int pageSize = 25, CancellationToken cancellationToken = default) where T : class, ITableEntity, new();
+
+        /// <summary>
+        /// Retrieve all entities of the given type.
+        /// </summary>
         /// <param name="query"></param>
         /// <param name="pageSize"></param>
         /// <param name="cancellationToken">The cancellationtoken.</param>
@@ -48,7 +61,32 @@ namespace CodeCube.Azure.Storage.Interfaces
         /// <typeparam name="T">The type for the entities in the list. Must inherit from <see cref="TableEntity">TableEntity.</see></typeparam>
         /// <returns>All entities in the specified table matching the type.</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        AsyncPageable<T> Retrieve<T>(string query, IEnumerable<string> propertiesToSelect = null, int pageSize = 25, CancellationToken cancellationToken = default) where T : class, ITableEntity, new();
+        AsyncPageable<T> Query<T>(string query, IEnumerable<string> propertiesToSelect = null, int pageSize = 25, CancellationToken cancellationToken = default) where T : class, ITableEntity, new();
+
+        /// <summary>
+        /// Retrieve all entities of the given type.
+        /// </summary>
+        /// <param name="query">The query to use for filtering entites.</param>
+        /// <param name="pageSize">The number of items per page.</param>
+        /// <param name="cancellationToken">The cancellationtoken.</param>        
+        /// <typeparam name="T">The type for the entities in the list. Must inherit from <see cref="TableEntity">TableEntity.</see></typeparam>
+        /// <returns>All entities in the specified table matching the type.</returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="RequestFailedException"></exception>
+        AsyncPageable<T> Query<T>(Expression<Func<T, bool>> query, int pageSize = 25, CancellationToken cancellationToken = default) where T : class, ITableEntity, new();
+
+        /// <summary>
+        /// Retrieve all entities of the given type.
+        /// </summary>
+        /// <param name="query">The query to use for filtering entites.</param>
+        /// <param name="pageSize">The number of items per page.</param>
+        /// <param name="cancellationToken">The cancellationtoken.</param>
+        /// <param name="propertiesToSelect">The properties eg coluns to select from your tableEntity.</param>
+        /// <typeparam name="T">The type for the entities in the list. Must inherit from <see cref="TableEntity">TableEntity.</see></typeparam>
+        /// <returns>All entities in the specified table matching the type.</returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="RequestFailedException"></exception>
+        AsyncPageable<T> Query<T>(Expression<Func<T, bool>> query, IEnumerable<string> propertiesToSelect = null, int pageSize = 25, CancellationToken cancellationToken = default) where T : class, ITableEntity, new();
 
         /// <summary>
         /// Retrieve an entity from the tablestorage
@@ -58,7 +96,19 @@ namespace CodeCube.Azure.Storage.Interfaces
         /// <param name="rowKey">The rowkey of the entity to retrieve.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<Response<T>> Retrieve<T>(string partitionKey, string rowKey, CancellationToken cancellationToken = default) where T : class, ITableEntity, new();
+        Task<Response<T>> GetSingle<T>(string partitionKey, string rowKey, CancellationToken cancellationToken = default) where T : class, ITableEntity, new();
+
+        /// <summary>
+        /// Retrieve all entities of the given type.
+        /// </summary>
+        /// <param name="query">The query to use for filtering entites.</param>
+        /// <param name="pageSize">The number of items per page.</param>
+        /// <param name="cancellationToken">The cancellationtoken.</param>        
+        /// <typeparam name="T">The type for the entities in the list. Must inherit from <see cref="TableEntity">TableEntity.</see></typeparam>
+        /// <returns>All entities in the specified table matching the type.</returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="RequestFailedException"></exception>
+        Task<T> GetSingle<T>(Expression<Func<T, bool>> query, int pageSize = 25, CancellationToken cancellationToken = default) where T : class, ITableEntity, new();
 
         /// <summary>
         /// Delete the specified entity from the tablestorage.

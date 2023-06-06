@@ -10,12 +10,19 @@ Version 1.x of this package is supporting Windows.Azure.Storage untill version 9
 
 This version won't be maintained anymore!
 
-## Version 2.x 
+## Version 2.x and higher
 Version 2.x of this package supports the following microsoft packages;
 
 - Microsoft.Azure.Storage.Blob
 - Microsoft.Azure.Storage.Queue
 - Microsoft.Azure.Cosmos.Table
+
+# Version 3.3.x and higer
+Version 3.3.x introduces a breaking change!
+
+The following methods have been changed;
+- Task<Response<T>> Retrieve<T> was changed to Task<Response<T>> GetSingle<T>
+- AsyncPageable<T> Retrieve<T> was changed to AsyncPageable<T> Query<T> (including all overloads!)
 
 # How to use
 1. In your startup.cs add the following line of code;
