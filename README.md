@@ -37,9 +37,8 @@ Both options are explained here.
       ```
       services.AddSingleton<IStorageFactory, StorageFactory>();
       ```
-
+      
   2. On your implementation side you can use one of the options below
-     - 
       ```
           public class MyClass{
               
@@ -63,7 +62,6 @@ Both options are explained here.
       ```
 
   2. On your implementation side you can use one of the options below
-     - 
       ```
           public class MyClass{
               
