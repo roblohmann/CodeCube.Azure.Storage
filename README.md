@@ -20,6 +20,8 @@ Version 2.x of this package supports the following microsoft packages;
 # How to use
 1. In your startup.cs add the following line of code;
 
+    ```
     service.AddScoped<IStorageFactory, StorageFactory>();
+    ```
 
 2.
