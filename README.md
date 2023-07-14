@@ -53,12 +53,7 @@ Both options are explained here.
   1. In your startup.cs add the following line of code;
 
       ```
-      services.AddSingleton<IStorageFactory, StorageFactory>();
-      services.AddScoped<ITableStorageManager>((s) => {
-        var factory = s.GetRequiredService<IStorageFactory>();
-
-        return factory.GetTableStorageManager("myConnectionString","myTableName");
-      });
+      services.AddTableStorageManager("myConnectionString","myTableName");
       ```
 
   2. On your implementation side you can use one of the options below
