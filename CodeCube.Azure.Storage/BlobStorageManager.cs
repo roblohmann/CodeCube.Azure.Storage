@@ -146,7 +146,66 @@ namespace CodeCube.Azure.Storage
             {
                 throw new InvalidOperationException(ErrorConstants.Blob.FileCouldNotBeStored, e);
             }
+        }
 
+        /// <summary>
+        /// Stores a file in the blob-storage.
+        /// </summary>
+        /// <param name="filename">The filename of the blob.</param>
+        /// <param name="bytes">The content for the blob in bytes.</param>
+        /// <param name="container">The containername where to store the blob. If the container doesn't exist it will be created.</param>
+        /// <param name="overwriteExistingFile">Boolean indicating wether existing blob with this filename should be overwritten.</param>
+        /// <param name="cancellationToken">The cancellationtoken.</param>
+        /// <returns>The URI for the blobfile.</returns>
+        public async Task<string> StoreFile(string filename, byte[] bytes, string container, bool overwriteExistingFile, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                //Get a reference to the container
+                var blobContainerClient = _blobServiceClient.GetBlobContainerClient(container);
+                await blobContainerClient.CreateIfNotExistsAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
+
+                //Create a reference to the blob.
+                var blobClient = blobContainerClient.GetBlobClient(filename);
+
+                //Update the blob.
+                var binaryData = new BinaryData(bytes);
+                await blobClient.UploadAsync(binaryData, overwriteExistingFile, cancellationToken).ConfigureAwait(false);
+
+                //Return the url for the blob.
+                return blobClient.Uri.AbsoluteUri;
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException(ErrorConstants.Blob.FileCouldNotBeStored, e);
+            }
+        }
+
+        /// <summary>
+        /// Deletes the specified file from the container.
+        /// </summary>
+        /// <param name="filename">The filename of the blob to delete.</param>
+        /// <param name="container">The containername where the blob to be deleted is stored.</param>
+        /// <param name="cancellationToken">The cancelaltiontoken.</param>
+        /// <returns></returns>
+        public async Task<bool> DeleteFile(string filename, string container, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                //Get a reference to the container
+                var blobContainerClient = _blobServiceClient.GetBlobContainerClient(container);
+                await blobContainerClient.CreateIfNotExistsAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
+
+                //Create a reference to the blob.
+                var blobClient = blobContainerClient.GetBlobClient(filename);
+
+                //Update the blob.
+                return await blobClient.DeleteIfExistsAsync(cancellationToken:cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException(ErrorConstants.Blob.FileCouldNotBeStored, e);
+            }
         }
 
         /// <summary>

@@ -27,6 +27,26 @@ namespace CodeCube.Azure.Storage.Interfaces
         Task<string> StoreFile(string filename, byte[] bytes, string container, CancellationToken cancellationToken = default);
 
         /// <summary>
+        /// Stores a file in the blob-storage.
+        /// </summary>
+        /// <param name="filename">The filename of the blob.</param>
+        /// <param name="bytes">The content for the blob in bytes.</param>
+        /// <param name="container">The containername where to store the blob. If the container doesn't exist it will be created.</param>
+        /// <param name="overwriteExistingFile">Boolean indicating wether existing blob with this filename should be overwritten.</param>
+        /// <param name="cancellationToken">The cancellationtoken.</param>
+        /// <returns>The URI for the blobfile.</returns>
+        Task<string> StoreFile(string filename, byte[] bytes, string container, bool overwriteExistingFile, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Deletes the specified file from the container.
+        /// </summary>
+        /// <param name="filename">The filename of the blob to delete.</param>
+        /// <param name="container">The containername where the blob to be deleted is stored.</param>
+        /// <param name="cancellationToken">The cancelaltiontoken.</param>
+        /// <returns></returns>
+        Task<bool> DeleteFile(string filename, string container, CancellationToken cancellationToken = default);
+
+        /// <summary>
         /// Get the specified file from the BLOB-storage.
         /// </summary>
         /// <param name="filename">The full filename for the blob to retrieve.</param>
