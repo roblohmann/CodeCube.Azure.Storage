@@ -50,6 +50,17 @@ namespace CodeCube.Azure.Storage.Interfaces
         Task<string> StoreFile(string filename, byte[] bytes, string container, bool overwriteExistingFile, CancellationToken cancellationToken = default);
 
         /// <summary>
+        /// Stores a file in the blob-storage.
+        /// </summary>
+        /// <param name="filename">The filename of the blob.</param>
+        /// <param name="binaryData">A <see cref="BinaryData"/>object</param> holding the contents of the file to store.
+        /// <param name="container">The containername where to store the blob. If the container doesn't exist it will be created.</param>
+        /// <param name="overwriteExistingFile">Boolean indicating wether existing blob with this filename should be overwritten.</param>
+        /// <param name="cancellationToken">The cancellationtoken.</param>
+        /// <returns>The URI for the blobfile.</returns>
+        Task<string> StoreFile(string filename, BinaryData binaryData, string container, bool overwriteExistingFile, CancellationToken cancellationToken = default);
+
+        /// <summary>
         /// Deletes the specified file from the container.
         /// </summary>
         /// <param name="filename">The filename of the blob to delete.</param>
@@ -75,15 +86,5 @@ namespace CodeCube.Azure.Storage.Interfaces
         /// <param name="cancellationToken">The cancellationtoken.</param>
         /// <returns>The specified file as string.</returns>
         Task<string> GetString(string filename, string container, CancellationToken cancellationToken = default);
-
-        /// <summary>
-        /// Marks the specified blob in the container for deletion.
-        /// <remarks>Snapshots are included in deletion!</remarks>
-        /// </summary>
-        /// <param name="filename">The name of the blob to delete.</param>
-        /// <param name="container">The container.</param>
-        /// <param name="cancellationToken"></param>
-        /// <returns>A <see cref="Response"/>Response</returns> returns true if the file has succesfully been marked for deletion.
-        Task<Response<bool>> DeleteFile(string filename, string container, CancellationToken cancellationToken = default);
     }
 }

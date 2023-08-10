@@ -59,6 +59,47 @@
             <param name="cancellationToken">The cancellationtoken.</param>
             <returns>The URI for the blobfile.</returns>
         </member>
+        <member name="M:CodeCube.Azure.Storage.BlobStorageManager.StoreFile(System.String,System.Byte[],System.String,System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Stores a file in the blob-storage.
+            </summary>
+            <param name="filename">The filename of the blob.</param>
+            <param name="bytes">The content for the blob in bytes.</param>
+            <param name="container">The containername where to store the blob. If the container doesn't exist it will be created.</param>
+            <param name="overwriteExistingFile">Boolean indicating wether existing blob with this filename should be overwritten.</param>
+            <param name="cancellationToken">The cancellationtoken.</param>
+            <returns>The URI for the blobfile.</returns>
+        </member>
+        <member name="M:CodeCube.Azure.Storage.BlobStorageManager.StoreFile(System.String,System.BinaryData,System.String,System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Stores a file in the blob-storage.
+            </summary>
+            <param name="filename">The filename of the blob.</param>
+            <param name="binaryData">A <see cref="T:System.BinaryData"/>object</param> holding the contents of the file to store.
+            <param name="container">The containername where to store the blob. If the container doesn't exist it will be created.</param>
+            <param name="overwriteExistingFile">Boolean indicating wether existing blob with this filename should be overwritten.</param>
+            <param name="cancellationToken">The cancellationtoken.</param>
+            <returns>The URI for the blobfile.</returns>
+        </member>
+        <member name="M:CodeCube.Azure.Storage.BlobStorageManager.DeleteFile(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Deletes the specified file from the container.
+            </summary>
+            <param name="filename">The filename of the blob to delete.</param>
+            <param name="container">The containername where the blob to be deleted is stored.</param>
+            <param name="cancellationToken">The cancelaltiontoken.</param>
+            <returns></returns>
+        </member>
+        <member name="M:CodeCube.Azure.Storage.BlobStorageManager.StoreFile(System.String,System.BinaryData,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Stores a file in the blob-storage.
+            </summary>
+            <param name="filename">The filename of the blob.</param>
+            <param name="binaryData">A <see cref="T:System.BinaryData"/>object</param> holding the contents of the file to store.
+            <param name="container">The containername where to store the blob. If the container doesn't exist it will be created.</param>
+            <param name="cancellationToken">The cancellationtoken.</param>
+            <returns>The URI for the blobfile.</returns>
+        </member>
         <member name="M:CodeCube.Azure.Storage.BlobStorageManager.GetBytes(System.String,System.String,System.Threading.CancellationToken)">
             <summary>
             Get the specified file from the BLOB-storage.
@@ -101,6 +142,47 @@
             <param name="container">The containername where to store the blob. If the container doesn't exist it will be created.</param>
             <param name="cancellationToken">The cancellationtoken.</param>
             <returns>The URI for the blobfile.</returns>
+        </member>
+        <member name="M:CodeCube.Azure.Storage.Interfaces.IBlobStorageManager.StoreFile(System.String,System.BinaryData,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Stores a file in the blob-storage.
+            </summary>
+            <param name="filename">The filename of the blob.</param>
+            <param name="binaryData">A <see cref="T:System.BinaryData"/>object</param> holding the contents of the file to store.
+            <param name="container">The containername where to store the blob. If the container doesn't exist it will be created.</param>
+            <param name="cancellationToken">The cancellationtoken.</param>
+            <returns>The URI for the blobfile.</returns>
+        </member>
+        <member name="M:CodeCube.Azure.Storage.Interfaces.IBlobStorageManager.StoreFile(System.String,System.Byte[],System.String,System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Stores a file in the blob-storage.
+            </summary>
+            <param name="filename">The filename of the blob.</param>
+            <param name="bytes">The content for the blob in bytes.</param>
+            <param name="container">The containername where to store the blob. If the container doesn't exist it will be created.</param>
+            <param name="overwriteExistingFile">Boolean indicating wether existing blob with this filename should be overwritten.</param>
+            <param name="cancellationToken">The cancellationtoken.</param>
+            <returns>The URI for the blobfile.</returns>
+        </member>
+        <member name="M:CodeCube.Azure.Storage.Interfaces.IBlobStorageManager.StoreFile(System.String,System.BinaryData,System.String,System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Stores a file in the blob-storage.
+            </summary>
+            <param name="filename">The filename of the blob.</param>
+            <param name="binaryData">A <see cref="T:System.BinaryData"/>object</param> holding the contents of the file to store.
+            <param name="container">The containername where to store the blob. If the container doesn't exist it will be created.</param>
+            <param name="overwriteExistingFile">Boolean indicating wether existing blob with this filename should be overwritten.</param>
+            <param name="cancellationToken">The cancellationtoken.</param>
+            <returns>The URI for the blobfile.</returns>
+        </member>
+        <member name="M:CodeCube.Azure.Storage.Interfaces.IBlobStorageManager.DeleteFile(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Deletes the specified file from the container.
+            </summary>
+            <param name="filename">The filename of the blob to delete.</param>
+            <param name="container">The containername where the blob to be deleted is stored.</param>
+            <param name="cancellationToken">The cancelaltiontoken.</param>
+            <returns></returns>
         </member>
         <member name="M:CodeCube.Azure.Storage.Interfaces.IBlobStorageManager.GetBytes(System.String,System.String,System.Threading.CancellationToken)">
             <summary>
@@ -437,6 +519,50 @@
             <param name="partitionKey"></param>
             <returns></returns>
             <exception cref="T:Azure.RequestFailedException"></exception>
+        </member>
+        <member name="T:ServiceCollectionExtensions">
+            <summary>
+            Class with extenion methods specific for usage with CodeCube.Azure.Storage
+            </summary>
+        </member>
+        <member name="M:ServiceCollectionExtensions.AddStorageFactory(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Adds an singleton instance of <see cref="T:CodeCube.Azure.Storage.Interfaces.IStorageFactory"/> to the DI-container.
+            The <see cref="T:CodeCube.Azure.Storage.Interfaces.IStorageFactory"/> can be used to connect to BlobStorage, TableStorage or Azure Queues.
+            </summary>
+            <param name="serviceCollection"></param>
+        </member>
+        <member name="M:ServiceCollectionExtensions.AddBlobStorageManager(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String,System.String,System.String)">
+            <summary>
+            Adds an instance of <see cref="T:CodeCube.Azure.Storage.Interfaces.IBlobStorageManager"/> to the DI-container.
+            </summary>
+            <param name="serviceCollection"></param>
+            <param name="storageUrl">The URL for the storage account to connect to.</param>
+            <param name="accountName">The name of the storage account to connect to.</param>
+            <param name="accessKey">The AccessKey to use when connection.</param>
+        </member>
+        <member name="M:ServiceCollectionExtensions.AddBlobStorageManager(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String)">
+            <summary>
+            Adds an instance of <see cref="T:CodeCube.Azure.Storage.Interfaces.IBlobStorageManager"/> to the DI-container.
+            </summary>
+            <param name="serviceCollection"></param>
+            <param name="connectionString">The connectionstring of the BLOB-storage to connect to.</param>
+        </member>
+        <member name="M:ServiceCollectionExtensions.AddTableStorageManager(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String,System.String)">
+            <summary>
+            Adds an instance of the <see cref="T:CodeCube.Azure.Storage.Interfaces.ITableStorageManager"/> to the DI-container.
+            </summary>
+            <param name="serviceCollection"></param>
+            <param name="tableConnectionstring">The connectionstring of the tablestorage to connect to.</param>
+            <param name="tableName">The name of the table to connect to.</param>
+        </member>
+        <member name="M:ServiceCollectionExtensions.AddQueueManager(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String,System.String)">
+            <summary>
+            Adds an instance of the <see cref="T:CodeCube.Azure.Storage.Interfaces.IQueueManager"/> to the DI-container.
+            </summary>
+            <param name="serviceCollection"></param>
+            <param name="connectionstring">The connectionstring of the queue to connect to.</param>
+            <param name="queueName">The name of the queue to connect to.</param>
         </member>
     </members>
 </doc>
