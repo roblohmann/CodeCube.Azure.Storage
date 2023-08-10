@@ -35,10 +35,10 @@ Both options are explained here.
   1. In your startup.cs add the following line of code;
 
       ```
-      services.AddSingleton<IStorageFactory, StorageFactory>();
+      services.AddStorageFactory();
       ```
       
-  2. On your implementation side you can use one of the options below
+  2. On your implementation side you can do something like this:
       ```
           public class MyClass{
               
@@ -50,15 +50,12 @@ Both options are explained here.
           } 
       ```
 ### Option 2 - Direct Implementation
+
+#### TableStorage
   1. In your startup.cs add the following line of code;
 
       ```
-      services.AddSingleton<IStorageFactory, StorageFactory>();
-      services.AddScoped<ITableStorageManager>((s) => {
-        var factory = s.GetRequiredService<IStorageFactory>();
-
-        return factory.GetTableStorageManager("myConnectionString","myTableName");
-      });
+      services.AddTableStorageManager("myConnectionString","myTableName");
       ```
 
   2. On your implementation side you can use one of the options below
@@ -67,8 +64,49 @@ Both options are explained here.
               
               private readonly ITableStorageManager _tableStorageManager;
               
-              public MyClass(IStorageFactory storageFactory){
-                  _tableStorageManager = storageFactory.GetTableStorageManager("myConnectionString","myTableName")
+              public MyClass(ITableStorageManager tableStorageManager){
+                  _tableStorageManager = tableStorageManager;
               }
           } 
       ```
+
+#### BlobStorage
+  1. In your startup.cs add the following line of code;
+
+      ```
+      services.AddBlobStorageManager("storageUrl","accountName", "accessKey");
+      ```
+      OR
+     ```
+      services.AddBlobStorageManager("connectionstring");
+      ```
+
+  3. On your implementation side you can use one of the options below
+      ```
+          public class MyClass{
+              
+              private readonly IBlobStorageMaanger _blobStorageManager;
+              
+              public MyClass(IBlobStorageMaanger blobStorageManager){
+                  _tableStorageManager = blobStorageManager;
+              }
+          } 
+      ```
+#### Queues
+  1. In your startup.cs add the following line of code;
+
+      ```
+      services.AddQueueManager("connectionString", "queueName");
+      ```
+
+  3. On your implementation side you can use one of the options below
+      ```
+          public class MyClass{
+              
+              private readonly IQueueManager _queueManager;
+              
+              public MyClass(IQueueManager queueManager){
+                  _queueManager = queueManager;
+              }
+          } 
+      ```          

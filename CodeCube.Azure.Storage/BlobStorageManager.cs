@@ -2,6 +2,7 @@
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Azure;
 using Azure.Storage;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
@@ -209,6 +210,19 @@ namespace CodeCube.Azure.Storage
         }
 
         /// <summary>
+        /// Stores a file in the blob-storage.
+        /// </summary>
+        /// <param name="filename">The filename of the blob.</param>
+        /// <param name="binaryData">A <see cref="BinaryData"/>object</param> holding the contents of the file to store.
+        /// <param name="container">The containername where to store the blob. If the container doesn't exist it will be created.</param>
+        /// <param name="cancellationToken">The cancellationtoken.</param>
+        /// <returns>The URI for the blobfile.</returns>
+        public async Task<string> StoreFile(string filename, BinaryData binaryData, string container, CancellationToken cancellationToken = default)
+        {
+            return await StoreFile(filename, binaryData.ToArray(), container, cancellationToken).ConfigureAwait(false);
+        }
+
+        /// <summary>
         /// Get the specified file from the BLOB-storage.
         /// </summary>
         /// <param name="filename">The full filename for the blob to retrieve.</param>
@@ -265,6 +279,24 @@ namespace CodeCube.Azure.Storage
             }
 
             return returnvalue;
+        }
+
+        /// <summary>
+        /// Marks the specified blob in the container for deletion.
+        /// <remarks>Snapshots are included in deletion!</remarks>
+        /// </summary>
+        /// <param name="filename">The name of the blob to delete.</param>
+        /// <param name="container">The container.</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>A <see cref="Response"/>Response</returns> returns true if the file has succesfully been marked for deletion.
+        public async Task<Response<bool>> DeleteFile(string filename, string container, CancellationToken cancellationToken = default)
+        {
+            var blobContainerClient = _blobServiceClient.GetBlobContainerClient(container);
+            await blobContainerClient.CreateIfNotExistsAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
+
+            var blobClient = blobContainerClient.GetBlobClient(filename);
+
+            return await blobClient.DeleteIfExistsAsync(DeleteSnapshotsOption.IncludeSnapshots, null, cancellationToken).ConfigureAwait(false);
         }
 
         #region privates
