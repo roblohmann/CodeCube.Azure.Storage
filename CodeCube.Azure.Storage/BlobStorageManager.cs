@@ -254,10 +254,10 @@ namespace CodeCube.Azure.Storage
             BlobDownloadInfo downloadInfo = await blobClient.DownloadAsync(cancellationToken).ConfigureAwait(false);
 
             byte[] bytes;
-            using (var memoryStream = new MemoryStream())
+            await using (var memoryStream = new MemoryStream())
             {
                 await downloadInfo.Content.CopyToAsync(memoryStream, cancellationToken).ConfigureAwait(false);
-                bytes = memoryStream.GetBuffer();
+                bytes = memoryStream.ToArray();
             }
 
             return bytes;
