@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Azure;
@@ -272,26 +273,28 @@ namespace CodeCube.Azure.Storage
         /// <returns>The specified file as string.</returns>
         public async Task<string> GetString(string filename, string container, CancellationToken cancellationToken = default)
         {
-            //Get a reference to the container
-            var blobContainerClient = _blobServiceClient.GetBlobContainerClient(container);
-            await blobContainerClient.CreateIfNotExistsAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
-            await blobContainerClient.SetAccessPolicyAsync(PublicAccessType.None, cancellationToken: cancellationToken).ConfigureAwait(false);
+            return Encoding.UTF8.GetString(await GetBytes(filename, container, cancellationToken));
 
-            var blobClient = blobContainerClient.GetBlobClient(filename);
+            ////Get a reference to the container
+            //var blobContainerClient = _blobServiceClient.GetBlobContainerClient(container);
+            //await blobContainerClient.CreateIfNotExistsAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
+            //await blobContainerClient.SetAccessPolicyAsync(PublicAccessType.None, cancellationToken: cancellationToken).ConfigureAwait(false);
 
-            BlobDownloadInfo downloadInfo = await blobClient.DownloadAsync(cancellationToken).ConfigureAwait(false);
+            //var blobClient = blobContainerClient.GetBlobClient(filename);
 
-            string returnvalue;
-            using (var memoryStream = new MemoryStream())
-            {
-                await downloadInfo.Content.CopyToAsync(memoryStream, cancellationToken).ConfigureAwait(false);
-                using (var streamReader = new StreamReader(memoryStream))
-                {
-                    returnvalue = await streamReader.ReadToEndAsync().ConfigureAwait(false);
-                }
-            }
+            //BlobDownloadInfo downloadInfo = await blobClient.DownloadAsync(cancellationToken).ConfigureAwait(false);
 
-            return returnvalue;
+            //string returnvalue;
+            //using (var memoryStream = new MemoryStream())
+            //{
+            //    await downloadInfo.Content.CopyToAsync(memoryStream, cancellationToken).ConfigureAwait(false);
+            //    using (var streamReader = new StreamReader(memoryStream))
+            //    {
+            //        returnvalue = await streamReader.ReadToEndAsync().ConfigureAwait(false);
+            //    }
+            //}
+
+            //return returnvalue;
         }
 
         #region privates
