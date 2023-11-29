@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using Azure.Storage.Queues;
 
 namespace CodeCube.Azure.Storage.Interfaces
@@ -9,6 +10,6 @@ namespace CodeCube.Azure.Storage.Interfaces
         /// Connect to the desired queue and return the client.
         /// </summary>
         /// <returns>The queueclient.</returns>
-        Task<QueueClient> ConnectAsync();
+        Task<QueueClient> ConnectAsync(CancellationToken cancellationToken);
     }
 }
