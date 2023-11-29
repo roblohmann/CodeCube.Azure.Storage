@@ -98,7 +98,7 @@ namespace CodeCube.Azure.Storage
             {
                 //Get a reference to the container
                 var blobContainerClient = _blobServiceClient.GetBlobContainerClient(container);
-                await blobContainerClient.CreateIfNotExistsAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
+                await CreateContainerIfNotExists(cancellationToken, blobContainerClient).ConfigureAwait(false);
 
                 //Create a reference to the blob.
                 var blobClient = blobContainerClient.GetBlobClient(filename);
@@ -116,6 +116,16 @@ namespace CodeCube.Azure.Storage
 
         }
 
+        private static async Task CreateContainerIfNotExists(CancellationToken cancellationToken,
+            BlobContainerClient blobContainerClient)
+        {
+            var containerExists = await blobContainerClient.ExistsAsync(cancellationToken);
+            if (!containerExists)
+            {
+                await blobContainerClient.CreateAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
+            }
+        }
+
         /// <summary>
         /// Stores a file in the blob-storage.
         /// </summary>
@@ -130,7 +140,7 @@ namespace CodeCube.Azure.Storage
             {
                 //Get a reference to the container
                 var blobContainerClient = _blobServiceClient.GetBlobContainerClient(container);
-                await blobContainerClient.CreateIfNotExistsAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
+                await CreateContainerIfNotExists(cancellationToken, blobContainerClient).ConfigureAwait(false);
 
                 //Create a reference to the blob.
                 var blobClient = blobContainerClient.GetBlobClient(filename);
@@ -179,7 +189,7 @@ namespace CodeCube.Azure.Storage
             {
                 //Get a reference to the container
                 var blobContainerClient = _blobServiceClient.GetBlobContainerClient(container);
-                await blobContainerClient.CreateIfNotExistsAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
+                await CreateContainerIfNotExists(cancellationToken, blobContainerClient).ConfigureAwait(false);
 
                 //Create a reference to the blob.
                 var blobClient = blobContainerClient.GetBlobClient(filename);
@@ -209,7 +219,7 @@ namespace CodeCube.Azure.Storage
             {
                 //Get a reference to the container
                 var blobContainerClient = _blobServiceClient.GetBlobContainerClient(container);
-                await blobContainerClient.CreateIfNotExistsAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
+                await CreateContainerIfNotExists(cancellationToken, blobContainerClient).ConfigureAwait(false);
 
                 //Create a reference to the blob.
                 var blobClient = blobContainerClient.GetBlobClient(filename);
@@ -247,7 +257,7 @@ namespace CodeCube.Azure.Storage
         {
             //Get a reference to the container
             var blobContainerClient = _blobServiceClient.GetBlobContainerClient(container);
-            await blobContainerClient.CreateIfNotExistsAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
+            await CreateContainerIfNotExists(cancellationToken, blobContainerClient).ConfigureAwait(false);
             await blobContainerClient.SetAccessPolicyAsync(PublicAccessType.None, cancellationToken: cancellationToken).ConfigureAwait(false);
 
             var blobClient = blobContainerClient.GetBlobClient(filename);
@@ -274,27 +284,6 @@ namespace CodeCube.Azure.Storage
         public async Task<string> GetString(string filename, string container, CancellationToken cancellationToken = default)
         {
             return Encoding.UTF8.GetString(await GetBytes(filename, container, cancellationToken));
-
-            ////Get a reference to the container
-            //var blobContainerClient = _blobServiceClient.GetBlobContainerClient(container);
-            //await blobContainerClient.CreateIfNotExistsAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
-            //await blobContainerClient.SetAccessPolicyAsync(PublicAccessType.None, cancellationToken: cancellationToken).ConfigureAwait(false);
-
-            //var blobClient = blobContainerClient.GetBlobClient(filename);
-
-            //BlobDownloadInfo downloadInfo = await blobClient.DownloadAsync(cancellationToken).ConfigureAwait(false);
-
-            //string returnvalue;
-            //using (var memoryStream = new MemoryStream())
-            //{
-            //    await downloadInfo.Content.CopyToAsync(memoryStream, cancellationToken).ConfigureAwait(false);
-            //    using (var streamReader = new StreamReader(memoryStream))
-            //    {
-            //        returnvalue = await streamReader.ReadToEndAsync().ConfigureAwait(false);
-            //    }
-            //}
-
-            //return returnvalue;
         }
 
         #region privates

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Azure.Storage.Queues;
 using CodeCube.Azure.Storage.Constants;
@@ -34,19 +35,23 @@ namespace CodeCube.Azure.Storage
         /// Connect to the desired queue and return the client.
         /// </summary>
         /// <returns>The queueclient.</returns>
-        public async Task<QueueClient> ConnectAsync()
+        public async Task<QueueClient> ConnectAsync(CancellationToken cancellationToken)
         {
-            if(_queueClient == null) await ConnectToQueue();
+            if (_queueClient == null) await ConnectToQueue(cancellationToken);
 
             return _queueClient;
         }
 
         #region privates
-        private async Task ConnectToQueue()
+        private async Task ConnectToQueue(CancellationToken cancellationToken)
         {
             _queueClient = new QueueClient(Connectionstring, _queuename);
 
-            await _queueClient.CreateIfNotExistsAsync().ConfigureAwait(false);
+            var queueExists = await _queueClient.ExistsAsync(cancellationToken);
+            if (!queueExists)
+            {
+                await _queueClient.CreateAsync(cancellationToken: cancellationToken);
+            }
         }
         #endregion
     }
