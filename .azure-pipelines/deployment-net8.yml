@@ -18,6 +18,7 @@ stages:
     displayName: 'Build and Test'
     steps:
     - task: Assembly-Info-NetCore@3
+      displayName: 'Set Assembly Info'
       inputs:
         Path: '$(Build.SourcesDirectory)'
         FileNames: '**/CodeCube.Azure.Storage.csproj'
