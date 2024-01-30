@@ -202,7 +202,7 @@
             <param name="cancellationToken">The cancellationtoken.</param>
             <returns>The specified file as string.</returns>
         </member>
-        <member name="M:CodeCube.Azure.Storage.Interfaces.IQueueManager.ConnectAsync">
+        <member name="M:CodeCube.Azure.Storage.Interfaces.IQueueManager.ConnectAsync(System.Threading.CancellationToken)">
             <summary>
             Connect to the desired queue and return the client.
             </summary>
@@ -355,7 +355,7 @@
             Manager class to connect to one single Azure Storage Queue
             </summary>
         </member>
-        <member name="M:CodeCube.Azure.Storage.QueueManager.ConnectAsync">
+        <member name="M:CodeCube.Azure.Storage.QueueManager.ConnectAsync(System.Threading.CancellationToken)">
             <summary>
             Connect to the desired queue and return the client.
             </summary>

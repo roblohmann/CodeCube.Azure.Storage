@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.1</TargetFrameworks>
+	<TargetFramework>net8.0</TargetFramework>
     <PackageProjectUrl>https://github.com/roblohmann/CodeCube.Azure.Storage</PackageProjectUrl>
     <Authors>Rob Lohmann</Authors>
     <Description>Library with utilities and wrappers around commonly used stuff in Microsoft Azure Storages</Description>
     <PackageIconUrl>https://github.com/roblohmann/CodeCube.Azure.Storage/blob/master/nuget-icon.png?raw=true</PackageIconUrl>
     <RepositoryUrl>https://github.com/roblohmann/CodeCube.Azure.Storage</RepositoryUrl>
     <PackageReleaseNotes></PackageReleaseNotes>
-    <Copyright>Copyright Rob Lohmann 2019 - 2021</Copyright>
+    <Copyright>Copyright Rob Lohmann 2019 - 2024</Copyright>
     <PackageTags>azure blobstorage tablestorage queue</PackageTags>
   </PropertyGroup>
 
@@ -22,10 +22,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Azure.Data.Tables" Version="12.8.0" />
-    <PackageReference Include="Azure.Storage.Blobs" Version="12.16.0" />
-    <PackageReference Include="Azure.Storage.Queues" Version="12.14.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Azure.Data.Tables" Version="12.8.2" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.19.1" />
+    <PackageReference Include="Azure.Storage.Queues" Version="12.17.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
   </ItemGroup>
 
 </Project>
