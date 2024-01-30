@@ -85,7 +85,7 @@ stages:
         buildType: 'current'
         downloadType: 'single'
         artifactName: 'drop'
-        downloadPath: '$(System.ArtifactsDirectory)'
+        downloadPath: '$(Build.ArtifactStagingDirectory)'
 
     - task: NuGetCommand@2
       displayName: 'Pack NuGet'
