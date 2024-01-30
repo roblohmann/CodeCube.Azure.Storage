@@ -1,0 +1,48 @@
+trigger:
+- master  # Adjust the branch as needed
+
+pool:
+  vmImage: 'ubuntu-latest'  # You can choose a different image depending on your requirements
+
+variables:
+  buildConfiguration: 'Release'  
+
+stages:
+- stage: Build
+  jobs:
+  - job: Build
+    displayName: 'Build and Test'
+    steps:
+    - task: UseDotNet@2
+      inputs:
+        packageType: 'sdk'
+        version: '8.x'        
+
+    - script: dotnet restore
+      displayName: 'Restore NuGet packages'
+
+    - script: dotnet build --configuration $(buildConfiguration)
+      displayName: 'Build solution'
+
+    - script: dotnet test --configuration $(buildConfiguration)
+      displayName: 'Run unit tests'
+
+- stage: Deploy
+  jobs:
+  - job: Deploy
+    displayName: 'Deploy to NuGet'
+    steps:
+    - task: UseDotNet@2
+      inputs:
+        packageType: 'sdk'
+        version: '8.x'
+        
+    - script: dotnet pack --configuration $(buildConfiguration)
+      displayName: 'Pack NuGet package'
+
+    - task: NuGetCommand@2
+      inputs:
+        command: 'push'
+        packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+        nuGetFeedType: 'external'
+        publishFeedCredentials: 'nuget.org'
