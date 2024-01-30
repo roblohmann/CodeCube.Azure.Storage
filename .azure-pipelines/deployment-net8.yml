@@ -60,6 +60,13 @@ stages:
         command: 'test'
         projects: '**/*.Tests.csproj'
         arguments: '--configuration $(buildConfiguration)'
+    
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Build Artifact'
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'drop'
+        publishLocation: 'Container'
 
 - stage: Deploy
   jobs:
@@ -72,6 +79,14 @@ stages:
         packageType: 'sdk'
         version: '8.x'
     
+    - task: DownloadBuildArtifacts@1
+      displayName: 'Download Build Artifact'
+      inputs:
+        buildType: 'current'
+        downloadType: 'single'
+        artifactName: 'drop'
+        downloadPath: '$(System.ArtifactsDirectory)'
+
     - task: NuGetCommand@2
       displayName: 'Pack NuGet'
       inputs:
