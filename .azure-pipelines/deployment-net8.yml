@@ -13,6 +13,21 @@ stages:
   - job: Build
     displayName: 'Build and Test'
     steps:
+    - task: Assembly-Info-NetCore@3
+      inputs:
+        Path: '$(Build.SourcesDirectory)'
+        FileNames: '**/CodeCube.Azure.Storage.csproj'
+        InsertAttributes: true
+        FileEncoding: 'auto'
+        WriteBOM: false
+        VersionNumber: '$(Build.BuildNumber)'
+        FileVersionNumber: '$(Build.BuildNumber)'
+        InformationalVersion: '$(Build.BuildNumber)'
+        PackageVersion: '$(Build.BuildNumber)'
+        LogLevel: 'verbose'
+        FailOnWarning: false
+        DisableTelemetry: false
+        
     - task: UseDotNet@2
       displayName: 'Use .NET 8'
       inputs:
@@ -48,9 +63,13 @@ stages:
       inputs:
         packageType: 'sdk'
         version: '8.x'
-        
-    - script: dotnet pack --configuration $(buildConfiguration)
+    
+    - task: NuGetCommand@2
       displayName: 'Pack NuGet package'
+      inputs:
+        command: 'pack'
+        packagesToPack: '**/*.csproj'
+        versioningScheme: 'byBuildNumber'
 
     - task: NuGetCommand@2
       inputs:
