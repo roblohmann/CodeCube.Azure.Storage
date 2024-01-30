@@ -14,18 +14,30 @@ stages:
     displayName: 'Build and Test'
     steps:
     - task: UseDotNet@2
+      displayName: 'Use .NET 8'
       inputs:
         packageType: 'sdk'
-        version: '8.x'        
+        version: '8.x'
+        
+    - task: NuGetCommand@2
+      displayName: 'Restore NuGet Packages'
+      inputs:
+        command: 'restore'
+        restoreSolution: '**/*.sln'
+        feedsToUse: 'select'
 
-    - script: dotnet restore
-      displayName: 'Restore NuGet packages'
-
-    - script: dotnet build --configuration $(buildConfiguration)
-      displayName: 'Build solution'
-
-    - script: dotnet test --configuration $(buildConfiguration)
-      displayName: 'Run unit tests'
+    - task: DotNetCoreCLI@2
+      displayName: 'Build Project'
+      inputs:
+        command: 'build'
+        projects: '**/CodeCube.Azure.Storage.csproj'
+        arguments: '--configuration $(buildConfiguration)'
+    
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'test'
+        projects: '**/CodeCube.Azure.Storage.csproj'
+        arguments: '--configuration $(buildConfiguration)'
 
 - stage: Deploy
   jobs:
