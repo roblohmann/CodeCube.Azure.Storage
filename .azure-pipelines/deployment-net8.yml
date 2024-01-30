@@ -53,6 +53,7 @@ stages:
         arguments: '--configuration $(buildConfiguration)'
     
     - task: DotNetCoreCLI@2
+      displayName: 'Run tests'
       inputs:
         command: 'test'
         projects: '**/CodeCube.Azure.Storage.csproj'
@@ -64,18 +65,20 @@ stages:
     displayName: 'Deploy to NuGet'
     steps:
     - task: UseDotNet@2
+      displayName: 'Install .NET 8'
       inputs:
         packageType: 'sdk'
         version: '8.x'
     
     - task: NuGetCommand@2
-      displayName: 'Pack NuGet package'
+      displayName: 'Pack NuGet'
       inputs:
         command: 'pack'
         packagesToPack: '**/*.csproj'
         versioningScheme: 'byBuildNumber'
 
     - task: NuGetCommand@2
+      displayName: 'Push NuGet'
       inputs:
         command: 'push'
         packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
