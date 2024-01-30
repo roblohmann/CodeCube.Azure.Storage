@@ -5,7 +5,11 @@ pool:
   vmImage: 'ubuntu-latest'  # You can choose a different image depending on your requirements
 
 variables:
-  buildConfiguration: 'Release'  
+  buildConfiguration: 'Release'
+  Version.Major: '8'
+  Version.Minor: '0'
+
+name: $(Version.Major).$(Version.Minor).$(Rev:r)
 
 stages:
 - stage: Build
@@ -27,7 +31,7 @@ stages:
         LogLevel: 'verbose'
         FailOnWarning: false
         DisableTelemetry: false
-        
+
     - task: UseDotNet@2
       displayName: 'Use .NET 8'
       inputs:
