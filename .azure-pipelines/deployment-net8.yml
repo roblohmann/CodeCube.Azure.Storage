@@ -51,7 +51,7 @@ stages:
       displayName: 'Build Project'
       inputs:
         command: 'build'
-        projects: '**/C$(ProjectToPack)'
+        projects: '**/$(ProjectToPack)'
         arguments: '--configuration $(buildConfiguration)'
     
     - task: DotNetCoreCLI@2
