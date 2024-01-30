@@ -8,6 +8,7 @@ variables:
   buildConfiguration: 'Release'
   Version.Major: '8'
   Version.Minor: '0'
+  ProjectToPack: 'CodeCube.Azure.Storage.csproj'
 
 name: $(Version.Major).$(Version.Minor).$(Rev:r)
 
@@ -21,7 +22,7 @@ stages:
       displayName: 'Set Assembly Info'
       inputs:
         Path: '$(Build.SourcesDirectory)'
-        FileNames: '**/CodeCube.Azure.Storage.csproj'
+        FileNames: '**/$(ProjectToPack)'
         InsertAttributes: true
         FileEncoding: 'auto'
         WriteBOM: false
@@ -50,14 +51,14 @@ stages:
       displayName: 'Build Project'
       inputs:
         command: 'build'
-        projects: '**/CodeCube.Azure.Storage.csproj'
+        projects: '**/C$(ProjectToPack)'
         arguments: '--configuration $(buildConfiguration)'
     
     - task: DotNetCoreCLI@2
       displayName: 'Run tests'
       inputs:
         command: 'test'
-        projects: '**/CodeCube.Azure.Storage.csproj'
+        projects: '**/*.Tests.csproj'
         arguments: '--configuration $(buildConfiguration)'
 
 - stage: Deploy
@@ -75,7 +76,7 @@ stages:
       displayName: 'Pack NuGet'
       inputs:
         command: 'pack'
-        packagesToPack: '**/*.csproj'
+        packagesToPack: '**/$(ProjectToPack)'
         versioningScheme: 'byBuildNumber'
 
     - task: NuGetCommand@2
