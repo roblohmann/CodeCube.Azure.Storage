@@ -61,6 +61,11 @@ stages:
         command: 'test'
         projects: '**/*.Tests.csproj'
         arguments: '--configuration $(buildConfiguration)'
+
+    - task: CopyFiles@2
+      displayName: 'Copy files to output directory'
+      inputs:
+        targetFolder: '$(Build.ArtifactStagingDirectory)'
     
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Build Artifact'
