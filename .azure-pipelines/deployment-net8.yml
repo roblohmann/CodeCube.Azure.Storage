@@ -9,6 +9,7 @@ variables:
   Version.Major: '8'
   Version.Minor: '0'
   ProjectToPack: 'CodeCube.Azure.Storage.csproj'
+  system.debug: true
 
 name: $(Version.Major).$(Version.Minor).$(Rev:r)
 
