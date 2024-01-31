@@ -93,40 +93,40 @@ namespace CodeCube.Azure.Storage
             return await _tableClient.UpdateEntityAsync(entity, entity.ETag, TableUpdateMode.Merge, cancellationToken);
         }
 
-        /// <summary>
-        /// Retrieve all entities of the given type.
-        /// </summary>
-        /// <param name="query">The query to use for filtering entites. Eg: PartitionKey eq 'myPartitionKey' </param>
-        /// <param name="pageSize">The number of items per page.</param>
-        /// <param name="cancellationToken">The cancellationtoken.</param>        
-        /// <typeparam name="T">The type for the entities in the list. Must inherit from <see cref="TableEntity">TableEntity.</see></typeparam>
-        /// <returns>All entities in the specified table matching the type.</returns>
-        /// <exception cref="InvalidOperationException"></exception>
-        /// <exception cref="RequestFailedException"></exception>
-        [Obsolete("Will be removed in a future version. Please use overload which returns List<T>")]
-        public AsyncPageable<T> Query<T>(string query, int pageSize = 25, CancellationToken cancellationToken = default)
-            where T : class, ITableEntity, new()
-        {
-            return _tableClient.QueryAsync<T>(query, pageSize, null, cancellationToken);
-        }
+        ///// <summary>
+        ///// Retrieve all entities of the given type.
+        ///// </summary>
+        ///// <param name="query">The query to use for filtering entites. Eg: PartitionKey eq 'myPartitionKey' </param>
+        ///// <param name="pageSize">The number of items per page.</param>
+        ///// <param name="cancellationToken">The cancellationtoken.</param>        
+        ///// <typeparam name="T">The type for the entities in the list. Must inherit from <see cref="TableEntity">TableEntity.</see></typeparam>
+        ///// <returns>All entities in the specified table matching the type.</returns>
+        ///// <exception cref="InvalidOperationException"></exception>
+        ///// <exception cref="RequestFailedException"></exception>
+        //[Obsolete("Will be removed in a future version. Please use overload which returns List<T>")]
+        //public AsyncPageable<T> Query<T>(string query, int pageSize = 25, CancellationToken cancellationToken = default)
+        //    where T : class, ITableEntity, new()
+        //{
+        //    return _tableClient.QueryAsync<T>(query, pageSize, null, cancellationToken);
+        //}
 
-        /// <summary>
-        /// Retrieve all entities of the given type.
-        /// </summary>
-        /// <param name="query">The query to use for filtering entites. Eg: PartitionKey eq 'myPartitionKey' </param>
-        /// <param name="pageSize">The number of items per page.</param>
-        /// <param name="cancellationToken">The cancellationtoken.</param>
-        /// <param name="propertiesToSelect">The properties eg coluns to select from your tableEntity.</param>
-        /// <typeparam name="T">The type for the entities in the list. Must inherit from <see cref="TableEntity">TableEntity.</see></typeparam>
-        /// <returns>All entities in the specified table matching the type.</returns>
-        /// <exception cref="InvalidOperationException"></exception>
-        /// <exception cref="RequestFailedException"></exception>
-        [Obsolete("Will be removed in a future version. Please use overload which returns List<T>")]
-        public AsyncPageable<T> Query<T>(string query, IEnumerable<string> propertiesToSelect = null, int pageSize = 25, CancellationToken cancellationToken = default)
-            where T : class, ITableEntity, new()
-        {
-            return _tableClient.QueryAsync<T>(query, pageSize, propertiesToSelect, cancellationToken);
-        }
+        ///// <summary>
+        ///// Retrieve all entities of the given type.
+        ///// </summary>
+        ///// <param name="query">The query to use for filtering entites. Eg: PartitionKey eq 'myPartitionKey' </param>
+        ///// <param name="pageSize">The number of items per page.</param>
+        ///// <param name="cancellationToken">The cancellationtoken.</param>
+        ///// <param name="propertiesToSelect">The properties eg coluns to select from your tableEntity.</param>
+        ///// <typeparam name="T">The type for the entities in the list. Must inherit from <see cref="TableEntity">TableEntity.</see></typeparam>
+        ///// <returns>All entities in the specified table matching the type.</returns>
+        ///// <exception cref="InvalidOperationException"></exception>
+        ///// <exception cref="RequestFailedException"></exception>
+        //[Obsolete("Will be removed in a future version. Please use overload which returns List<T>")]
+        //public AsyncPageable<T> Query<T>(string query, IEnumerable<string> propertiesToSelect = null, int pageSize = 25, CancellationToken cancellationToken = default)
+        //    where T : class, ITableEntity, new()
+        //{
+        //    return _tableClient.QueryAsync<T>(query, pageSize, propertiesToSelect, cancellationToken);
+        //}
 
         /// <summary>
         /// Retrieve all entities of the given type.
