@@ -11,7 +11,7 @@ variables:
   ProjectToPack: 'CodeCube.Azure.Storage.csproj'
   system.debug: true
 
-name: $(Version.Major).$(Version.Minor).$(Rev:r)
+name: $(Version.Major).$(Version.Minor).$(Rev:r)-alpha
 
 stages:
 - stage: Build
@@ -62,48 +62,42 @@ stages:
         projects: '**/*.Tests.csproj'
         arguments: '--configuration $(buildConfiguration)'
 
-    - task: CopyFiles@2
-      displayName: 'Copy files to output directory'
-      inputs:
-        targetFolder: '$(Build.ArtifactStagingDirectory)'
-    
     - task: PublishBuildArtifacts@1
-      displayName: 'Publish Build Artifact'
       inputs:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)'
         ArtifactName: 'drop'
         publishLocation: 'Container'
 
-- stage: Deploy
-  jobs:
-  - job: Deploy
-    displayName: 'Deploy to NuGet'
-    steps:
-    - task: UseDotNet@2
-      displayName: 'Install .NET 8'
-      inputs:
-        packageType: 'sdk'
-        version: '8.x'
+# - stage: Deploy
+#   jobs:
+#   - job: Deploy
+#     displayName: 'Deploy to NuGet'
+#     steps:
+#     - task: UseDotNet@2
+#       displayName: 'Install .NET 8'
+#       inputs:
+#         packageType: 'sdk'
+#         version: '8.x'
     
-    - task: DownloadBuildArtifacts@1
-      displayName: 'Download Build Artifact'
-      inputs:
-        buildType: 'current'
-        downloadType: 'single'
-        artifactName: 'drop'
-        downloadPath: '$(Build.ArtifactStagingDirectory)'
+#     - task: DownloadBuildArtifacts@1
+#       displayName: 'Download Build Artifact'
+#       inputs:
+#         buildType: 'current'
+#         downloadType: 'single'
+#         artifactName: 'drop'
+#         downloadPath: '$(Build.ArtifactStagingDirectory)'
 
-    - task: NuGetCommand@2
-      displayName: 'Pack NuGet'
-      inputs:
-        command: 'pack'
-        packagesToPack: '**/$(ProjectToPack)'
-        versioningScheme: 'byBuildNumber'
+#     - task: NuGetCommand@2
+#       displayName: 'Pack NuGet'
+#       inputs:
+#         command: 'pack'
+#         packagesToPack: '**/$(ProjectToPack)'
+#         versioningScheme: 'byBuildNumber'
 
-    - task: NuGetCommand@2
-      displayName: 'Push NuGet'
-      inputs:
-        command: 'push'
-        packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
-        nuGetFeedType: 'external'
-        publishFeedCredentials: 'nuget.org'
+#     - task: NuGetCommand@2
+#       displayName: 'Push NuGet'
+#       inputs:
+#         command: 'push'
+#         packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+#         nuGetFeedType: 'external'
+#         publishFeedCredentials: 'nuget.org'
