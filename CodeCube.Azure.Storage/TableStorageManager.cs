@@ -204,6 +204,29 @@ namespace CodeCube.Azure.Storage
         }
 
         /// <summary>
+        /// Replace the specified entity in the table storage.
+        /// </summary>
+        /// <typeparam name="T">The type for the entity. Must inherit from <see cref="TableEntity">TableEntity.</see></typeparam>
+        /// <param name="entity">The entity to replace.</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        public async Task<Response> Replace<T>(T entity, CancellationToken cancellationToken = default) where T : ITableEntity, new()
+        {
+            if (string.IsNullOrWhiteSpace(entity.RowKey))
+            {
+                throw new ArgumentException(ErrorConstants.Table.RowKeyIsRequired, nameof(entity));
+            }
+            if (string.IsNullOrWhiteSpace(entity.PartitionKey))
+            {
+                throw new ArgumentException(ErrorConstants.Table.PartitionKeyIsRequired, nameof(entity));
+            }
+
+            return await _tableClient.UpdateEntityAsync(entity, entity.ETag, TableUpdateMode.Replace, cancellationToken);
+        }
+
+        /// <summary>
         /// Delete the specified entity from the tablestorage.
         /// </summary>
         /// <typeparam name="T">The type of the entity. Must inherit from <see cref="TableEntity">TableEntity.</see></typeparam>
