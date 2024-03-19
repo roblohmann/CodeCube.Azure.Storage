@@ -14,9 +14,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeCube.Azure.Storage", "C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeCube.Azure.Storage.Tests", "CodeCube.Azure.Storage.Tests\CodeCube.Azure.Storage.Tests.csproj", "{BB7B0DB8-0B5F-4619-9790-83750757ECF5}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".azure-pipelines", ".azure-pipelines", "{4D237E60-848B-4FBA-8272-87A6E1287CE4}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".azure-pipelines", ".azure-pipelines", "{45D30F9C-BC8F-4082-9EAA-12F7F4FA9DA0}"
 	ProjectSection(SolutionItems) = preProject
 		.azure-pipelines\deployment-net6.yml = .azure-pipelines\deployment-net6.yml
+		.azure-pipelines\deployment-net8.yml = .azure-pipelines\deployment-net8.yml
 	EndProjectSection
 EndProject
 Global
