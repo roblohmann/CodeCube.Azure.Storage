@@ -165,6 +165,30 @@ namespace CodeCube.Azure.Storage
         }
 
         /// <summary>
+        /// Insert the specified entity to the table.
+        /// Entity will be replaced if already exists.
+        /// </summary>
+        /// <typeparam name="T">The type for the entities. Must inherit from <see cref="TableEntity">TableEntity.</see></typeparam>
+        /// <param name="entity">The entity to insertin the tablestorage</param>
+        /// <param name="cancellationToken">The cancellationtoken.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="RequestFailedException"></exception>
+        public async Task<Response> InsertOrReplace<T>(T entity, CancellationToken cancellationToken = default) where T : ITableEntity, new()
+        {
+            if (string.IsNullOrWhiteSpace(entity.RowKey))
+            {
+                throw new ArgumentNullException(ErrorConstants.Table.RowKeyIsRequired, nameof(entity));
+            }
+            if (string.IsNullOrWhiteSpace(entity.PartitionKey))
+            {
+                throw new ArgumentNullException(ErrorConstants.Table.PartitionKeyIsRequired, nameof(entity));
+            }
+
+            return await _tableClient.UpsertEntityAsync(entity, TableUpdateMode.Replace, cancellationToken);
+        }
+
+        /// <summary>
         /// Insert a batch of entities.
         /// </summary>
         /// <typeparam name="T">The type for the entities. Must inherit from <see cref="TableEntity">TableEntity.</see></typeparam>
