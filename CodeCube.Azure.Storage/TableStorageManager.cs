@@ -251,6 +251,23 @@ namespace CodeCube.Azure.Storage
         }
 
         /// <summary>
+        /// Replace a batch of entities via the UpdateReplace method.
+        /// </summary>
+        /// <typeparam name="T">The type for the entities. Must inherit from <see cref="TableEntity">TableEntity.</see></typeparam>
+        /// <param name="entities">The batch of entities to replace.</param>
+        /// <param name="cancellationToken">The cancellationtoken.</param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="RequestFailedException"></exception>
+        public async Task<Response<IReadOnlyList<Response>>> ReplaceBatch<T>(List<T> entities, CancellationToken cancellationToken = default) where T : ITableEntity
+        {
+            var batch = new List<TableTransactionAction>();
+            batch.AddRange(entities.Select(tableEntity => new TableTransactionAction(TableTransactionActionType.UpdateReplace, tableEntity)));
+
+            return await _tableClient.SubmitTransactionAsync(batch, cancellationToken);
+        }
+
+        /// <summary>
         /// Delete the specified entity from the tablestorage.
         /// </summary>
         /// <typeparam name="T">The type of the entity. Must inherit from <see cref="TableEntity">TableEntity.</see></typeparam>

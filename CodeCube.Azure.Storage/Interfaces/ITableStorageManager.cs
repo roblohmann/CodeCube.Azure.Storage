@@ -108,6 +108,17 @@ namespace CodeCube.Azure.Storage.Interfaces
         /// <exception cref="InvalidOperationException"></exception>
         Task<Response> Replace<T>(T entity, CancellationToken cancellationToken = default) where T : ITableEntity, new();
 
+        /// <summary>
+        /// Replace a batch of entities via the UpdateReplace method.
+        /// </summary>
+        /// <typeparam name="T">The type for the entities. Must inherit from <see cref="TableEntity">TableEntity.</see></typeparam>
+        /// <param name="entities">The batch of entities to replace.</param>
+        /// <param name="cancellationToken">The cancellationtoken.</param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="RequestFailedException"></exception>
+        Task<Response<IReadOnlyList<Response>>> ReplaceBatch<T>(List<T> entities, CancellationToken cancellationToken = default) where T : ITableEntity
+
         /*
         /// <summary>
         /// Retrieve all entities of the given type.
@@ -135,7 +146,7 @@ namespace CodeCube.Azure.Storage.Interfaces
         [Obsolete("Will be removed in a future version. Please use overload which returns List<T>")]
         AsyncPageable<T> Query<T>(string query, IEnumerable<string> propertiesToSelect = null, int pageSize = 25, CancellationToken cancellationToken = default) where T : class, ITableEntity, new();
         */
-        
+
         /// <summary>
         /// Delete the specified entity from the tablestorage.
         /// </summary>
