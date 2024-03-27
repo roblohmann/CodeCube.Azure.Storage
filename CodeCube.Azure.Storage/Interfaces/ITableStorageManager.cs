@@ -117,7 +117,7 @@ namespace CodeCube.Azure.Storage.Interfaces
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="RequestFailedException"></exception>
-        Task<Response<IReadOnlyList<Response>>> ReplaceBatch<T>(List<T> entities, CancellationToken cancellationToken = default) where T : ITableEntity
+        Task<Response<IReadOnlyList<Response>>> ReplaceBatch<T>(List<T> entities, CancellationToken cancellationToken = default) where T : ITableEntity;
 
         /*
         /// <summary>
