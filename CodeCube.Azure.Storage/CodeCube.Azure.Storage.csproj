@@ -10,6 +10,7 @@
     <PackageReleaseNotes></PackageReleaseNotes>
     <Copyright>Copyright Rob Lohmann 2019 - 2021</Copyright>
     <PackageTags>azure blobstorage tablestorage queue</PackageTags>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

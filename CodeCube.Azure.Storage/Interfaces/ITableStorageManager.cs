@@ -21,7 +21,7 @@ namespace CodeCube.Azure.Storage.Interfaces
         Task<Response<T>> GetSingle<T>(string partitionKey, string rowKey, CancellationToken cancellationToken = default) where T : class, ITableEntity, new();
 
         /// <summary>
-        /// Retrieve all entities of the given type.
+        /// Retrieve an entities of the given type.
         /// </summary>
         /// <param name="query">The query to use for filtering entites.</param>
         /// <param name="cancellationToken">The cancellationtoken.</param>        
@@ -29,7 +29,18 @@ namespace CodeCube.Azure.Storage.Interfaces
         /// <returns>All entities in the specified table matching the type.</returns>
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="RequestFailedException"></exception>
-        Task<T> GetSingle<T>(Expression<Func<T, bool>> query, CancellationToken cancellationToken = default) where T : class, ITableEntity, new();
+        Task<T?> GetSingle<T>(Expression<Func<T, bool>> query, CancellationToken cancellationToken = default) where T : class, ITableEntity, new();
+
+        /// <summary>
+        /// Retrieve all entities of the given type.
+        /// Pagesize is required to be able to handle large tables.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="continuationToken">The continuationToken. Should be null for the first request. For the following request the identifier (eg item1) from the Tuple should be used.</param>
+        /// <param name="pageSize">The pagesize.</param>
+        /// <param name="cancellationToken">The cancellationtoken.</param>
+        /// <returns>Tuple with the results. Item1 is should be used as continuationtoken for the next request. Item2 is a strong type collection with an max number of items matching the pageSize.</returns>
+        Task<Tuple<string, IEnumerable<T>>?> GetAll<T>(string continuationToken, int pageSize, CancellationToken cancellationToken = default) where T : class, ITableEntity, new();
 
         /// <summary>
         /// Retrieve all entities of the given type.
