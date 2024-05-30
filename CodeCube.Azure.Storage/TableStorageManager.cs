@@ -132,7 +132,40 @@ namespace CodeCube.Azure.Storage
         */
 
         /// <summary>
-        /// Retrieve all entities of the given type.
+        /// Retrieve all entities of the given type based on the provided filter.
+        /// </summary>
+        /// <param name="rangeQuery">The query to use for filtering entites.</param>
+        /// <param name="pageSize">The number of items per page.</param>
+        /// <param name="cancellationToken">The cancellationtoken.</param>
+        /// <typeparam name="T">The type for the entities in the list. Must inherit from <see cref="TableEntity">TableEntity.</see></typeparam>
+        /// <returns>All entities in the specified table matching the type.</returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="RequestFailedException"></exception>
+        public async Task<List<T>> Query<T>(string rangeQuery, int pageSize = 25, CancellationToken cancellationToken = default) where T : class, ITableEntity, new()
+        {
+            return await Query<T>(rangeQuery, pageSize, null, cancellationToken);
+        }
+
+        /// <summary>
+        /// Retrieve all entities of the given type based on the provided filter.
+        /// </summary>
+        /// <param name="rangeQuery">The query to use for filtering entites.</param>
+        /// <param name="pageSize">The number of items per page.</param>
+        /// <param name="propertiesToSelect">The properties to select for the result.</param>
+        /// <param name="cancellationToken">The cancellationtoken.</param>
+        /// <typeparam name="T">The type for the entities in the list. Must inherit from <see cref="TableEntity">TableEntity.</see></typeparam>
+        /// <returns>All entities in the specified table matching the type.</returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="RequestFailedException"></exception>
+        public async Task<List<T>> Query<T>(string rangeQuery, int pageSize = 25, IEnumerable<string> propertiesToSelect = null, CancellationToken cancellationToken = default) where T : class, ITableEntity, new()
+        {
+            var queryResponse = _tableClient.QueryAsync<T>(filter: rangeQuery, maxPerPage: pageSize, select: propertiesToSelect, cancellationToken);
+            
+            return await ConvertToList<T>(queryResponse, cancellationToken);
+        }
+
+        /// <summary>
+        /// Retrieve all entities of the given type based on the provided filter.
         /// </summary>
         /// <param name="query">The query to use for filtering entites.</param>
         /// <param name="pageSize">The number of items per page.</param>
@@ -141,16 +174,13 @@ namespace CodeCube.Azure.Storage
         /// <returns>All entities in the specified table matching the type.</returns>
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="RequestFailedException"></exception>
-        public async Task<List<T>> Query<T>(Expression<Func<T, bool>> query, int pageSize = 25, CancellationToken cancellationToken = default)
-            where T : class, ITableEntity, new()
+        public async Task<List<T>> Query<T>(Expression<Func<T, bool>> query, int pageSize = 25, CancellationToken cancellationToken = default) where T : class, ITableEntity, new()
         {
-            var queryResponse = _tableClient.QueryAsync<T>(filter: query, maxPerPage: pageSize, select: null, cancellationToken);
-
-            return await ConvertToList<T>(queryResponse, cancellationToken);
+            return await Query(query, null, pageSize, cancellationToken);
         }
 
         /// <summary>
-        /// Retrieve all entities of the given type.
+        /// Retrieve all entities of the given type based on the provided filter.
         /// </summary>
         /// <param name="query">The query to use for filtering entites.</param>
         /// <param name="propertiesToSelect">The properties eg coluns to select from your tableEntity.</param>

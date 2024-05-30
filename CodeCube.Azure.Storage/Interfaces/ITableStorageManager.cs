@@ -43,7 +43,32 @@ namespace CodeCube.Azure.Storage.Interfaces
         Task<Tuple<string, IEnumerable<T>>?> GetAll<T>(string continuationToken, int pageSize, CancellationToken cancellationToken = default) where T : class, ITableEntity, new();
 
         /// <summary>
-        /// Retrieve all entities of the given type.
+        /// Retrieve all entities of the given type based on the provided filter.
+        /// </summary>
+        /// <param name="rangeQuery">The query to use for filtering entites.</param>
+        /// <param name="pageSize">The number of items per page.</param>
+        /// <param name="cancellationToken">The cancellationtoken.</param>
+        /// <typeparam name="T">The type for the entities in the list. Must inherit from <see cref="TableEntity">TableEntity.</see></typeparam>
+        /// <returns>All entities in the specified table matching the type.</returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="RequestFailedException"></exception>
+        Task<List<T>> Query<T>(string rangeQuery, int pageSize = 25, CancellationToken cancellationToken = default) where T : class, ITableEntity, new();
+
+        /// <summary>
+        /// Retrieve all entities of the given type based on the provided filter.
+        /// </summary>
+        /// <param name="rangeQuery">The query to use for filtering entites.</param>
+        /// <param name="pageSize">The number of items per page.</param>
+        /// <param name="propertiesToSelect">The properties to select for the result.</param>
+        /// <param name="cancellationToken">The cancellationtoken.</param>
+        /// <typeparam name="T">The type for the entities in the list. Must inherit from <see cref="TableEntity">TableEntity.</see></typeparam>
+        /// <returns>All entities in the specified table matching the type.</returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="RequestFailedException"></exception>
+        Task<List<T>> Query<T>(string rangeQuery, int pageSize = 25, IEnumerable<string> propertiesToSelect = null, CancellationToken cancellationToken = default) where T : class, ITableEntity, new();
+
+        /// <summary>
+        /// Retrieve all entities of the given type based on the provided filter.
         /// </summary>
         /// <param name="query">The query to use for filtering entites.</param>
         /// <param name="pageSize">The number of items per page.</param>
@@ -55,7 +80,7 @@ namespace CodeCube.Azure.Storage.Interfaces
         Task<List<T>> Query<T>(Expression<Func<T, bool>> query, int pageSize = 25, CancellationToken cancellationToken = default) where T : class, ITableEntity, new();
 
         /// <summary>
-        /// Retrieve all entities of the given type.
+        /// Retrieve all entities of the given type based on the provided filter.
         /// </summary>
         /// <param name="query">The query to use for filtering entites.</param>
         /// <param name="propertiesToSelect">The properties eg coluns to select from your tableEntity.</param>
