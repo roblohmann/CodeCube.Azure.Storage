@@ -199,6 +199,26 @@ namespace CodeCube.Azure.Storage
         }
 
         /// <summary>
+        /// Retrieve all entities of the given type based on the filter.
+        /// Pagesize is required to be able to handle large tables.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="continuationToken">The continuationToken. Should be null for the first request. For the following request the identifier (eg item1) from the Tuple should be used.</param>
+        /// <param name="pageSize">The pagesize.</param>
+        /// <param name="cancellationToken">The cancellationtoken.</param>
+        /// <returns>Tuple with the results. Item1 is should be used as continuationtoken for the next request. Item2 is a strong type collection with an max number of items matching the pageSize.</returns>
+        public async Task<Tuple<string, IEnumerable<T>>?> QueryAll<T>(Expression<Func<T, bool>> query, string continuationToken, int pageSize, CancellationToken cancellationToken = default) where T : class, ITableEntity, new()
+        {
+            var queryResponse = _tableClient.QueryAsync<T>(filter: query, maxPerPage: pageSize, cancellationToken: cancellationToken);
+
+            await foreach (var page in queryResponse.AsPages(continuationToken).WithCancellation(cancellationToken))
+            {
+                return Tuple.Create<string, IEnumerable<T>>(page.ContinuationToken!, page.Values);
+            }
+            return null;
+        }
+
+        /// <summary>
         /// Insert the specified entity to the table.
         /// </summary>
         /// <typeparam name="T">The type for the entities. Must inherit from <see cref="TableEntity">TableEntity.</see></typeparam>
