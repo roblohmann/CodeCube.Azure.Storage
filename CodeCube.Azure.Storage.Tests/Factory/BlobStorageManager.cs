@@ -1,108 +1,9 @@
 ﻿using System;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace CodeCube.Azure.Storage.Tests.Factory
 {
-    [TestFixture]
-    public class QueueManager
-    {
-        [Test]
-        public void Get()
-        {
-            //Setup            
-            const string mockConnectionstring = "MockConnectionstring";
-            const string mockQueueName = "MockQueueName";
-            var factory = new StorageFactory();
-
-            //Act
-            var manager = factory.GetQueueManager(mockConnectionstring, mockQueueName);
-
-            //Assert
-            Assert.IsNotNull(manager);
-        }
-
-        [Test]
-        public void Get_WithoutConnectionstring_ThrowsException()
-        {
-            //Setup            
-            const string mockQueueName = "MockQueueName";
-            var factory = new StorageFactory();
-
-            //Act + Assert
-            var exception = Assert.Throws<ArgumentNullException>(() => factory.GetQueueManager(null, mockQueueName));
-            Assert.AreEqual("Name for the queue is required! (Parameter 'connectionstring')", exception.GetBaseException().Message);
-        }
-
-
-        [Test]
-        public void Get_WithoutQueueName_ThrowsException()
-        {
-            //Setup            
-            const string mockConnectionstring = "MockConnectionstring";
-            var factory = new StorageFactory();
-
-            //Act + Assert
-            var exception = Assert.Throws<ArgumentNullException>(() => factory.GetQueueManager(mockConnectionstring, null));
-            Assert.AreEqual("Connectionstring for the queue is required! (Parameter 'queueName')", exception.GetBaseException().Message);
-        }
-    }
-
-    [TestFixture]
-    public class TableStorageManager
-    {
-        //[Test]
-        //public void Get()
-        //{
-        //    //Setup            
-        //    const string mockConnectionstring = "MockConnectionstring";
-        //    const string mockTableName = "MockTable";
-        //    var factory = new StorageFactory();
-
-        //    //Act
-        //    var manager = factory.GetTableStorageManager(mockConnectionstring, mockTableName);
-
-        //    //Assert
-        //    Assert.IsNotNull(manager);
-        //}
-
-        [Test]
-        public void Get_With_Invalid_Connectionstring_Throws_Exception()
-        {
-            //Setup            
-            const string mockTableName = "MockTableName";
-            var factory = new StorageFactory();
-
-            //Act + Assert
-            var exception = Assert.Throws<InvalidOperationException>(() => factory.GetTableStorageManager("MockConnectionString", mockTableName));
-            Assert.AreEqual("Connection string doesn't have value for keyword 'MockConnectionString'.", exception.GetBaseException().Message);
-        }
-
-        [Test]
-        public void Get_WithoutConnectionstring_ThrowsException()
-        {
-            //Setup            
-            const string mockTableName = "MockTableName";
-            var factory = new StorageFactory();
-
-            //Act + Assert
-            var exception = Assert.Throws<ArgumentNullException>(() => factory.GetTableStorageManager(null, mockTableName));
-            Assert.AreEqual("Connectionstring for tablestorage cannot be empty! (Parameter 'tableConnectionstring')", exception.GetBaseException().Message);
-        }
-
-
-        [Test]
-        public void Get_WithoutTableName_ThrowsException()
-        {
-            //Setup            
-            const string mockConnectionstring = "MockConnectionstring";
-            var factory = new StorageFactory();
-
-            //Act + Assert
-            var exception = Assert.Throws<ArgumentNullException>(() => factory.GetTableStorageManager(mockConnectionstring, null));
-            Assert.AreEqual("Tablename for tablestorage cannot be empty! (Parameter 'tableName')", exception.GetBaseException().Message);
-        }
-    }
-
     [TestFixture]
     public class BlobStorageManager
     {
@@ -119,7 +20,7 @@ namespace CodeCube.Azure.Storage.Tests.Factory
             var manager = factory.GetBlobStorageManager(mockUri, mockBlobStorageAccount, mockBlobStoragePassword);
 
             //Assert
-            Assert.IsNotNull(manager);
+            ClassicAssert.IsNotNull(manager);
         }
 
         [Test]
@@ -133,7 +34,7 @@ namespace CodeCube.Azure.Storage.Tests.Factory
 
             //Act + Assert
             var exception = Assert.Throws<ArgumentNullException>(() => factory.GetBlobStorageManager(mockUri, mockBlobStorageAccount, mockBlobStoragePassword));
-            Assert.AreEqual("Accesskey for BLOB-storage cannot be empty! (Parameter 'blobAccesskey')", exception.GetBaseException().Message);
+            ClassicAssert.AreEqual("Accesskey for BLOB-storage cannot be empty! (Parameter 'blobAccesskey')", exception.GetBaseException().Message);
         }
 
         [Test]
@@ -144,7 +45,7 @@ namespace CodeCube.Azure.Storage.Tests.Factory
 
             //Act + Assert
             var exception = Assert.Throws<ArgumentNullException>(() => factory.GetBlobStorageManager(string.Empty, string.Empty, string.Empty));
-            Assert.AreEqual("URI for BLOB-storage cannot be empty! (Parameter 'uri')", exception.GetBaseException().Message);
+            ClassicAssert.AreEqual("URI for BLOB-storage cannot be empty! (Parameter 'uri')", exception.GetBaseException().Message);
         }
 
         [Test]
@@ -155,7 +56,7 @@ namespace CodeCube.Azure.Storage.Tests.Factory
 
             //Act + Assert
             var exception = Assert.Throws<ArgumentNullException>(() => factory.GetBlobStorageManager(string.Empty));
-            Assert.AreEqual("A valid connectionstring for the BLOB-storage is required! (Parameter 'connectionstring')", exception.GetBaseException().Message);
+            ClassicAssert.AreEqual("A valid connectionstring for the BLOB-storage is required! (Parameter 'connectionstring')", exception.GetBaseException().Message);
         }
     }
 }

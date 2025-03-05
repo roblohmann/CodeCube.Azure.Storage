@@ -49,6 +49,17 @@
             <param name="cancellationToken">The cancellationtoken.</param>
             <returns>The URI for the blobfile.</returns>
         </member>
+        <member name="M:CodeCube.Azure.Storage.BlobStorageManager.StoreFile(System.String,System.IO.Stream,System.String,System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Stores a file in the blob-storage.
+            </summary>
+            <param name="filename">The filename of the blob.</param>
+            <param name="fileContent">The content for the blob as a stream.</param>
+            <param name="container">The containername where to store the blob. If the container doesn't exist it will be created.</param>
+            <param name="overwriteExistingFile">If existent, should the existing file be overwritten?</param>
+            <param name="cancellationToken">The cancellationtoken.</param>
+            <returns>The URI for the blobfile.</returns>
+        </member>
         <member name="M:CodeCube.Azure.Storage.BlobStorageManager.StoreFile(System.String,System.Byte[],System.String,System.Threading.CancellationToken)">
             <summary>
             Stores a file in the blob-storage.
@@ -130,6 +141,17 @@
             <param name="filename">The filename of the blob.</param>
             <param name="fileContent">The content for the blob as a stream.</param>
             <param name="container">The containername where to store the blob. If the container doesn't exist it will be created.</param>
+            <param name="cancellationToken">The cancellationtoken.</param>
+            <returns>The URI for the blobfile.</returns>
+        </member>
+        <member name="M:CodeCube.Azure.Storage.Interfaces.IBlobStorageManager.StoreFile(System.String,System.IO.Stream,System.String,System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Stores a file in the blob-storage.
+            </summary>
+            <param name="filename">The filename of the blob.</param>
+            <param name="fileContent">The content for the blob as a stream.</param>
+            <param name="container">The containername where to store the blob. If the container doesn't exist it will be created.</param>
+            <param name="overwriteExistingFile">If existent, should the existing file be overwritten?</param>
             <param name="cancellationToken">The cancellationtoken.</param>
             <returns>The URI for the blobfile.</returns>
         </member>
@@ -253,7 +275,7 @@
         </member>
         <member name="M:CodeCube.Azure.Storage.Interfaces.ITableStorageManager.GetSingle``1(System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Threading.CancellationToken)">
             <summary>
-            Retrieve all entities of the given type.
+            Retrieve an entities of the given type.
             </summary>
             <param name="query">The query to use for filtering entites.</param>
             <param name="cancellationToken">The cancellationtoken.</param>        
@@ -262,9 +284,45 @@
             <exception cref="T:System.InvalidOperationException"></exception>
             <exception cref="T:Azure.RequestFailedException"></exception>
         </member>
-        <member name="M:CodeCube.Azure.Storage.Interfaces.ITableStorageManager.Query``1(System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Int32,System.Threading.CancellationToken)">
+        <member name="M:CodeCube.Azure.Storage.Interfaces.ITableStorageManager.GetAll``1(System.String,System.Int32,System.Threading.CancellationToken)">
             <summary>
             Retrieve all entities of the given type.
+            Pagesize is required to be able to handle large tables.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="continuationToken">The continuationToken. Should be null for the first request. For the following request the identifier (eg item1) from the Tuple should be used.</param>
+            <param name="pageSize">The pagesize.</param>
+            <param name="cancellationToken">The cancellationtoken.</param>
+            <returns>Tuple with the results. Item1 is should be used as continuationtoken for the next request. Item2 is a strong type collection with an max number of items matching the pageSize.</returns>
+        </member>
+        <member name="M:CodeCube.Azure.Storage.Interfaces.ITableStorageManager.Query``1(System.String,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Retrieve all entities of the given type based on the provided filter.
+            </summary>
+            <param name="rangeQuery">The query to use for filtering entites.</param>
+            <param name="pageSize">The number of items per page.</param>
+            <param name="cancellationToken">The cancellationtoken.</param>
+            <typeparam name="T">The type for the entities in the list. Must inherit from <see cref="T:Azure.Data.Tables.TableEntity">TableEntity.</see></typeparam>
+            <returns>All entities in the specified table matching the type.</returns>
+            <exception cref="T:System.InvalidOperationException"></exception>
+            <exception cref="T:Azure.RequestFailedException"></exception>
+        </member>
+        <member name="M:CodeCube.Azure.Storage.Interfaces.ITableStorageManager.Query``1(System.String,System.Int32,System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
+            <summary>
+            Retrieve all entities of the given type based on the provided filter.
+            </summary>
+            <param name="rangeQuery">The query to use for filtering entites.</param>
+            <param name="pageSize">The number of items per page.</param>
+            <param name="propertiesToSelect">The properties to select for the result.</param>
+            <param name="cancellationToken">The cancellationtoken.</param>
+            <typeparam name="T">The type for the entities in the list. Must inherit from <see cref="T:Azure.Data.Tables.TableEntity">TableEntity.</see></typeparam>
+            <returns>All entities in the specified table matching the type.</returns>
+            <exception cref="T:System.InvalidOperationException"></exception>
+            <exception cref="T:Azure.RequestFailedException"></exception>
+        </member>
+        <member name="M:CodeCube.Azure.Storage.Interfaces.ITableStorageManager.Query``1(System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Retrieve all entities of the given type based on the provided filter.
             </summary>
             <param name="query">The query to use for filtering entites.</param>
             <param name="pageSize">The number of items per page.</param>
@@ -276,7 +334,7 @@
         </member>
         <member name="M:CodeCube.Azure.Storage.Interfaces.ITableStorageManager.Query``1(System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Collections.Generic.IEnumerable{System.String},System.Int32,System.Threading.CancellationToken)">
             <summary>
-            Retrieve all entities of the given type.
+            Retrieve all entities of the given type based on the provided filter.
             </summary>
             <param name="query">The query to use for filtering entites.</param>
             <param name="propertiesToSelect">The properties eg coluns to select from your tableEntity.</param>
@@ -287,6 +345,17 @@
             <exception cref="T:System.InvalidOperationException"></exception>
             <exception cref="T:Azure.RequestFailedException"></exception>
         </member>
+        <member name="M:CodeCube.Azure.Storage.Interfaces.ITableStorageManager.QueryAll``1(System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.String,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Retrieve all entities of the given type based on the filter.
+            Pagesize is required to be able to handle large tables.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="continuationToken">The continuationToken. Should be null for the first request. For the following request the identifier (eg item1) from the Tuple should be used.</param>
+            <param name="pageSize">The pagesize.</param>
+            <param name="cancellationToken">The cancellationtoken.</param>
+            <returns>Tuple with the results. Item1 is should be used as continuationtoken for the next request. Item2 is a strong type collection with an max number of items matching the pageSize.</returns>
+        </member>
         <member name="M:CodeCube.Azure.Storage.Interfaces.ITableStorageManager.Insert``1(``0,System.Threading.CancellationToken)">
             <summary>
             Insert the specified entity to the table.
@@ -295,6 +364,18 @@
             <param name="entity">The entity to insertin the tablestorage</param>
             <param name="cancellationToken">The cancellationtoken.</param>
             <returns></returns>
+        </member>
+        <member name="M:CodeCube.Azure.Storage.Interfaces.ITableStorageManager.InsertOrReplace``1(``0,System.Threading.CancellationToken)">
+            <summary>
+            Insert the specified entity to the table.
+            Entity will be replaced if already exists.
+            </summary>
+            <typeparam name="T">The type for the entities. Must inherit from <see cref="T:Azure.Data.Tables.TableEntity">TableEntity.</see></typeparam>
+            <param name="entity">The entity to insertin the tablestorage</param>
+            <param name="cancellationToken">The cancellationtoken.</param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:Azure.RequestFailedException"></exception>
         </member>
         <member name="M:CodeCube.Azure.Storage.Interfaces.ITableStorageManager.InsertBatch``1(System.Collections.Generic.List{``0},System.Threading.CancellationToken)">
             <summary>
@@ -326,6 +407,17 @@
             <returns></returns>
             <exception cref="T:System.ArgumentException"></exception>
             <exception cref="T:System.InvalidOperationException"></exception>
+        </member>
+        <member name="M:CodeCube.Azure.Storage.Interfaces.ITableStorageManager.ReplaceBatch``1(System.Collections.Generic.List{``0},System.Threading.CancellationToken)">
+            <summary>
+            Replace a batch of entities via the UpdateReplace method.
+            </summary>
+            <typeparam name="T">The type for the entities. Must inherit from <see cref="T:Azure.Data.Tables.TableEntity">TableEntity.</see></typeparam>
+            <param name="entities">The batch of entities to replace.</param>
+            <param name="cancellationToken">The cancellationtoken.</param>
+            <returns></returns>
+            <exception cref="T:System.InvalidOperationException"></exception>
+            <exception cref="T:Azure.RequestFailedException"></exception>
         </member>
         <member name="M:CodeCube.Azure.Storage.Interfaces.ITableStorageManager.Delete``1(System.String,System.String,System.Threading.CancellationToken)">
             <summary>
@@ -391,6 +483,11 @@
             Manager class to communicate with azure table storage
             </summary>
         </member>
+        <member name="F:CodeCube.Azure.Storage.TableStorageManager.ConnectedAccountName">
+            <summary>
+            The accountname of the connected table.
+            </summary>
+        </member>
         <member name="M:CodeCube.Azure.Storage.TableStorageManager.GetSingle``1(System.String,System.String,System.Threading.CancellationToken)">
             <summary>
             Retrieve an entity from the tablestorage
@@ -413,9 +510,45 @@
             <exception cref="T:System.InvalidOperationException"></exception>
             <exception cref="T:Azure.RequestFailedException"></exception>
         </member>
-        <member name="M:CodeCube.Azure.Storage.TableStorageManager.Query``1(System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Int32,System.Threading.CancellationToken)">
+        <member name="M:CodeCube.Azure.Storage.TableStorageManager.GetAll``1(System.String,System.Int32,System.Threading.CancellationToken)">
             <summary>
             Retrieve all entities of the given type.
+            Pagesize is required to be able to handle large tables.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="continuationToken">The continuationToken. Should be null for the first request. For the following request the identifier (eg item1) from the Tuple should be used.</param>
+            <param name="pageSize">The pagesize.</param>
+            <param name="cancellationToken">The cancellationtoken.</param>
+            <returns>Tuple with the results. Item1 is should be used as continuationtoken for the next request. Item2 is a strong type collection with an max number of items matching the pageSize.</returns>
+        </member>
+        <member name="M:CodeCube.Azure.Storage.TableStorageManager.Query``1(System.String,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Retrieve all entities of the given type based on the provided filter.
+            </summary>
+            <param name="rangeQuery">The query to use for filtering entites.</param>
+            <param name="pageSize">The number of items per page.</param>
+            <param name="cancellationToken">The cancellationtoken.</param>
+            <typeparam name="T">The type for the entities in the list. Must inherit from <see cref="T:Azure.Data.Tables.TableEntity">TableEntity.</see></typeparam>
+            <returns>All entities in the specified table matching the type.</returns>
+            <exception cref="T:System.InvalidOperationException"></exception>
+            <exception cref="T:Azure.RequestFailedException"></exception>
+        </member>
+        <member name="M:CodeCube.Azure.Storage.TableStorageManager.Query``1(System.String,System.Int32,System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
+            <summary>
+            Retrieve all entities of the given type based on the provided filter.
+            </summary>
+            <param name="rangeQuery">The query to use for filtering entites.</param>
+            <param name="pageSize">The number of items per page.</param>
+            <param name="propertiesToSelect">The properties to select for the result.</param>
+            <param name="cancellationToken">The cancellationtoken.</param>
+            <typeparam name="T">The type for the entities in the list. Must inherit from <see cref="T:Azure.Data.Tables.TableEntity">TableEntity.</see></typeparam>
+            <returns>All entities in the specified table matching the type.</returns>
+            <exception cref="T:System.InvalidOperationException"></exception>
+            <exception cref="T:Azure.RequestFailedException"></exception>
+        </member>
+        <member name="M:CodeCube.Azure.Storage.TableStorageManager.Query``1(System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Retrieve all entities of the given type based on the provided filter.
             </summary>
             <param name="query">The query to use for filtering entites.</param>
             <param name="pageSize">The number of items per page.</param>
@@ -427,7 +560,7 @@
         </member>
         <member name="M:CodeCube.Azure.Storage.TableStorageManager.Query``1(System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Collections.Generic.IEnumerable{System.String},System.Int32,System.Threading.CancellationToken)">
             <summary>
-            Retrieve all entities of the given type.
+            Retrieve all entities of the given type based on the provided filter.
             </summary>
             <param name="query">The query to use for filtering entites.</param>
             <param name="propertiesToSelect">The properties eg coluns to select from your tableEntity.</param>
@@ -438,9 +571,32 @@
             <exception cref="T:System.InvalidOperationException"></exception>
             <exception cref="T:Azure.RequestFailedException"></exception>
         </member>
+        <member name="M:CodeCube.Azure.Storage.TableStorageManager.QueryAll``1(System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.String,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Retrieve all entities of the given type based on the filter.
+            Pagesize is required to be able to handle large tables.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="continuationToken">The continuationToken. Should be null for the first request. For the following request the identifier (eg item1) from the Tuple should be used.</param>
+            <param name="pageSize">The pagesize.</param>
+            <param name="cancellationToken">The cancellationtoken.</param>
+            <returns>Tuple with the results. Item1 is should be used as continuationtoken for the next request. Item2 is a strong type collection with an max number of items matching the pageSize.</returns>
+        </member>
         <member name="M:CodeCube.Azure.Storage.TableStorageManager.Insert``1(``0,System.Threading.CancellationToken)">
             <summary>
             Insert the specified entity to the table.
+            </summary>
+            <typeparam name="T">The type for the entities. Must inherit from <see cref="T:Azure.Data.Tables.TableEntity">TableEntity.</see></typeparam>
+            <param name="entity">The entity to insertin the tablestorage</param>
+            <param name="cancellationToken">The cancellationtoken.</param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:Azure.RequestFailedException"></exception>
+        </member>
+        <member name="M:CodeCube.Azure.Storage.TableStorageManager.InsertOrReplace``1(``0,System.Threading.CancellationToken)">
+            <summary>
+            Insert the specified entity to the table.
+            Entity will be replaced if already exists.
             </summary>
             <typeparam name="T">The type for the entities. Must inherit from <see cref="T:Azure.Data.Tables.TableEntity">TableEntity.</see></typeparam>
             <param name="entity">The entity to insertin the tablestorage</param>
@@ -481,6 +637,17 @@
             <returns></returns>
             <exception cref="T:System.ArgumentException"></exception>
             <exception cref="T:System.InvalidOperationException"></exception>
+        </member>
+        <member name="M:CodeCube.Azure.Storage.TableStorageManager.ReplaceBatch``1(System.Collections.Generic.List{``0},System.Threading.CancellationToken)">
+            <summary>
+            Replace a batch of entities via the UpdateReplace method.
+            </summary>
+            <typeparam name="T">The type for the entities. Must inherit from <see cref="T:Azure.Data.Tables.TableEntity">TableEntity.</see></typeparam>
+            <param name="entities">The batch of entities to replace.</param>
+            <param name="cancellationToken">The cancellationtoken.</param>
+            <returns></returns>
+            <exception cref="T:System.InvalidOperationException"></exception>
+            <exception cref="T:Azure.RequestFailedException"></exception>
         </member>
         <member name="M:CodeCube.Azure.Storage.TableStorageManager.Delete``1(System.String,System.String,System.Threading.CancellationToken)">
             <summary>
