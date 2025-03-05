@@ -22,6 +22,17 @@ namespace CodeCube.Azure.Storage.Interfaces
         /// Stores a file in the blob-storage.
         /// </summary>
         /// <param name="filename">The filename of the blob.</param>
+        /// <param name="fileContent">The content for the blob as a stream.</param>
+        /// <param name="container">The containername where to store the blob. If the container doesn't exist it will be created.</param>
+        /// <param name="overwriteExistingFile">If existent, should the existing file be overwritten?</param>
+        /// <param name="cancellationToken">The cancellationtoken.</param>
+        /// <returns>The URI for the blobfile.</returns>
+        Task<string> StoreFile(string filename, Stream fileContent, string container, bool overwriteExistingFile, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Stores a file in the blob-storage.
+        /// </summary>
+        /// <param name="filename">The filename of the blob.</param>
         /// <param name="bytes">The content for the blob in bytes.</param>
         /// <param name="container">The containername where to store the blob. If the container doesn't exist it will be created.</param>
         /// <param name="cancellationToken">The cancellationtoken.</param>

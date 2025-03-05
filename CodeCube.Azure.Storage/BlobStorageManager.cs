@@ -94,6 +94,20 @@ namespace CodeCube.Azure.Storage
         /// <returns>The URI for the blobfile.</returns>
         public async Task<string> StoreFile(string filename, Stream fileContent, string container, CancellationToken cancellationToken = default)
         {
+            return await StoreFile(filename, fileContent, container, false, cancellationToken);
+        }
+
+        /// <summary>
+        /// Stores a file in the blob-storage.
+        /// </summary>
+        /// <param name="filename">The filename of the blob.</param>
+        /// <param name="fileContent">The content for the blob as a stream.</param>
+        /// <param name="container">The containername where to store the blob. If the container doesn't exist it will be created.</param>
+        /// <param name="overwriteExistingFile">If existent, should the existing file be overwritten?</param>
+        /// <param name="cancellationToken">The cancellationtoken.</param>
+        /// <returns>The URI for the blobfile.</returns>
+        public async Task<string> StoreFile(string filename, Stream fileContent, string container, bool overwriteExistingFile, CancellationToken cancellationToken = default)
+        {
             try
             {
                 //Get a reference to the container
@@ -104,7 +118,7 @@ namespace CodeCube.Azure.Storage
                 var blobClient = blobContainerClient.GetBlobClient(filename);
 
                 //Update the blob.
-                await blobClient.UploadAsync(fileContent, cancellationToken).ConfigureAwait(false);
+                await blobClient.UploadAsync(fileContent, overwriteExistingFile, cancellationToken).ConfigureAwait(false);
 
                 //Return the url for the blob.
                 return blobClient.Uri.AbsoluteUri;
@@ -116,8 +130,7 @@ namespace CodeCube.Azure.Storage
 
         }
 
-        private static async Task CreateContainerIfNotExists(CancellationToken cancellationToken,
-            BlobContainerClient blobContainerClient)
+        private static async Task CreateContainerIfNotExists(CancellationToken cancellationToken, BlobContainerClient blobContainerClient)
         {
             var containerExists = await blobContainerClient.ExistsAsync(cancellationToken);
             if (!containerExists)
