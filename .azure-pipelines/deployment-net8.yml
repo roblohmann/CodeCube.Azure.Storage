@@ -11,7 +11,7 @@ variables:
   ProjectToPack: 'CodeCube.Azure.Storage.csproj'
   system.debug: true
 
-name: $(Version.Major).$(Version.Minor).$(Rev:r)-alpha
+name: $(Version.Major).$(Version.Minor).$(Rev:r)
 
 stages:
 - stage: Build
