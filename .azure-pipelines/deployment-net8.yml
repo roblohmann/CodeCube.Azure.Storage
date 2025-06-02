@@ -6,10 +6,10 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
-  Version.Major: '8'
+  Version.Major: '4'
   Version.Minor: '0'
   ProjectToPack: 'CodeCube.Azure.Storage.csproj'
-  system.debug: true
+  system.debug: false
 
 name: $(Version.Major).$(Version.Minor).$(Rev:r)
 
