@@ -35,17 +35,17 @@ stages:
         FailOnWarning: false
         DisableTelemetry: false
 
-    - task: UseDotNet@2
-      displayName: 'Use .NET 8'
-      inputs:
-        packageType: 'sdk'
-        version: '8.x'
-        
-    - task: NuGetCommand@2
+    # - task: UseDotNet@2
+    #   displayName: 'Use .NET 8'
+    #   inputs:
+    #     packageType: 'sdk'
+    #     version: '8.x'
+            
+    - task: DotNetCoreCLI@2
       displayName: 'Restore NuGet Packages'
       inputs:
         command: 'restore'
-        restoreSolution: '**/*.sln'
+        projects: '**/*.sln'
         feedsToUse: 'select'
 
     - task: DotNetCoreCLI@2
