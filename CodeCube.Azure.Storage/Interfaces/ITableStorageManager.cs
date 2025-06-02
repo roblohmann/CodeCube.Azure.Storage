@@ -75,7 +75,7 @@ namespace CodeCube.Azure.Storage.Interfaces
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="RequestFailedException"></exception>
-        Task<Response> InsertOrReplace<T>(T entity, CancellationToken cancellationToken = default) where T : ITableEntity, new()
+        Task<Response> InsertOrReplace<T>(T entity, CancellationToken cancellationToken = default) where T : ITableEntity, new();
 
         /// <summary>
         /// Insert a batch of entities.
@@ -98,17 +98,6 @@ namespace CodeCube.Azure.Storage.Interfaces
         Task<Response> Update<T>(T entity, CancellationToken cancellationToken = default) where T : ITableEntity, new();
 
         /// <summary>
-        /// Updates the specified list of entites in the table storage.
-        /// </summary>
-        /// <typeparam name="T">The type for the entity. Must inherit from <see cref="TableEntity">TableEntity.</see></typeparam>
-        /// <param name="listOfEntities">The entity to update.</param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"></exception>
-        /// <exception cref="InvalidOperationException"></exception>
-        Task<Response<IReadOnlyList<Response>>> Update<T>(List<T> listOfEntities, CancellationToken cancellationToken = default) where T : ITableEntity, new();
-
-        /// <summary>
         /// Replace the specified entity in the table storage.
         /// </summary>
         /// <typeparam name="T">The type for the entity. Must inherit from <see cref="TableEntity">TableEntity.</see></typeparam>
@@ -123,27 +112,15 @@ namespace CodeCube.Azure.Storage.Interfaces
         /// <summary>
         /// Retrieve all entities of the given type.
         /// </summary>
-        /// <typeparam name="T">The type for the entity. Must inherit from <see cref="TableEntity">TableEntity.</see></typeparam>
-        /// <param name="listOfEntities">The entity to update.</param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"></exception>
+        /// <param name="query">The query to use for filtering entites. Eg: PartitionKey eq 'myPartitionKey' </param>
+        /// <param name="pageSize">The number of items per page.</param>
+        /// <param name="cancellationToken">The cancellationtoken.</param>        
+        /// <typeparam name="T">The type for the entities in the list. Must inherit from <see cref="TableEntity">TableEntity.</see></typeparam>
+        /// <returns>All entities in the specified table matching the type.</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        Task<Response<IReadOnlyList<Response>>> Update<T>(List<T> listOfEntities,
-            CancellationToken cancellationToken = default) where T : ITableEntity, new();
-
-        ///// <summary>
-        ///// Retrieve all entities of the given type.
-        ///// </summary>
-        ///// <param name="query">The query to use for filtering entites. Eg: PartitionKey eq 'myPartitionKey' </param>
-        ///// <param name="pageSize">The number of items per page.</param>
-        ///// <param name="cancellationToken">The cancellationtoken.</param>        
-        ///// <typeparam name="T">The type for the entities in the list. Must inherit from <see cref="TableEntity">TableEntity.</see></typeparam>
-        ///// <returns>All entities in the specified table matching the type.</returns>
-        ///// <exception cref="InvalidOperationException"></exception>
-        ///// <exception cref="RequestFailedException"></exception>
-        //[Obsolete("Will be removed in a future version. Please use overload which returns List<T>")]
-        //AsyncPageable<T> Query<T>(string query, int pageSize = 25, CancellationToken cancellationToken = default) where T : class, ITableEntity, new();
+        /// <exception cref="RequestFailedException"></exception>
+        [Obsolete("Will be removed in a future version. Please use overload which returns List<T>")]
+        AsyncPageable<T> Query<T>(string query, int pageSize = 25, CancellationToken cancellationToken = default) where T : class, ITableEntity, new();
 
         /// <summary>
         /// Retrieve all entities of the given type.

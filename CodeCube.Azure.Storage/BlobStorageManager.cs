@@ -32,10 +32,12 @@ namespace CodeCube.Azure.Storage
             {
                 throw new ArgumentNullException(nameof(url), ErrorConstants.Blob.BlobUriRequired);
             }
+
             if (string.IsNullOrEmpty(accountName))
             {
                 throw new ArgumentNullException(nameof(accountName), ErrorConstants.Blob.BlobAccountRequired);
             }
+
             if (string.IsNullOrEmpty(accessKey))
             {
                 throw new ArgumentNullException(nameof(accessKey), ErrorConstants.Blob.BlobAccesskeyRequired);
@@ -57,10 +59,12 @@ namespace CodeCube.Azure.Storage
             {
                 throw new ArgumentNullException(nameof(url), ErrorConstants.Blob.BlobUriRequired);
             }
+
             if (string.IsNullOrEmpty(accountName))
             {
                 throw new ArgumentNullException(nameof(accountName), ErrorConstants.Blob.BlobAccountRequired);
             }
+
             if (string.IsNullOrEmpty(accessKey))
             {
                 throw new ArgumentNullException(nameof(accessKey), ErrorConstants.Blob.BlobAccesskeyRequired);
@@ -78,7 +82,8 @@ namespace CodeCube.Azure.Storage
         {
             if (string.IsNullOrEmpty(connectionstring))
             {
-                throw new ArgumentNullException(nameof(connectionstring), ErrorConstants.Blob.BlobConnectionstringRequired);
+                throw new ArgumentNullException(nameof(connectionstring),
+                    ErrorConstants.Blob.BlobConnectionstringRequired);
             }
 
             _blobServiceClient = ConnectBlobServiceClient();
@@ -89,10 +94,28 @@ namespace CodeCube.Azure.Storage
         /// </summary>
         /// <param name="filename">The filename of the blob.</param>
         /// <param name="fileContent">The content for the blob as a stream.</param>
+        /// <param name="contentType">The contentType for the file being uploaded.</param>
         /// <param name="container">The containername where to store the blob. If the container doesn't exist it will be created.</param>
         /// <param name="cancellationToken">The cancellationtoken.</param>
         /// <returns>The URI for the blobfile.</returns>
-        public async Task<string> StoreFile(string filename, Stream fileContent, string container, CancellationToken cancellationToken = default)
+        public async Task<string> StoreFile(string filename, Stream fileContent, string contentType, string container,
+            CancellationToken cancellationToken = default)
+        {
+            return await StoreFile(filename, fileContent, contentType, container, false, cancellationToken);
+        }
+
+        /// <summary>
+        /// Stores a file in the blob-storage.
+        /// </summary>
+        /// <param name="filename">The filename of the blob.</param>
+        /// <param name="fileContent">The content for the blob as a stream.</param>
+        /// <param name="contentType">The contentType for the file being uploaded.</param>
+        /// <param name="container">The containername where to store the blob. If the container doesn't exist it will be created.</param>
+        /// <param name="overwriteExistingFile">If existent, should the existing file be overwritten?</param>
+        /// <param name="cancellationToken">The cancellationtoken.</param>
+        /// <returns>The URI for the blobfile.</returns>
+        public async Task<string> StoreFile(string filename, Stream fileContent, string contentType, string container,
+            bool overwriteExistingFile, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -104,7 +127,9 @@ namespace CodeCube.Azure.Storage
                 var blobClient = blobContainerClient.GetBlobClient(filename);
 
                 //Update the blob.
-                await blobClient.UploadAsync(fileContent, cancellationToken).ConfigureAwait(false);
+                //await blobClient.UploadAsync(fileContent, overwriteExistingFile, cancellationToken).ConfigureAwait(false);
+                await blobClient.UploadAsync(fileContent, new BlobHttpHeaders {ContentType = contentType}, null, null,
+                    null, null, default, cancellationToken).ConfigureAwait(false);
 
                 //Return the url for the blob.
                 return blobClient.Uri.AbsoluteUri;
@@ -113,7 +138,6 @@ namespace CodeCube.Azure.Storage
             {
                 throw new InvalidOperationException(ErrorConstants.Blob.FileCouldNotBeStored, e);
             }
-
         }
 
         private static async Task CreateContainerIfNotExists(CancellationToken cancellationToken,
@@ -134,7 +158,8 @@ namespace CodeCube.Azure.Storage
         /// <param name="container">The containername where to store the blob. If the container doesn't exist it will be created.</param>
         /// <param name="cancellationToken">The cancellationtoken.</param>
         /// <returns>The URI for the blobfile.</returns>
-        public async Task<string> StoreFile(string filename, byte[] bytes, string container, CancellationToken cancellationToken = default)
+        public async Task<string> StoreFile(string filename, byte[] bytes, string container,
+            CancellationToken cancellationToken = default)
         {
             try
             {
@@ -169,9 +194,11 @@ namespace CodeCube.Azure.Storage
         /// <param name="overwriteExistingFile">Boolean indicating wether existing blob with this filename should be overwritten.</param>
         /// <param name="cancellationToken">The cancellationtoken.</param>
         /// <returns>The URI for the blobfile.</returns>
-        public async Task<string> StoreFile(string filename, byte[] bytes, string container, bool overwriteExistingFile, CancellationToken cancellationToken = default)
+        public async Task<string> StoreFile(string filename, byte[] bytes, string container, bool overwriteExistingFile,
+            CancellationToken cancellationToken = default)
         {
-            return await StoreFile(filename, new BinaryData(bytes), container, overwriteExistingFile, cancellationToken).ConfigureAwait(false);
+            return await StoreFile(filename, new BinaryData(bytes), container, overwriteExistingFile, cancellationToken)
+                .ConfigureAwait(false);
         }
 
         /// <summary>
@@ -183,7 +210,8 @@ namespace CodeCube.Azure.Storage
         /// <param name="overwriteExistingFile">Boolean indicating wether existing blob with this filename should be overwritten.</param>
         /// <param name="cancellationToken">The cancellationtoken.</param>
         /// <returns>The URI for the blobfile.</returns>
-        public async Task<string> StoreFile(string filename, BinaryData binaryData, string container, bool overwriteExistingFile, CancellationToken cancellationToken = default)
+        public async Task<string> StoreFile(string filename, BinaryData binaryData, string container,
+            bool overwriteExistingFile, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -195,7 +223,8 @@ namespace CodeCube.Azure.Storage
                 var blobClient = blobContainerClient.GetBlobClient(filename);
 
                 //Update the blob.
-                await blobClient.UploadAsync(binaryData, overwriteExistingFile, cancellationToken).ConfigureAwait(false);
+                await blobClient.UploadAsync(binaryData, overwriteExistingFile, cancellationToken)
+                    .ConfigureAwait(false);
 
                 //Return the url for the blob.
                 return blobClient.Uri.AbsoluteUri;
@@ -213,7 +242,8 @@ namespace CodeCube.Azure.Storage
         /// <param name="container">The containername where the blob to be deleted is stored.</param>
         /// <param name="cancellationToken">The cancelaltiontoken.</param>
         /// <returns></returns>
-        public async Task<bool> DeleteFile(string filename, string container, CancellationToken cancellationToken = default)
+        public async Task<bool> DeleteFile(string filename, string container,
+            CancellationToken cancellationToken = default)
         {
             try
             {
@@ -225,7 +255,7 @@ namespace CodeCube.Azure.Storage
                 var blobClient = blobContainerClient.GetBlobClient(filename);
 
                 //Update the blob.
-                return await blobClient.DeleteIfExistsAsync(cancellationToken:cancellationToken).ConfigureAwait(false);
+                return await blobClient.DeleteIfExistsAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -241,7 +271,8 @@ namespace CodeCube.Azure.Storage
         /// <param name="container">The containername where to store the blob. If the container doesn't exist it will be created.</param>
         /// <param name="cancellationToken">The cancellationtoken.</param>
         /// <returns>The URI for the blobfile.</returns>
-        public async Task<string> StoreFile(string filename, BinaryData binaryData, string container, CancellationToken cancellationToken = default)
+        public async Task<string> StoreFile(string filename, BinaryData binaryData, string container,
+            CancellationToken cancellationToken = default)
         {
             return await StoreFile(filename, binaryData.ToArray(), container, cancellationToken).ConfigureAwait(false);
         }
@@ -253,12 +284,14 @@ namespace CodeCube.Azure.Storage
         /// <param name="container">The name of the conatiner where the blob is stored.</param>
         /// <param name="cancellationToken">The cancellationtoken.</param>
         /// <returns>The bytearray for the specified blob.</returns>
-        public async Task<byte[]> GetBytes(string filename, string container, CancellationToken cancellationToken = default)
+        public async Task<byte[]> GetBytes(string filename, string container,
+            CancellationToken cancellationToken = default)
         {
             //Get a reference to the container
             var blobContainerClient = _blobServiceClient.GetBlobContainerClient(container);
             await CreateContainerIfNotExists(cancellationToken, blobContainerClient).ConfigureAwait(false);
-            await blobContainerClient.SetAccessPolicyAsync(PublicAccessType.None, cancellationToken: cancellationToken).ConfigureAwait(false);
+            await blobContainerClient.SetAccessPolicyAsync(PublicAccessType.None, cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
 
             var blobClient = blobContainerClient.GetBlobClient(filename);
 
@@ -281,12 +314,14 @@ namespace CodeCube.Azure.Storage
         /// <param name="container">The name of the conatiner where the blob is stored.</param>
         /// <param name="cancellationToken">The cancellationtoken.</param>
         /// <returns>The specified file as string.</returns>
-        public async Task<string> GetString(string filename, string container, CancellationToken cancellationToken = default)
+        public async Task<string> GetString(string filename, string container,
+            CancellationToken cancellationToken = default)
         {
             return Encoding.UTF8.GetString(await GetBytes(filename, container, cancellationToken));
         }
 
         #region privates
+
         private BlobServiceClient ConnectBlobServiceClient()
         {
             return ConnectCloudStorageAccountWithConnectionString();
@@ -309,6 +344,7 @@ namespace CodeCube.Azure.Storage
 
             return new BlobServiceClient(Connectionstring);
         }
+
         #endregion
     }
 }
