@@ -6,7 +6,7 @@
     <PackageProjectUrl>https://github.com/roblohmann/CodeCube.Azure.Storage</PackageProjectUrl>
     <Authors>Rob Lohmann</Authors>
     <Description>Library with utilities and wrappers around commonly used stuff in Microsoft Azure Storages</Description>
-    <PackageIconUrl>https://github.com/roblohmann/CodeCube.Azure.Storage/blob/master/nuget-icon.png?raw=true</PackageIconUrl>
+    <PackageIcon>nuget-icon.png</PackageIcon>
     <RepositoryUrl>https://github.com/roblohmann/CodeCube.Azure.Storage</RepositoryUrl>    
     <Copyright>Copyright Rob Lohmann 2019 - 2026</Copyright>
     <PackageTags>azure blobstorage tablestorage queue</PackageTags>
@@ -27,6 +27,10 @@
     <PackageReference Include="Azure.Storage.Blobs" Version="12.27.0" />
     <PackageReference Include="Azure.Storage.Queues" Version="12.25.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="../nuget-icon.png" Pack="true" Visible="false" PackagePath="" />
   </ItemGroup>
 
 </Project>
