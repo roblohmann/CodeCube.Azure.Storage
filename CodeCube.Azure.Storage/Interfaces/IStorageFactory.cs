@@ -2,6 +2,9 @@
 
 namespace CodeCube.Azure.Storage.Interfaces
 {
+    /// <summary>
+    /// Factory to create managers for blob, table and queue storage.
+    /// </summary>
     public interface IStorageFactory
     {
         /// <summary>

@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Azure.Storage.Queues;
@@ -13,7 +13,7 @@ namespace CodeCube.Azure.Storage
     public sealed class QueueManager : BaseManager, IQueueManager
     {
         private readonly string _queuename;
-        private QueueClient _queueClient;
+        private QueueClient? _queueClient;
 
         internal QueueManager(string connectionstring, string queuename) : base(connectionstring)
         {
@@ -37,21 +37,26 @@ namespace CodeCube.Azure.Storage
         /// <returns>The queueclient.</returns>
         public async Task<QueueClient> ConnectAsync(CancellationToken cancellationToken)
         {
-            if (_queueClient == null) await ConnectToQueue(cancellationToken);
-
-            return _queueClient;
+            return _queueClient ??= await ConnectToQueue(cancellationToken);
         }
 
         #region privates
-        private async Task ConnectToQueue(CancellationToken cancellationToken)
+        private async Task<QueueClient> ConnectToQueue(CancellationToken cancellationToken)
         {
-            _queueClient = new QueueClient(Connectionstring, _queuename);
+            if (string.IsNullOrWhiteSpace(Connectionstring))
+            {
+                throw new InvalidOperationException(ErrorConstants.Queue.QueueConnectionstringRequired);
+            }
 
-            var queueExists = await _queueClient.ExistsAsync(cancellationToken);
+            var queueClient = new QueueClient(Connectionstring, _queuename);
+
+            var queueExists = await queueClient.ExistsAsync(cancellationToken);
             if (!queueExists)
             {
-                await _queueClient.CreateAsync(cancellationToken: cancellationToken);
+                await queueClient.CreateAsync(cancellationToken: cancellationToken);
             }
+
+            return queueClient;
         }
         #endregion
     }

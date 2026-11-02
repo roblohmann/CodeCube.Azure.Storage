@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace CodeCube.Azure.Storage.Interfaces
 {
+    /// <summary>
+    /// Manager to connect to a blob storage and upload, download or delete blobs.
+    /// </summary>
     public interface IBlobStorageManager
     {
         /// <summary>

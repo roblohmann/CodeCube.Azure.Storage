@@ -8,6 +8,9 @@ using Azure.Data.Tables;
 
 namespace CodeCube.Azure.Storage.Interfaces
 {
+    /// <summary>
+    /// Manager to communicate with azure table storage.
+    /// </summary>
     public interface ITableStorageManager
     {
         /// <summary>
@@ -29,7 +32,7 @@ namespace CodeCube.Azure.Storage.Interfaces
         /// <returns>All entities in the specified table matching the type.</returns>
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="RequestFailedException"></exception>
-        Task<T> GetSingle<T>(Expression<Func<T, bool>> query, CancellationToken cancellationToken = default) where T : class, ITableEntity, new();
+        Task<T?> GetSingle<T>(Expression<Func<T, bool>> query, CancellationToken cancellationToken = default) where T : class, ITableEntity, new();
 
         /// <summary>
         /// Retrieve all entities of the given type.
@@ -54,7 +57,7 @@ namespace CodeCube.Azure.Storage.Interfaces
         /// <returns>All entities in the specified table matching the type.</returns>
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="RequestFailedException"></exception>
-        Task<List<T>> Query<T>(Expression<Func<T, bool>> query, IEnumerable<string> propertiesToSelect = null, int pageSize = 25, CancellationToken cancellationToken = default) where T : class, ITableEntity, new();
+        Task<List<T>> Query<T>(Expression<Func<T, bool>> query, IEnumerable<string>? propertiesToSelect = null, int pageSize = 25, CancellationToken cancellationToken = default) where T : class, ITableEntity, new();
         
         /// <summary>
         /// Retrieve all entities of the given type based on the provided filter.
@@ -79,14 +82,15 @@ namespace CodeCube.Azure.Storage.Interfaces
         /// <returns>All entities in the specified table matching the type.</returns>
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="RequestFailedException"></exception>
-        Task<List<T>> Query<T>(string rangeQuery, int pageSize = 25, IEnumerable<string> propertiesToSelect = null, CancellationToken cancellationToken = default) where T : class, ITableEntity, new();
+        Task<List<T>> Query<T>(string rangeQuery, int pageSize = 25, IEnumerable<string>? propertiesToSelect = null, CancellationToken cancellationToken = default) where T : class, ITableEntity, new();
 
         
         /// <summary>
         /// Retrieve all entities of the given type based on the filter.
         /// Pagesize is required to be able to handle large tables.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">The type for the entities in the list. Must inherit from <see cref="TableEntity">TableEntity.</see></typeparam>
+        /// <param name="query">The query to use for filtering entites.</param>
         /// <param name="continuationToken">The continuationToken. Should be null for the first request. For the following request the identifier (eg item1) from the Tuple should be used.</param>
         /// <param name="pageSize">The pagesize.</param>
         /// <param name="cancellationToken">The cancellationtoken.</param>

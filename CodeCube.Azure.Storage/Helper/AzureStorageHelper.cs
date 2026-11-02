@@ -6,6 +6,9 @@ using Azure.Data.Tables;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 
+/// <summary>
+/// Helper class which creates blob containers and tables only once per name, thread-safe, to avoid 409 Conflict errors.
+/// </summary>
 public static class AzureStorageHelper
 {
     private static readonly HashSet<string> _createdResources = [];
@@ -55,6 +58,7 @@ public static class AzureStorageHelper
     /// </summary>
     /// <param name="container">The blob container client</param>
     /// <param name="containerName">The name of the container (used as a unique key for tracking)</param>
+    /// <param name="cancellationToken">Cancellation token</param>
     public static async Task EnsureBlobContainerExists(
         BlobContainerClient container,
         string containerName,

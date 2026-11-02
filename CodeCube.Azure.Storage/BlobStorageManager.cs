@@ -43,7 +43,7 @@ namespace CodeCube.Azure.Storage
                 throw new ArgumentNullException(nameof(accessKey), ErrorConstants.Blob.BlobAccesskeyRequired);
             }
 
-            ConnectBlobServiceClient(new Uri(url), accountName, accessKey);
+            _blobServiceClient = ConnectBlobServiceClient(new Uri(url), accountName, accessKey);
         }
 
         /// <summary>
