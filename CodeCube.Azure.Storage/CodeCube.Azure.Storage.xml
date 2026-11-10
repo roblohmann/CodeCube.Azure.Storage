@@ -4,10 +4,26 @@
         <name>CodeCube.Azure.Storage</name>
     </assembly>
     <members>
+        <member name="T:CodeCube.Azure.Storage.BaseManager">
+            <summary>
+            Base class for the storage managers which holds the connectionstring to the storage.
+            </summary>
+        </member>
         <member name="F:CodeCube.Azure.Storage.BaseManager.Connectionstring">
             <summary>
-            The connectionstring to the storage
+            The connectionstring to the storage. Is <c>null</c> when the manager was not created with a connectionstring.
             </summary>
+        </member>
+        <member name="M:CodeCube.Azure.Storage.BaseManager.#ctor">
+            <summary>
+            Creates a new manager without a connectionstring.
+            </summary>
+        </member>
+        <member name="M:CodeCube.Azure.Storage.BaseManager.#ctor(System.String)">
+            <summary>
+            Creates a new manager with the provided connectionstring.
+            </summary>
+            <param name="connectionstring">The connectionstring to the storage.</param>
         </member>
         <member name="T:CodeCube.Azure.Storage.BlobStorageManager">
             <summary>
@@ -136,6 +152,37 @@
             The type of of storages.
             </summary>
         </member>
+        <member name="F:CodeCube.Azure.Storage.Enum.EStorageType.Unknown">
+            <summary>
+            The storagetype is unknown.
+            </summary>
+        </member>
+        <member name="F:CodeCube.Azure.Storage.Enum.EStorageType.BlobStorage">
+            <summary>
+            Azure Blob Storage.
+            </summary>
+        </member>
+        <member name="F:CodeCube.Azure.Storage.Enum.EStorageType.TableStorage">
+            <summary>
+            Azure Table Storage.
+            </summary>
+        </member>
+        <member name="T:CodeCube.Azure.Storage.Exceptions.UnsupportedStorageTypeException">
+            <summary>
+            Exception which is thrown when an unsupported <see cref="T:CodeCube.Azure.Storage.Enum.EStorageType"/> is requested.
+            </summary>
+        </member>
+        <member name="M:CodeCube.Azure.Storage.Exceptions.UnsupportedStorageTypeException.#ctor(CodeCube.Azure.Storage.Enum.EStorageType)">
+            <summary>
+            Creates a new exception for the provided storagetype.
+            </summary>
+            <param name="storageType">The storagetype which is not supported.</param>
+        </member>
+        <member name="T:CodeCube.Azure.Storage.Interfaces.IBlobStorageManager">
+            <summary>
+            Manager to connect to a blob storage and upload, download or delete blobs.
+            </summary>
+        </member>
         <member name="M:CodeCube.Azure.Storage.Interfaces.IBlobStorageManager.StoreFile(System.String,System.IO.Stream,System.String,System.String,System.Threading.CancellationToken)">
             <summary>
             Stores a file in the blob-storage.
@@ -228,11 +275,21 @@
             <param name="cancellationToken">The cancellationtoken.</param>
             <returns>The specified file as string.</returns>
         </member>
+        <member name="T:CodeCube.Azure.Storage.Interfaces.IQueueManager">
+            <summary>
+            Manager to connect to one single Azure Storage Queue.
+            </summary>
+        </member>
         <member name="M:CodeCube.Azure.Storage.Interfaces.IQueueManager.ConnectAsync(System.Threading.CancellationToken)">
             <summary>
             Connect to the desired queue and return the client.
             </summary>
             <returns>The queueclient.</returns>
+        </member>
+        <member name="T:CodeCube.Azure.Storage.Interfaces.IStorageFactory">
+            <summary>
+            Factory to create managers for blob, table and queue storage.
+            </summary>
         </member>
         <member name="M:CodeCube.Azure.Storage.Interfaces.IStorageFactory.GetBlobStorageManager(System.String,System.String,System.String)">
             <summary>
@@ -266,6 +323,11 @@
             <param name="queueName">The name of the queue to connect to</param>
             <returns>An instance of the <see cref="T:CodeCube.Azure.Storage.QueueManager"/></returns>
             <exception cref="T:System.ArgumentNullException">Throws an <see cref="T:System.ArgumentNullException"/> when parameters are forgotten.</exception>
+        </member>
+        <member name="T:CodeCube.Azure.Storage.Interfaces.ITableStorageManager">
+            <summary>
+            Manager to communicate with azure table storage.
+            </summary>
         </member>
         <member name="M:CodeCube.Azure.Storage.Interfaces.ITableStorageManager.GetSingle``1(System.String,System.String,System.Threading.CancellationToken)">
             <summary>
@@ -312,6 +374,43 @@
             <returns>All entities in the specified table matching the type.</returns>
             <exception cref="T:System.InvalidOperationException"></exception>
             <exception cref="T:Azure.RequestFailedException"></exception>
+        </member>
+        <member name="M:CodeCube.Azure.Storage.Interfaces.ITableStorageManager.Query``1(System.String,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Retrieve all entities of the given type based on the provided filter.
+            </summary>
+            <param name="rangeQuery">The query to use for filtering entites.</param>
+            <param name="pageSize">The number of items per page.</param>
+            <param name="cancellationToken">The cancellationtoken.</param>
+            <typeparam name="T">The type for the entities in the list. Must inherit from <see cref="T:Azure.Data.Tables.TableEntity">TableEntity.</see></typeparam>
+            <returns>All entities in the specified table matching the type.</returns>
+            <exception cref="T:System.InvalidOperationException"></exception>
+            <exception cref="T:Azure.RequestFailedException"></exception>
+        </member>
+        <member name="M:CodeCube.Azure.Storage.Interfaces.ITableStorageManager.Query``1(System.String,System.Int32,System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
+            <summary>
+            Retrieve all entities of the given type based on the provided filter.
+            </summary>
+            <param name="rangeQuery">The query to use for filtering entites.</param>
+            <param name="pageSize">The number of items per page.</param>
+            <param name="propertiesToSelect">The properties to select for the result.</param>
+            <param name="cancellationToken">The cancellationtoken.</param>
+            <typeparam name="T">The type for the entities in the list. Must inherit from <see cref="T:Azure.Data.Tables.TableEntity">TableEntity.</see></typeparam>
+            <returns>All entities in the specified table matching the type.</returns>
+            <exception cref="T:System.InvalidOperationException"></exception>
+            <exception cref="T:Azure.RequestFailedException"></exception>
+        </member>
+        <member name="M:CodeCube.Azure.Storage.Interfaces.ITableStorageManager.QueryAll``1(System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.String,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Retrieve all entities of the given type based on the filter.
+            Pagesize is required to be able to handle large tables.
+            </summary>
+            <typeparam name="T">The type for the entities in the list. Must inherit from <see cref="T:Azure.Data.Tables.TableEntity">TableEntity.</see></typeparam>
+            <param name="query">The query to use for filtering entites.</param>
+            <param name="continuationToken">The continuationToken. Should be null for the first request. For the following request the identifier (eg item1) from the Tuple should be used.</param>
+            <param name="pageSize">The pagesize.</param>
+            <param name="cancellationToken">The cancellationtoken.</param>
+            <returns>Tuple with the results. Item1 is should be used as continuationtoken for the next request. Item2 is a strong type collection with an max number of items matching the pageSize.</returns>
         </member>
         <member name="M:CodeCube.Azure.Storage.Interfaces.ITableStorageManager.Insert``1(``0,System.Threading.CancellationToken)">
             <summary>
@@ -522,7 +621,8 @@
             Retrieve all entities of the given type based on the filter.
             Pagesize is required to be able to handle large tables.
             </summary>
-            <typeparam name="T"></typeparam>
+            <typeparam name="T">The type for the entities in the list. Must inherit from <see cref="T:Azure.Data.Tables.TableEntity">TableEntity.</see></typeparam>
+            <param name="query">The query to use for filtering entites.</param>
             <param name="continuationToken">The continuationToken. Should be null for the first request. For the following request the identifier (eg item1) from the Tuple should be used.</param>
             <param name="pageSize">The pagesize.</param>
             <param name="cancellationToken">The cancellationtoken.</param>
@@ -616,6 +716,51 @@
             <param name="partitionKey"></param>
             <returns></returns>
             <exception cref="T:Azure.RequestFailedException"></exception>
+        </member>
+        <member name="T:AzureStorageHelper">
+            <summary>
+            Helper class which creates blob containers and tables only once per name, thread-safe, to avoid 409 Conflict errors.
+            </summary>
+        </member>
+        <member name="M:AzureStorageHelper.EnsureBlobContainerExistsAsync(Azure.Storage.Blobs.BlobContainerClient,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Ensures a blob container exists, using thread-safe creation to avoid 409 Conflict errors.
+            Only attempts creation once per container name across all threads.
+            </summary>
+            <param name="container">The blob container client</param>
+            <param name="containerName">The name of the container (used as a unique key for tracking)</param>
+            <param name="cancellationToken">Cancellation token</param>
+        </member>
+        <member name="M:AzureStorageHelper.EnsureBlobContainerExists(Azure.Storage.Blobs.BlobContainerClient,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Ensures a blob container exists (synchronous version), using thread-safe creation to avoid 409 Conflict errors.
+            Only attempts creation once per container name across all threads.
+            </summary>
+            <param name="container">The blob container client</param>
+            <param name="containerName">The name of the container (used as a unique key for tracking)</param>
+            <param name="cancellationToken">Cancellation token</param>
+        </member>
+        <member name="M:AzureStorageHelper.EnsureTableExistsAsync(Azure.Data.Tables.TableClient,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Ensures a table exists, using thread-safe creation to avoid 409 Conflict errors.
+            Only attempts creation once per table name across all threads.
+            </summary>
+            <param name="tableClient">The table client</param>
+            <param name="tableName">The name of the table (used as a unique key for tracking)</param>
+            <param name="cancellationToken">Cancellation token</param>
+        </member>
+        <member name="M:AzureStorageHelper.EnsureTableExists(Azure.Data.Tables.TableClient,System.String)">
+            <summary>
+            Ensures a table exists (synchronous version), using thread-safe creation to avoid 409 Conflict errors.
+            Only attempts creation once per table name across all threads.
+            </summary>
+            <param name="tableClient">The table client</param>
+            <param name="tableName">The name of the table (used as a unique key for tracking)</param>
+        </member>
+        <member name="M:AzureStorageHelper.ResetCreatedResources">
+            <summary>
+            Clears the tracking of created resources. Useful for testing purposes.
+            </summary>
         </member>
         <member name="T:ServiceCollectionExtensions">
             <summary>
